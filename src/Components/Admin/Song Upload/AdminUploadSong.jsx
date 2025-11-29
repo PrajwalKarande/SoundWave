@@ -1,0 +1,317 @@
+// src/Components/Admin/AdminUploadSong.jsx
+import { useState } from 'react';
+import { Upload, Music, Image, X, Plus, Check } from 'lucide-react';
+import api from '../../../services/api';
+import './AdminUploadSong.css';
+
+function AdminUploadSong() {
+  const [formData, setFormData] = useState({
+    title: '',
+    artists: [''],
+    genres: [''],
+  });
+  const [audioFile, setAudioFile] = useState(null);
+  const [coverImage, setCoverImage] = useState(null);
+  const [audioPreview, setAudioPreview] = useState(null);
+  const [coverPreview, setCoverPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
+
+  // Available genres list
+  const availableGenres = ['Romance','Bollywood','Soft','Pop', 'Rock', 'Hip Hop', 'Jazz', 'Classical', 'Electronic', 'R&B', 'Country', 'Indie', 'Blues'];
+
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleArtistChange = (index, value) => {
+    const newArtists = [...formData.artists];
+    newArtists[index] = value;
+    setFormData({ ...formData, artists: newArtists });
+  };
+
+  const addArtist = () => {
+    setFormData({
+      ...formData,
+      artists: [...formData.artists, ''],
+    });
+  };
+
+  const removeArtist = (index) => {
+    const newArtists = formData.artists.filter((_, i) => i !== index);
+    setFormData({ ...formData, artists: newArtists });
+  };
+
+  const toggleGenre = (genre) => {
+    const newGenres = formData.genres.includes(genre)
+      ? formData.genres.filter((g) => g !== genre)
+      : [...formData.genres, genre];
+    setFormData({ ...formData, genres: newGenres });
+  };
+
+  const handleAudioChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+        setError('Audio file must be less than 50MB');
+        return;
+      }
+      setAudioFile(file);
+      setAudioPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleCoverChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError('Cover image must be less than 5MB');
+        return;
+      }
+      setCoverImage(file);
+      setCoverPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    setSuccess('');
+
+    // Validation
+    if (!formData.title.trim()) {
+      setError('Song title is required');
+      setLoading(false);
+      return;
+    }
+    if (formData.artists.filter(a => a.trim()).length === 0) {
+      setError('At least one artist is required');
+      setLoading(false);
+      return;
+    }
+    if (formData.genres.length === 0) {
+      setError('At least one genre is required');
+      setLoading(false);
+      return;
+    }
+    if (!audioFile) {
+      setError('Audio file is required');
+      setLoading(false);
+      return;
+    }
+    if (!coverImage) {
+      setError('Cover image is required');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const formDataToSend = new FormData();
+      formDataToSend.append('title', formData.title);
+      formDataToSend.append('artists', formData.artists.filter(a => a.trim()).join(','));
+      formDataToSend.append('genres', formData.genres.join(','));
+      formDataToSend.append('audioFile', audioFile);
+      formDataToSend.append('coverImage', coverImage);
+
+      await api.post('/admin/songs/upload', formDataToSend, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      setSuccess('Song uploaded successfully!');
+      
+      // Reset form
+      setFormData({ title: '', artists: [''], genres: [] });
+      setAudioFile(null);
+      setCoverImage(null);
+      setAudioPreview(null);
+      setCoverPreview(null);
+    } catch (err) {
+      setError(err.response?.data || 'Failed to upload song');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="bg-linear-to-b from-gray-900 to-black text-white min-h-screen p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold mb-8">Upload Song</h1>
+
+        {/* Success Message */}
+        {success && (
+          <div className="mb-6 bg-green-900/30 border border-green-500 text-green-400 px-4 py-3 rounded flex items-center">
+            <Check className="mr-2" size={20} />
+            {success}
+          </div>
+        )}
+
+        {/* Error Message */}
+        {error && (
+          <div className="mb-6 bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Song Title */}
+          <div>
+            <label className="block text-sm font-semibold mb-2">Song Title *</label>
+            <input
+              type="text"
+              name="title"
+              value={formData.title}
+              onChange={handleInputChange}
+              placeholder="Enter song title"
+              className="w-full px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-green-500 focus:outline-none"
+            />
+          </div>
+
+          {/* Artists */}
+          <div>
+            <label className="block text-sm font-semibold mb-2">Artists *</label>
+            {formData.artists.map((artist, index) => (
+              <div key={index} className="flex items-center space-x-2 mb-2">
+                <input
+                  type="text"
+                  value={artist}
+                  onChange={(e) => handleArtistChange(index, e.target.value)}
+                  placeholder="Artist name"
+                  className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-green-500 focus:outline-none"
+                />
+                {formData.artists.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => removeArtist(index)}
+                    className="p-2 text-red-400 hover:text-red-300"
+                  >
+                    <X size={20} />
+                  </button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addArtist}
+              className="flex items-center text-green-500 hover:text-green-400 text-sm"
+            >
+              <Plus size={16} className="mr-1" />
+              Add Artist
+            </button>
+          </div>
+
+          {/* Genres */}
+          <div>
+            <label className="block text-sm font-semibold mb-2">Genres * (Select at least one)</label>
+            <div className="flex flex-wrap gap-2">
+              {availableGenres.map((genre) => (
+                <button
+                  key={genre}
+                  type="button"
+                  onClick={() => toggleGenre(genre)}
+                  className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                    formData.genres.includes(genre)
+                      ? 'bg-green-500 text-black'
+                      : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                  }`}
+                >
+                  {genre}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Audio File Upload */}
+          <div>
+            <label className="block text-sm font-semibold mb-2">Audio File * (MP3, WAV - Max 50MB)</label>
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-green-500 transition-colors">
+              {audioPreview ? (
+                <div className="space-y-4">
+                  <Music className="mx-auto text-green-500" size={48} />
+                  <p className="text-sm text-gray-400">{audioFile.name}</p>
+                  <audio controls src={audioPreview} className="w-full" />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setAudioFile(null);
+                      setAudioPreview(null);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer">
+                  <Upload className="mx-auto mb-4 text-gray-500" size={48} />
+                  <p className="text-gray-400 mb-2">Click to upload or drag and drop</p>
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Cover Image Upload */}
+          <div>
+            <label className="block text-sm font-semibold mb-2">Cover Image * (JPG, PNG - Max 5MB)</label>
+            <div className="border-2 border-dashed border-gray-700 rounded-lg p-8 text-center hover:border-green-500 transition-colors">
+              {coverPreview ? (
+                <div className="space-y-4">
+                  <img
+                    src={coverPreview}
+                    alt="Cover preview"
+                    className="w-48 h-48 mx-auto rounded-lg object-cover"
+                  />
+                  <p className="text-sm text-gray-400">{coverImage.name}</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCoverImage(null);
+                      setCoverPreview(null);
+                    }}
+                    className="text-red-400 hover:text-red-300 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer">
+                  <Image className="mx-auto mb-4 text-gray-500" size={48} />
+                  <p className="text-gray-400 mb-2">Click to upload or drag and drop</p>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleCoverChange}
+                    className="hidden"
+                  />
+                </label>
+              )}
+            </div>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Uploading...' : 'Upload Song'}
+          </button>
+        </form>
+      </div>
+    </div>
+  );
+}
+
+export default AdminUploadSong;
