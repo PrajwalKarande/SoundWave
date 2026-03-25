@@ -1,6 +1,6 @@
 // src/context/AuthContext.jsx
 import { createContext, useState, useContext, useEffect } from 'react';
-import { authService } from '../services/api';
+import { authService } from '../Services/api';
 
 const AuthContext = createContext(null);
 
@@ -45,7 +45,7 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const isAdmin = () => {
-    return user?.role === 'ADMIN';
+    return user?.role === 'admin';
   };
 
   return (

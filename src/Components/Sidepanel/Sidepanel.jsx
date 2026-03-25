@@ -29,7 +29,7 @@ function Sidepanel() {
     return (
         <>
             {user ? (
-                <aside className="bg-gray-900 text-white w-64 h-screen sticky top-0 p-2 flex flex-col rounded-2xl">
+                <aside className="bg-gray-950 text-white w-64 h-screen sticky top-0 p-2 flex flex-col rounded-2xl">
                     <nav className="flex-1 px-2 py-6">
                         <ul className="space-y-2">
                             {menuItems.map((item) => {

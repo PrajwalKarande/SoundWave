@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContextProvider';
 import logo from '../../assets/logo.svg';
 import './Header.css';
+import { Home,Search } from 'lucide-react';
 
 function Header() {
   const { user,logout } = useAuth();
@@ -18,10 +19,20 @@ function Header() {
     <header className="bg-black text-white sticky top-0 z-50">
       <div className="flex items-center justify-between px-6 py-3">
 
-        <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+        <div className='flex flex-row items-center justify-center gap-10'>
+          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
           <img src={logo} alt="Soundwave" className="h-8 w-8" />
-          <span className="text-xl font-bold tracking-tight">Soundwave</span>
+          <span className="text-xl font-bold tracking-tight hover:text-green-500 transition-colors">Soundwave</span>
         </Link>
+
+        <nav className='flex items-center space-x-4 font-bold'>
+          <Link to="/" className='hover:text-green-500 transition-colors'><Home size={24}/></Link>
+          <div className='px-4 py-2 w-fit h-fit flex flex-row items-center bg-gray-950 border border-gray-700 rounded-full gap-2 text-white  focus:border-green-500'>
+            <Search size={24}/>
+            <input type='text' placeholder='Search' className='focus:outline-none'/>
+          </div>
+        </nav>
+        </div>
 
         <div className="flex items-center space-x-4">
           {user? (

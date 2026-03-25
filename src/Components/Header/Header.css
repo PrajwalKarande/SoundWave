@@ -1,5 +1,5 @@
 /* src/Components/Header/Header.css */
-
+@import 'tailwindcss';
 /* Additional custom styles if needed */
 header {
   backdrop-filter: blur(10px);

@@ -1,14 +1,14 @@
 // src/Components/Admin/AdminUploadSong.jsx
 import { useState } from 'react';
 import { Upload, Music, Image, X, Plus, Check } from 'lucide-react';
-import api from '../../../services/api';
+import api from '../../../Services/api';
 import './AdminUploadSong.css';
 
 function AdminUploadSong() {
   const [formData, setFormData] = useState({
     title: '',
     artists: [''],
-    genres: [''],
+    genres: [],
   });
   const [audioFile, setAudioFile] = useState(null);
   const [coverImage, setCoverImage] = useState(null);
@@ -19,7 +19,7 @@ function AdminUploadSong() {
   const [success, setSuccess] = useState('');
 
   // Available genres list
-  const availableGenres = ['Romance','Bollywood','Soft','Pop', 'Rock', 'Hip Hop', 'Jazz', 'Classical', 'Electronic', 'R&B', 'Country', 'Indie', 'Blues'];
+  const availableGenres = ['Romance', 'Bollywood', 'Soft', 'Pop', 'Rock', 'Hip Hop', 'Jazz', 'Classical', 'Electronic', 'R&B', 'Country', 'Indie', 'Blues'];
 
   const handleInputChange = (e) => {
     setFormData({
@@ -53,27 +53,37 @@ function AdminUploadSong() {
     setFormData({ ...formData, genres: newGenres });
   };
 
+  // Helper to extract duration from an audio file
+  const getAudioDuration = (file) =>
+    new Promise((resolve) => {
+      const audio = document.createElement('audio');
+      audio.src = URL.createObjectURL(file);
+      audio.onloadedmetadata = () => resolve(Math.round(audio.duration));
+    });
+
   const handleAudioChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 50 * 1024 * 1024) { // 50MB limit
+      if (file.size > 50 * 1024 * 1024) {
         setError('Audio file must be less than 50MB');
         return;
       }
       setAudioFile(file);
       setAudioPreview(URL.createObjectURL(file));
+      setError('');
     }
   };
 
   const handleCoverChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+      if (file.size > 5 * 1024 * 1024) {
         setError('Cover image must be less than 5MB');
         return;
       }
       setCoverImage(file);
       setCoverPreview(URL.createObjectURL(file));
+      setError('');
     }
   };
 
@@ -89,7 +99,7 @@ function AdminUploadSong() {
       setLoading(false);
       return;
     }
-    if (formData.artists.filter(a => a.trim()).length === 0) {
+    if (formData.artists.filter((a) => a.trim()).length === 0) {
       setError('At least one artist is required');
       setLoading(false);
       return;
@@ -111,21 +121,26 @@ function AdminUploadSong() {
     }
 
     try {
+      // Get actual duration from the audio file's metadata
+      const duration = await getAudioDuration(audioFile);
+
       const formDataToSend = new FormData();
       formDataToSend.append('title', formData.title);
-      formDataToSend.append('artists', formData.artists.filter(a => a.trim()).join(','));
-      formDataToSend.append('genres', formData.genres.join(','));
-      formDataToSend.append('audioFile', audioFile);
-      formDataToSend.append('coverImage', coverImage);
+      // Send as comma-separated strings — backend splits on ","
+      formDataToSend.append('artist', formData.artists.filter((a) => a.trim()).join(','));
+      formDataToSend.append('genre', formData.genres.filter((g) => g.trim()).join(','));
+      formDataToSend.append('audio', audioFile);         // matches files?.audio?.[0]
+      formDataToSend.append('coverImage', coverImage);   // matches files?.coverImage?.[0]
+      formDataToSend.append('duration', duration);
 
-      await api.post('/admin/songs/upload', formDataToSend, {
+      await api.post('/songs/upload', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
       });
 
       setSuccess('Song uploaded successfully!');
-      
+
       // Reset form
       setFormData({ title: '', artists: [''], genres: [] });
       setAudioFile(null);
@@ -133,7 +148,7 @@ function AdminUploadSong() {
       setAudioPreview(null);
       setCoverPreview(null);
     } catch (err) {
-      setError(err.response?.data || 'Failed to upload song');
+      setError(err.response?.data?.message || 'Failed to upload song');
     } finally {
       setLoading(false);
     }
