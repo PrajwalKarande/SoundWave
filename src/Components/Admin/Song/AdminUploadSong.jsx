@@ -133,7 +133,7 @@ function AdminUploadSong() {
       formDataToSend.append('coverImage', coverImage);   // matches files?.coverImage?.[0]
       formDataToSend.append('duration', duration);
 
-      await api.post('/songs/upload', formDataToSend, {
+      await api.post('/songs/manage', formDataToSend, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },

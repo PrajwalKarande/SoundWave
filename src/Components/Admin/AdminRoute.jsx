@@ -30,7 +30,7 @@ const AdminRoute = () => {
       <Header />
       <div className='flex flex-row m-2 items-start gap-1'>
         <Sidepanel />
-        <main className='flex-1 w-full rounded-2xl'>
+        <main className='flex-1 w-full rounded-2xl mr-2'>
           <Outlet />
         </main>
       </div>

@@ -11,6 +11,7 @@ import AdminRoute from './Components/Admin/AdminRoute.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
 import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
 import AdminUploadArtist from './Components/Admin/Artist/AdminUploadArtist.jsx'
+import UserManagement from './Components/Admin/UserManagement.jsx'
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,7 @@ const router = createBrowserRouter([
         element:<AdminDashboard />
       },
       {
-        path: "upload",
+        path: "manage",
         children:[
           {
             path: "song",
@@ -50,6 +51,10 @@ const router = createBrowserRouter([
           {
             path:"artist",
             element:<AdminUploadArtist />
+          },
+          {
+            path:"users",
+            element:<UserManagement />
           }
         ]
       }

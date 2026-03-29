@@ -100,8 +100,13 @@ function Signup() {
     }
 
     try {
-      await signup(formData.email, formData.username, formData.password);
-      navigate('/'); // Redirect to home after successful signup
+      const newUser = await signup(formData.email, formData.username, formData.password);
+      // Check role from the returned user object (standardized to match login)
+      if (newUser?.role === 'admin') {
+        navigate('/admin/dashboard');
+      } else {
+        navigate('/');
+      }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
     } finally {

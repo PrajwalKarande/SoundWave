@@ -71,12 +71,12 @@ function Header() {
           ) : (
             <>
               <Link to="/login">
-                <button className="px-6 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
+                <button className="px-4 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
                   Login
                 </button>
               </Link>
               <Link to="/signup">
-                <button className="px-6 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
+                <button className="px-4 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
                   Sign-up
                 </button>
               </Link>

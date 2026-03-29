@@ -5,6 +5,7 @@ import {
     Search,
     Library,
     PlusSquare,
+    UserCog,
     Heart,
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
@@ -25,6 +26,53 @@ function Sidepanel() {
         { path: '/create-playlist', icon: PlusSquare, label: 'Create Playlist' },
         { path: '/liked-songs', icon: Heart, label: 'Liked Songs' },
     ];
+
+    if (user?.role === 'admin') {
+        return (
+            <aside className="sidepanel-font bg-section-bg text-accent w-64 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
+                <nav className="flex-1 px-2 py-6">
+                    <ul className="space-y-2">
+                        <li>
+                            <Link
+                                to="/admin/dashboard"
+                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/dashboard')
+                                    ? 'bg-accent/20 text-accent'
+                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                                    }`}
+                            >
+                                <Home size={24} />
+                                <span className="font-semibold">Admin Dashboard</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/manage/song"
+                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/manage/song')
+                                    ? 'bg-accent/20 text-accent'
+                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                                    }`}
+                            >
+                                <PlusSquare size={24} />
+                                <span className="font-semibold">Upload Song</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link
+                                to="/admin/manage/users"
+                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/manage/users')
+                                    ? 'bg-accent/20 text-accent'
+                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                                    }`}
+                            >
+                                <UserCog size={24} />
+                                <span className="font-semibold">User Management</span>
+                            </Link>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+        );
+    }
 
     return (
         <>
@@ -112,28 +160,16 @@ function Sidepanel() {
                 </aside>
             ) : (
                 <>
-                    <div className="sidepanel-font bg-primary-bg text-accent w-70 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
+                    <div className="sidepanel-font bg-section-bg text-accent w-70 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
                         <h1 className="p-2">Your mixes</h1>
                         <Link to="/signup">
-                            <div className="flex flex-col p-6 text-left m-4 gap-2 bg-section-bg rounded-2xl hover:bg-section-bg/80 cursor-pointer">
+                            <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-section-bg/80 cursor-pointer">
                                 <h1 className="text-primary-text">Amplify Your Experience</h1>
                                 <i className="text-sm text-muted-text mt-1">
                                     create your profile and evolve your personal Soundwave
                                 </i>
                             </div>
                         </Link>
-                        <br />
-
-                        <div className="relative px-2 group">
-                            <span className='text-xs text-muted-text cursor-default'>
-                                About
-                            </span>
-                            <div className="absolute left-0 bottom-full mb-2 p-3 w-64 bg-section-bg text-primary-text text-xs rounded-lg shadow-lg hidden group-hover:block z-10">
-                                This project is made to showcase skills and gain experience of full stack development.
-                                <div className="absolute w-0 h-0 border-l-8 border-l-transparent border-r-8 border-r-transparent border-t-8 border-t-section-bg -bottom-2 left-4"></div>
-                            </div>
-                        </div>
-
                     </div>
                 </>
             )}
