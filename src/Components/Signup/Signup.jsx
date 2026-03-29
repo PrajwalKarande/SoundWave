@@ -1,8 +1,8 @@
 // src/components/Signup/Signup.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../Context/AuthContextProvider'
-import logo from '../../assets/logo.svg';
+import { useAuth } from '../../Context/AuthContextProvider';
+import logo from '../../assets/logo.png';
 import './signup.css';
 
 function Signup() {
@@ -58,7 +58,7 @@ function Signup() {
       errors.email = 'Please enter a valid email address';
     }
     if (name === 'password' && value && !validatePassword(value)) {
-      errors.password = 'Password must be at least 6 characters';
+      errors.password = 'Password must be at least 8 characters';
     }
     if (name === 'username' && value && !validateUsername(value)) {
       errors.username = 'Username must be at least 3 characters';
@@ -110,106 +110,106 @@ function Signup() {
   };
 
   return (
-    
-      <div className="bg-black min-h-screen flex flex-col items-center justify-center text-white">
-        {/* Header with logo */}
-        <header className="mb-8">
-          <img src={logo} alt="Soundwave" className="h-12 mx-auto" />
-        </header>
 
-        {/* Signup Form */}
-        <main className="bg-black rounded-lg shadow-lg p-12 w-screen">
-          <h1 className="text-2xl mb-6 text-center font-sans font-bold">
-            Join the rhythm, live the wave.
-          </h1>
+    <div className="bg-primary-bg min-h-screen flex flex-col items-center justify-center text-primary-text">
+      {/* Header with logo */}
+      <header className="mb-8">
+        <img src={logo} alt="Soundwave" className="h-14 mx-auto" />
+      </header>
 
-          {/* Global Error Message */}
-          {error && (
-            <div className="max-w-80 mx-auto mb-4 bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded">
-              {error}
-            </div>
-          )}
+      {/* Signup Form */}
+      <main className="bg-primary-bg p-12 w-screen">
+        <h1 className="text-2xl mb-6 text-center font-bold text-accent">
+          Join the rhythm, live the wave :)
+        </h1>
 
-          <form onSubmit={handleSubmit} className="flex flex-col space-y-4 max-w-80 mx-auto">
-            {/* Username Field */}
-            <div>
-              <input
-                type="text"
-                name="username"
-                placeholder="username"
-                value={formData.username}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 rounded border ${fieldErrors.username
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-gray-700 focus:ring-green-500'
-                  } bg-black text-white focus:outline-none focus:ring-2`}
-              />
-              {fieldErrors.username && (
-                <p className="text-red-400 text-xs mt-1">{fieldErrors.username}</p>
-              )}
-            </div>
-
-            {/* Email Field */}
-            <div>
-              <input
-                type="email"
-                name="email"
-                placeholder="name@domain.com"
-                value={formData.email}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 rounded border ${fieldErrors.email
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-gray-700 focus:ring-green-500'
-                  } bg-black text-white focus:outline-none focus:ring-2`}
-              />
-              {fieldErrors.email && (
-                <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
-              )}
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <input
-                type="password"
-                name="password"
-                placeholder="Password"
-                value={formData.password}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                className={`w-full px-4 py-2 rounded border ${fieldErrors.password
-                    ? 'border-red-500 focus:ring-red-500'
-                    : 'border-gray-700 focus:ring-green-500'
-                  } bg-black text-white focus:outline-none focus:ring-2`}
-              />
-              {fieldErrors.password && (
-                <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
-              )}
-              <p className="text-gray-500 text-xs mt-1">Minimum 8 characters required</p>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-green-500 hover:bg-green-600 text-black font-semibold py-2 px-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? 'Signing up...' : 'Sign Up'}
-            </button>
-          </form>
-
-          {/* Login link */}
-          <div className="mt-6 text-sm text-gray-400 text-center">
-            <p>Already have an account?</p>
-            <Link
-              to="/login"
-              className="text-green-500 hover:underline font-medium"
-            >
-              Login
-            </Link>
+        {/* Global Error Message */}
+        {error && (
+          <div className="max-w-80 mx-auto mb-4 bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded">
+            {error}
           </div>
-        </main>
-      </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 max-w-80 mx-auto">
+          {/* Username Field */}
+          <div>
+            <input
+              type="text"
+              name="username"
+              placeholder="username"
+              value={formData.username}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 rounded border ${fieldErrors.username
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-muted-text/30 focus:ring-accent'
+                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
+            />
+            {fieldErrors.username && (
+              <p className="text-red-400 text-xs mt-1">{fieldErrors.username}</p>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div>
+            <input
+              type="email"
+              name="email"
+              placeholder="name@domain.com"
+              value={formData.email}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 rounded border ${fieldErrors.email
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-muted-text/30 focus:ring-accent'
+                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
+            />
+            {fieldErrors.email && (
+              <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
+            )}
+          </div>
+
+          {/* Password Field */}
+          <div>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formData.password}
+              onChange={handleChange}
+              onBlur={handleBlur}
+              className={`w-full px-4 py-2 rounded border ${fieldErrors.password
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-muted-text/30 focus:ring-accent'
+                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
+            />
+            {fieldErrors.password && (
+              <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
+            )}
+            <p className="text-muted-text text-xs mt-1">Minimum 8 characters required</p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="bg-accent hover:bg-accent/80 text-primary-bg font-semibold py-2 px-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {loading ? 'Signing up...' : 'Sign Up'}
+          </button>
+        </form>
+
+        {/* Login link */}
+        <div className="mt-6 text-sm text-muted-text text-center">
+          <p>Already have an account?</p>
+          <Link
+            to="/login"
+            className="text-accent hover:underline font-medium"
+          >
+            Login
+          </Link>
+        </div>
+      </main>
+    </div>
   );
 }
 

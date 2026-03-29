@@ -1,0 +1,39 @@
+/* src/Components/Header/Header.css */
+@import 'tailwindcss';
+
+/* Additional custom styles if needed */
+header {
+  backdrop-filter: blur(10px);
+  color: #ff4313;
+}
+
+/* Smooth transitions for all interactive elements */
+header a,
+header button {
+  transition: all 0.2s ease-in-out;
+}
+
+/* Logo hover effect */
+header img {
+  transition: transform 0.2s ease-in-out;
+}
+
+header a:hover img {
+  transform: scale(1.1);
+}
+
+/* User profile section */
+.user-info {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

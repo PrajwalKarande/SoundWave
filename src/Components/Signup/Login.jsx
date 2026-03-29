@@ -1,8 +1,7 @@
-// src/components/Login/Login.jsx
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../Context/AuthContextProvider'
-import logo from '../../assets/logo.svg';
+import { useAuth } from '../../Context/AuthContextProvider';
+import logo from '../../assets/logo.png';
 import './login.css';
 
 function Login() {
@@ -13,7 +12,7 @@ function Login() {
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  
+
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -23,13 +22,17 @@ function Login() {
     return emailRegex.test(email);
   };
 
+  const validatePassword = (password) => {
+    return password.length >= 8;
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-    
+
     // Clear errors when user types
     setError('');
     setFieldErrors({
@@ -47,6 +50,10 @@ function Login() {
       errors.email = 'Please enter a valid email address';
     }
 
+    if (name === 'password' && value && !validatePassword(value)) {
+      errors.password = 'Password must be at least 8 characters long';
+    }
+
     setFieldErrors(errors);
   };
 
@@ -57,7 +64,7 @@ function Login() {
 
     // Validate all fields
     const errors = {};
-    
+
     if (!formData.email.trim()) {
       errors.email = 'Email is required';
     } else if (!validateEmail(formData.email)) {
@@ -66,6 +73,8 @@ function Login() {
 
     if (!formData.password) {
       errors.password = 'Password is required';
+    } else if (formData.password.length < 8) {
+      errors.password = "Password must be at least 8 characters long"
     }
 
     if (Object.keys(errors).length > 0) {
@@ -85,15 +94,15 @@ function Login() {
   };
 
   return (
-    <div className="bg-black min-h-screen flex flex-col items-center justify-center text-white">
+    <div className="bg-primary-bg min-h-screen flex flex-col items-center justify-center text-primary-text">
       {/* Header with logo */}
       <header className="mb-8">
-        <img src={logo} alt="Soundwave" className="h-12 mx-auto" />
+        <img src={logo} alt="Soundwave" className="h-14 mx-auto" />
       </header>
 
       {/* Login Form */}
-      <main className="bg-black rounded-lg shadow-lg p-12 w-screen">
-        <h1 className="text-2xl mb-6 text-center font-sans font-bold">
+      <main className="bg-primary-bg p-12 w-screen">
+        <h1 className="text-2xl mb-6 text-center font-bold text-accent">
           Welcome back to Soundwave
         </h1>
 
@@ -114,11 +123,10 @@ function Login() {
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-2 rounded border ${
-                fieldErrors.email 
-                  ? 'border-red-500 focus:ring-red-500' 
-                  : 'border-gray-700 focus:ring-green-500'
-              } bg-black text-white focus:outline-none focus:ring-2`}
+              className={`w-full px-4 py-2 rounded border ${fieldErrors.email
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-muted-text/30 focus:ring-accent'
+                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
             />
             {fieldErrors.email && (
               <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
@@ -133,11 +141,10 @@ function Login() {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className={`w-full px-4 py-2 rounded border ${
-                fieldErrors.password 
-                  ? 'border-red-500 focus:ring-red-500' 
-                  : 'border-gray-700 focus:ring-green-500'
-              } bg-black text-white focus:outline-none focus:ring-2`}
+              className={`w-full px-4 py-2 rounded border ${fieldErrors.password
+                ? 'border-red-500 focus:ring-red-500'
+                : 'border-muted-text/30 focus:ring-accent'
+                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
             />
             {fieldErrors.password && (
               <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
@@ -147,18 +154,18 @@ function Login() {
           <button
             type="submit"
             disabled={loading}
-            className="bg-green-500 hover:bg-green-600 text-black font-semibold py-2 px-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-accent hover:bg-accent/80 text-primary-bg font-semibold py-2 px-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
 
         {/* Signup link */}
-        <div className="mt-6 text-sm text-gray-400 text-center">
+        <div className="mt-6 text-sm text-muted-text text-center">
           <p>Don't have an account?</p>
           <Link
             to="/signup"
-            className="text-green-500 hover:underline font-medium"
+            className="text-accent hover:underline font-medium"
           >
             Sign Up
           </Link>

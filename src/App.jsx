@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom'
-import Header from './Components/Header/Header.jsx'
-import Sidepanel from './Components/Sidepanel/Sidepanel.jsx'
+import Header from './Components/Common/Header/Header.jsx'
+import Sidepanel from './Components/Common/Sidepanel/Sidepanel.jsx'
 import './App.css'
 
 
@@ -9,10 +9,12 @@ function App() {
   return (
     <>
       <Header />
-      <main className='flex flex-row m-2'>
+      <div className='flex flex-row m-2 items-start gap-1'>
         <Sidepanel />
-        <Outlet />
-      </main>
+        <main className='flex-1 w-full'>
+          <Outlet />
+        </main>
+      </div>
     </>
   )
 }

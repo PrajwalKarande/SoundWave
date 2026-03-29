@@ -1,0 +1,39 @@
+.upload-container {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* File upload drag and drop */
+input[type="file"]+label {
+  transition: all 0.3s ease;
+}
+
+/* Audio preview */
+audio {
+  filter: sepia(20%) saturate(70%) grayscale(1) contrast(99%) invert(12%);
+}
+
+audio::-webkit-media-controls-panel {
+  background-color: #1F2937;
+}
+
+/* Genre buttons animation */
+button[type="button"] {
+  transform: scale(1);
+  transition: transform 0.2s ease;
+}
+
+button[type="button"]:active {
+  transform: scale(0.95);
+}

@@ -1,6 +1,7 @@
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContextProvider';
-import Header from '../Header/Header';
+import Header from '../Common/Header/Header';
+import Sidepanel from '../Common/Sidepanel/Sidepanel';
 
 const AdminRoute = () => {
   const { loading, isAdmin } = useAuth();
@@ -17,8 +18,8 @@ const AdminRoute = () => {
     return (
       <div className="flex items-center justify-center min-h-screen w-full">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-600 mb-4">Access Denied</h1>
-          <p className="text-gray-600">You don't have permission to access this page.</p>
+          <h1 className="text-2xl font-bold text-accent mb-4">Access Denied</h1>
+          <p className="text-muted-text">You don't have permission to access this page.</p>
         </div>
       </div>
     );
@@ -26,8 +27,13 @@ const AdminRoute = () => {
 
   return (
     <>
-        <Header/>
-        <Outlet/>
+      <Header />
+      <div className='flex flex-row m-2 items-start gap-1'>
+        <Sidepanel />
+        <main className='flex-1 w-full rounded-2xl'>
+          <Outlet />
+        </main>
+      </div>
     </>
   )
 };

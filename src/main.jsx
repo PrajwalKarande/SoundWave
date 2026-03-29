@@ -3,13 +3,14 @@ import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
 import Signup from './Components/Signup/Signup.jsx'
-import Login from './Components/Login/Login.jsx'
+import Login from './Components/Signup/Login.jsx'
 import './index.css'
 import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
-import { Home } from 'lucide-react'
+import { Home } from './Components/Home/Home.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
-import AdminUploadSong from './Components/Admin/Song Upload/AdminUploadSong.jsx'
+import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
+import AdminUploadArtist from './Components/Admin/Artist/AdminUploadArtist.jsx'
 
 const router = createBrowserRouter([
   {
@@ -41,7 +42,16 @@ const router = createBrowserRouter([
       },
       {
         path: "upload",
-        element:<AdminUploadSong />
+        children:[
+          {
+            path: "song",
+            element:<AdminUploadSong />
+          },
+          {
+            path:"artist",
+            element:<AdminUploadArtist />
+          }
+        ]
       }
     ]
   }
