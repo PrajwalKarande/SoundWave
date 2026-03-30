@@ -86,7 +86,7 @@ function Login() {
     try {
       const user = await login(formData.email, formData.password);
       if(user.role === 'admin') navigate('/admin/dashboard') // redirect admin to dashboard
-      else navigate('/'); // Redirect to home after successful login
+      else navigate('/home'); // Redirect to home after successful login
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {

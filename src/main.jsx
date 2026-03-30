@@ -7,6 +7,7 @@ import Login from './Components/Signup/Login.jsx'
 import './index.css'
 import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
 import { Home } from './Components/Home/Home.jsx'
+import { Landing } from './Components/Landing/Landing.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
 import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
@@ -16,12 +17,31 @@ import UserManagement from './Components/Admin/UserManagement.jsx'
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <Landing />
+  },
+  {
+    path: '/home',
     element: <App />,
     children: [
       {
-        index: true,
         element: <Home />
         //loader function needed to fetch songs and albums
+      },
+      {
+        path: 'search',
+        element: <div>Search Page - Coming Soon</div>
+      },
+      {
+        path: 'library',
+        element: <div>Your Library - Coming Soon</div>
+      },
+      {
+        path: 'create-playlist',
+        element: <div>Create Playlist - Coming Soon</div>
+      },
+      {
+        path: 'liked-songs',
+        element: <div>Liked Songs - Coming Soon</div>
       }
     ]
   },
@@ -63,9 +83,9 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-  <AuthContextProvider>
-    <StrictMode>
-      <RouterProvider router={router} />
-    </StrictMode>
-  </AuthContextProvider>
+    <AuthContextProvider>
+      <StrictMode>
+        <RouterProvider router={router} />
+      </StrictMode>
+    </AuthContextProvider>
 )

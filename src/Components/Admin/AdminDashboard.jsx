@@ -34,9 +34,7 @@ const AdminDashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        // Fetch users count (available)
         const userRes = await api.get('/stats');
-        // Setting state - you can add songs and artists counts here if endpoints are available
         setStats({
           users: userRes.data.users,
           songs: userRes.data.songs,

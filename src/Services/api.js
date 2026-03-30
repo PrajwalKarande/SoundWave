@@ -29,13 +29,13 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const originalRequest = error.config;
-    // Don't redirect if the error is from the login endpoint itself
+    // Don't redirect if the error is from the login endpoint itself or landing page
     if (error.response?.status === 401 && originalRequest && !originalRequest.url.includes('/auth/login')) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      
-      // Prevent redirect loops on auth pages
-      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup') {
+
+      // Prevent redirect loops on auth pages and landing page
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/signup' && window.location.pathname !== '/') {
         window.location.href = '/login';
       }
     }

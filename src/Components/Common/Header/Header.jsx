@@ -12,7 +12,7 @@ function Header() {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -20,7 +20,7 @@ function Header() {
       <div className="flex items-center justify-between px-6 py-3">
 
         <div className='flex flex-row items-center justify-center gap-10'>
-          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <Link to="/home" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
             <img src={logo} alt="Soundwave" className="h-8 w-8" />
             <span className="text-2xl font-bold tracking-tight transition-all duration-300 text-accent hover:text-primary-text"
               style={{
@@ -62,7 +62,7 @@ function Header() {
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-2 text-xl font-semibold hover:bg-accent hover:text-primary-bg rounded-full transition-colors text-accent"
+                  className="px-4 py-2 text-lg font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors"
                 >
                   Logout
                 </button>
@@ -71,12 +71,12 @@ function Header() {
           ) : (
             <>
               <Link to="/login">
-                <button className="px-4 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
+                <button className="px-4 py-2 text-xl font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors">
                   Login
                 </button>
               </Link>
               <Link to="/signup">
-                <button className="px-4 py-2 text-xl font-semibold text-accent rounded-full hover:bg-accent hover:text-primary-bg transition-colors">
+                <button className="px-4 py-2 text-xl font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors">
                   Sign-up
                 </button>
               </Link>

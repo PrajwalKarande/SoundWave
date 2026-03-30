@@ -163,9 +163,9 @@ function Sidepanel() {
                     <div className="sidepanel-font bg-section-bg text-accent w-70 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
                         <h1 className="p-2">Your mixes</h1>
                         <Link to="/signup">
-                            <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-section-bg/80 cursor-pointer">
+                            <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
                                 <h1 className="text-primary-text">Amplify Your Experience</h1>
-                                <i className="text-sm text-muted-text mt-1">
+                                <i className="text-sm text-muted-text mt-1 hover:text-black transition-colors">
                                     create your profile and evolve your personal Soundwave
                                 </i>
                             </div>

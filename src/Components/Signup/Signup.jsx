@@ -105,7 +105,7 @@ function Signup() {
       if (newUser?.role === 'admin') {
         navigate('/admin/dashboard');
       } else {
-        navigate('/');
+        navigate('/home');
       }
     } catch (err) {
       setError(err.response?.data?.message || 'Signup failed. Please try again.');
