@@ -7,10 +7,12 @@ import {
     PlusSquare,
     UserCog,
     Heart,
+    MicVocal,
+    X
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
 
-function Sidepanel() {
+function Sidepanel({ isOpen, onClose }) {
     const location = useLocation();
     const { user } = useAuth();
 
@@ -27,151 +29,137 @@ function Sidepanel() {
         { path: '/liked-songs', icon: Heart, label: 'Liked Songs' },
     ];
 
-    if (user?.role === 'admin') {
-        return (
-            <aside className="sidepanel-font bg-section-bg text-accent w-64 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
-                <nav className="flex-1 px-2 py-6">
-                    <ul className="space-y-2">
-                        <li>
+    const adminItems = [
+        { path: '/admin/dashboard', icon: Home, label: 'Dashboard' },
+        { path: '/admin/manage/songs', icon: PlusSquare, label: 'Songs' },
+        { path: '/admin/manage/users', icon: UserCog, label: 'Users' },
+        { path: '/admin/manage/artists', icon: MicVocal, label: 'Artists' },
+    ];
+
+    const sidebarClasses = 'sidepanel-font bg-section-bg text-accent w-64 h-[calc(100vh-6rem)] p-2 flex flex-col rounded-2xl';
+
+    const navContent = user?.role === 'admin' ? (
+        <nav className="flex-1 px-2 py-6">
+            <ul className="space-y-2">
+                {adminItems.map(({ path, icon: Icon, label }) => (
+                    <li key={path}>
+                        <Link
+                            to={path}
+                            onClick={onClose}
+                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
+                                ? 'bg-accent/20 text-accent'
+                                : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                                }`}
+                        >
+                            <Icon size={24} />
+                            <span className="font-semibold">{label}</span>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </nav>
+    ) : user ? (
+        <nav className="flex-1 px-2 py-6">
+            <ul className="space-y-2">
+                {menuItems.map(({ path, icon: Icon, label }) => (
+                    <li key={path}>
+                        <Link
+                            to={path}
+                            onClick={onClose}
+                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
+                                ? 'bg-accent/20 text-accent'
+                                : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                                }`}
+                        >
+                            <Icon size={24} />
+                            <span className="font-semibold">{label}</span>
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+
+            <div className="mt-8">
+                <ul className="space-y-2">
+                    {libraryItems.map(({ path, icon: Icon, label }) => (
+                        <li key={path}>
                             <Link
-                                to="/admin/dashboard"
-                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/dashboard')
+                                to={path}
+                                onClick={onClose}
+                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
                                     ? 'bg-accent/20 text-accent'
                                     : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
                                     }`}
                             >
-                                <Home size={24} />
-                                <span className="font-semibold">Admin Dashboard</span>
+                                <Icon size={24} />
+                                <span className="font-semibold">{label}</span>
                             </Link>
                         </li>
-                        <li>
+                    ))}
+                </ul>
+            </div>
+
+            <div className="mt-8 border-t border-muted-text/20 pt-4">
+                <div className="px-4 mb-2">
+                    <h3 className="text-xs font-semibold text-muted-text uppercase tracking-wider">Playlists</h3>
+                </div>
+                <ul className="space-y-1">
+                    {['My Playlist #1', 'Chill Vibes', 'Workout Mix'].map((name, i) => (
+                        <li key={i}>
                             <Link
-                                to="/admin/manage/song"
-                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/manage/song')
-                                    ? 'bg-accent/20 text-accent'
-                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                    }`}
+                                to={`/playlist/${i + 1}`}
+                                onClick={onClose}
+                                className="block px-4 py-2 text-sm text-muted-text hover:text-accent transition-colors"
                             >
-                                <PlusSquare size={24} />
-                                <span className="font-semibold">Upload Song</span>
+                                {name}
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                to="/admin/manage/users"
-                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive('/admin/manage/users')
-                                    ? 'bg-accent/20 text-accent'
-                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                    }`}
-                            >
-                                <UserCog size={24} />
-                                <span className="font-semibold">User Management</span>
-                            </Link>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-        );
-    }
+                    ))}
+                </ul>
+            </div>
+        </nav>
+    ) : (
+        <div className="p-2">
+            <h1 className="p-2 text-primary-text">Your mixes</h1>
+            <Link to="/signup" onClick={onClose}>
+                <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
+                    <h1 className="text-primary-text">Amplify Your Experience</h1>
+                    <i className="text-sm text-muted-text mt-1 hover:text-black transition-colors">
+                        create your profile and evolve your personal Soundwave
+                    </i>
+                </div>
+            </Link>
+        </div>
+    );
 
     return (
         <>
-            {user ? (
-                <aside className="sidepanel-font bg-section-bg text-accent w-64 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
-                    <nav className="flex-1 px-2 py-6">
-                        <ul className="space-y-2">
-                            {menuItems.map((item) => {
-                                const Icon = item.icon;
-                                return (
-                                    <li key={item.path}>
-                                        <Link
-                                            to={item.path}
-                                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(item.path)
-                                                ? 'bg-accent/20 text-accent'
-                                                : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                                }`}
-                                        >
-                                            <Icon size={24} />
-                                            <span className="font-semibold">{item.label}</span>
-                                        </Link>
-                                    </li>
-                                );
-                            })}
-                        </ul>
+            {/* Desktop sidebar */}
+            <aside className={`hidden md:flex sticky top-20 ${sidebarClasses}`}>
+                {navContent}
+            </aside>
 
-                        {/* Library Section */}
-                        <div className="mt-8">
-                            <ul className="space-y-2">
-                                {libraryItems.map((item) => {
-                                    const Icon = item.icon;
-                                    return (
-                                        <li key={item.path}>
-                                            <Link
-                                                to={item.path}
-                                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(item.path)
-                                                    ? 'bg-accent/20 text-accent'
-                                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                                    }`}
-                                            >
-                                                <Icon size={24} />
-                                                <span className="font-semibold">{item.label}</span>
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+            {/* Mobile overlay drawer */}
+            {isOpen && (
+                <div className="md:hidden fixed inset-0 z-40">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/60"
+                        onClick={onClose}
+                    />
+                    {/* Drawer panel */}
+                    <aside className={`absolute left-2 top-2 bottom-2 ${sidebarClasses} overflow-y-auto`}>
+                        <div className="flex justify-end px-2 pt-2">
+                            <button
+                                onClick={onClose}
+                                className="p-1 text-muted-text hover:text-primary-text transition-colors"
+                                aria-label="Close menu"
+                            >
+                                <X size={20} />
+                            </button>
                         </div>
-
-                        {/* Playlists Section */}
-                        <div className="mt-8 border-t border-muted-text/20 pt-4">
-                            <div className="px-4 mb-2">
-                                <h3 className="text-xs font-semibold text-muted-text uppercase tracking-wider">
-                                    Playlists
-                                </h3>
-                            </div>
-                            <ul className="space-y-1">
-                                <li>
-                                    <Link
-                                        to="/playlist/1"
-                                        className="block px-4 py-2 text-sm text-muted-text hover:text-accent transition-colors"
-                                    >
-                                        My Playlist #1
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/playlist/2"
-                                        className="block px-4 py-2 text-sm text-muted-text hover:text-accent transition-colors"
-                                    >
-                                        Chill Vibes
-                                    </Link>
-                                </li>
-                                <li>
-                                    <Link
-                                        to="/playlist/3"
-                                        className="block px-4 py-2 text-sm text-muted-text hover:text-accent transition-colors"
-                                    >
-                                        Workout Mix
-                                    </Link>
-                                </li>
-                            </ul>
-                        </div>
-                    </nav>
-                </aside>
-            ) : (
-                <>
-                    <div className="sidepanel-font bg-section-bg text-accent w-70 h-[calc(100vh-6rem)] sticky top-20 p-2 flex flex-col rounded-2xl">
-                        <h1 className="p-2">Your mixes</h1>
-                        <Link to="/signup">
-                            <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
-                                <h1 className="text-primary-text">Amplify Your Experience</h1>
-                                <i className="text-sm text-muted-text mt-1 hover:text-black transition-colors">
-                                    create your profile and evolve your personal Soundwave
-                                </i>
-                            </div>
-                        </Link>
-                    </div>
-                </>
+                        {navContent}
+                    </aside>
+                </div>
             )}
         </>
     );

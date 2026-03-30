@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContextProvider';
 import Header from '../Common/Header/Header';
@@ -5,7 +6,8 @@ import Sidepanel from '../Common/Sidepanel/Sidepanel';
 
 const AdminRoute = () => {
   const { loading, isAdmin } = useAuth();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   if (loading) {
     return (
@@ -16,23 +18,15 @@ const AdminRoute = () => {
   }
 
   if (!isAdmin()) {
-    // return (
-    //   <div className="flex items-center justify-center min-h-screen w-full">
-    //     <div className="text-center">
-    //       <h1 className="text-2xl font-bold text-accent mb-4">Access Denied</h1>
-    //       <p className="text-muted-text">You don't have permission to access this page.</p>
-    //     </div>
-    //   </div>
-    // );
     navigate('/home')
   }
 
   return (
     <>
-      <Header />
+      <Header onMenuToggle={() => setSidebarOpen(prev => !prev)} />
       <div className='flex flex-row m-2 items-start gap-1'>
-        <Sidepanel />
-        <main className='flex-1 w-full rounded-2xl mr-2'>
+        <Sidepanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        <main className='flex-1 min-w-0 w-full rounded-2xl mr-2'>
           <Outlet />
         </main>
       </div>

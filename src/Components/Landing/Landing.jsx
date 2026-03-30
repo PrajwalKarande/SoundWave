@@ -114,7 +114,7 @@ export const Landing = () => {
               <div className="landing-user-info">
                 <span className="landing-username">{user.username}</span>
                 <motion.button
-                  onClick={() => navigate('/home')}
+                  onClick={() => user.role === 'admin' ? navigate('/admin/dashboard') : navigate('/home')}
                   className="landing-btn landing-btn-primary"
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -164,7 +164,7 @@ export const Landing = () => {
           {/* Logo and tagline */}
           <motion.div className="logo-section" variants={itemVariants}>
             <img src={logo} alt="SoundWave" className="hero-logo" />
-            
+
           </motion.div>
 
           {/* Main heading */}
@@ -253,7 +253,7 @@ export const Landing = () => {
         variants={containerVariants}
       >
         <motion.h2 className="section-title" variants={itemVariants}>
-          Why Choose <span className="text-accent">SoundWave</span>
+          The Rhythm of <span className="text-accent">SoundWave</span>
         </motion.h2>
 
         <motion.div className="features-grid" variants={containerVariants}>

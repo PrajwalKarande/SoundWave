@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../Context/AuthContextProvider';
-// import { useNavigate } from 'react-router-dom';
 import api from '../../Services/api';
 import { motion } from 'framer-motion';
 import { Music, Users, Mic2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
-const StatCard = ({ title, value, icon: Icon, delay }) => (
+const StatCard = ({ title, value, icon: Icon, delay, onclick }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
@@ -15,7 +15,8 @@ const StatCard = ({ title, value, icon: Icon, delay }) => (
       borderColor: "rgba(255, 67, 19, 0.4)",
       backgroundColor: "rgba(31, 41, 55, 0.7)"
     }}
-    className="bg-section-bg/50 backdrop-blur-md border border-accent/10 p-8 rounded-2xl flex flex-col items-center justify-center gap-4 transition-all duration-300 cursor-default group"
+    className="bg-section-bg/50 backdrop-blur-md border border-accent/10 p-8 rounded-2xl flex flex-col items-center justify-center gap-4 transition-all duration-300 cursor-pointer group"
+    onClick={onclick}
   >
     <div className="p-4 bg-accent/10 rounded-2xl text-accent group-hover:bg-accent/20 transition-colors">
       <Icon size={32} />
@@ -30,6 +31,7 @@ const StatCard = ({ title, value, icon: Icon, delay }) => (
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [stats, setStats] = useState({ songs: 0, artists: 0, users: 0 });
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -66,19 +68,22 @@ const AdminDashboard = () => {
             title="Total Songs" 
             value={stats.songs} 
             icon={Music} 
-            delay={0.1} 
+            delay={0.1}
+            onclick={()=>navigate('/admin/manage/songs')}
           />
           <StatCard 
             title="Artists" 
             value={stats.artists} 
             icon={Mic2} 
             delay={0.2} 
+            onclick={()=>navigate('/admin/manage/artists')}
           />
           <StatCard 
             title="Active Users" 
             value={stats.users} 
             icon={Users} 
             delay={0.3} 
+            onclick={()=>navigate('/admin/manage/users')}
           />
         </div>
       </div>

@@ -11,7 +11,9 @@ import { Landing } from './Components/Landing/Landing.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
 import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
+import AddSong from './Components/Admin/Song/AddSong.jsx'
 import AdminUploadArtist from './Components/Admin/Artist/AdminUploadArtist.jsx'
+import AddArtist from './Components/Admin/Artist/AddArtist.jsx'
 import UserManagement from './Components/Admin/UserManagement.jsx'
 
 const router = createBrowserRouter([
@@ -65,12 +67,20 @@ const router = createBrowserRouter([
         path: "manage",
         children:[
           {
-            path: "song",
+            path: "songs",
             element:<AdminUploadSong />
           },
           {
-            path:"artist",
+            path:"songs/upload",
+            element:<AddSong />
+          },
+          {
+            path:"artists",
             element:<AdminUploadArtist />
+          },
+          {
+            path:"artists/add",
+            element:<AddArtist />
           },
           {
             path:"users",

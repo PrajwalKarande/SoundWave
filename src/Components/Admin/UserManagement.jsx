@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import api from "../../Services/api";
+import { userService } from "../../Services/userService";
 import { useAuth } from "../../Context/AuthContextProvider";
+import { Trash2 } from 'lucide-react';
 
 export default function UserManagement() {
 
@@ -16,8 +17,8 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
         try {
-            const response = await api.get('/users');
-            setUsers(response.data.users || response.data);
+            const data = await userService.getAll();
+            setUsers(data);
         } catch (err) {
             setError('Failed to fetch users', err.message);
         } finally {
@@ -27,7 +28,7 @@ export default function UserManagement() {
 
     const handleRoleChange = async (userId, newRole) => {
         try {
-            await api.put(`/users/${userId}/role?role=${newRole}`);
+            await userService.updateRole(userId, newRole);
             setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
             setSuccess('Role updated successfully');
         } catch (err) {
@@ -39,7 +40,7 @@ export default function UserManagement() {
         if (!window.confirm('Are you sure you want to delete this user?')) return;
 
         try {
-            await api.delete(`/users/${userId}`);
+            await userService.delete(userId);
             setUsers(users.filter(u => u._id !== userId));
             setSuccess('User deleted successfully');
         } catch (err) {
@@ -52,10 +53,10 @@ export default function UserManagement() {
     }
 
     return (
-        <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+        <main className="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div className="px-4 py-6 sm:px-0">
 
-                <h2 className="text-2xl font-bold mb-6 text-primary-text">User Management</h2>
+                <h2 className="text-4xl font-bold mb-6 text-primary-text">User Management</h2>
 
                 {error && (
                     <div className="bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded mb-4">
@@ -69,7 +70,7 @@ export default function UserManagement() {
                     </div>
                 )}
 
-                <div className="bg-section-bg shadow overflow-hidden sm:rounded-lg">
+                <div className="bg-section-bg shadow overflow-hidden sm:rounded-lg overflow-x-auto">
                     <table className="min-w-full divide-y divide-muted-text/20">
                         <thead className="bg-primary-bg/50">
                             <tr>
@@ -113,7 +114,7 @@ export default function UserManagement() {
                                             disabled={userItem.email === user?.email}
                                             className="text-red-500 hover:text-red-400 disabled:opacity-50 disabled:cursor-not-allowed"
                                         >
-                                            Delete
+                                            <Trash2 size={16} />
                                         </button>
                                     </td>
                                 </tr>
