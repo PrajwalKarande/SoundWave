@@ -25,7 +25,7 @@ audio {
 }
 
 audio::-webkit-media-controls-panel {
-  background-color: #1F2937;
+  background-color: var(--color-section-bg);
 }
 
 /* Genre buttons animation */

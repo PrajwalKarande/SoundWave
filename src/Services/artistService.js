@@ -1,13 +1,4 @@
 import api from './api';
-
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
-
-/**
- * Extracts a human-readable error message from an Axios error response.
- * Falls back to `fallbackMessage` when nothing useful is found.
- */
 const extractErrorMessage = (err, fallbackMessage) => {
   const status = err?.response?.status;
   const payload = err?.response?.data?.message;
@@ -29,12 +20,10 @@ const extractErrorMessage = (err, fallbackMessage) => {
     return payload[0]?.message ?? payload[0]?.field ?? fallbackMessage;
   }
 
-  // Plain string message
   if (typeof payload === 'string' && payload.trim()) {
     return payload.trim();
   }
 
-  // Last resorts
   return err?.response?.data?.error ?? err?.message ?? fallbackMessage;
 };
 

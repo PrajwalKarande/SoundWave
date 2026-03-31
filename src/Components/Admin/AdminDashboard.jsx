@@ -22,7 +22,7 @@ const StatCard = ({ title, value, icon: Icon, delay, onclick }) => (
       <Icon size={32} />
     </div>
     <div className="text-center">
-      <h3 className="text-4xl font-black text-primary-text tracking-tight">{value}</h3>
+      <h3 className="text-4xl font-primary-bg text-primary-text tracking-tight">{value}</h3>
       <p className="text-muted-text text-xs font-bold uppercase tracking-[0.2em] mt-1">{title}</p>
     </div>
   </motion.div>
@@ -61,7 +61,7 @@ const AdminDashboard = () => {
       </nav>
 
       <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-        <h2 className="text-3xl font-black text-primary-text mb-8">Platform Overview</h2>
+        <h2 className="text-3xl font-primary-bg text-primary-text mb-8">Platform Overview</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <StatCard 

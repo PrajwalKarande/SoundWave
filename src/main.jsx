@@ -26,6 +26,7 @@ const router = createBrowserRouter([
     element: <App />,
     children: [
       {
+        index: true,
         element: <Home />
         //loader function needed to fetch songs and albums
       },

@@ -19,7 +19,7 @@ function Sidepanel({ isOpen, onClose }) {
     const isActive = (path) => location.pathname === path;
 
     const menuItems = [
-        { path: '/', icon: Home, label: 'Home' },
+        { path: '/home', icon: Home, label: 'Home' },
         { path: '/search', icon: Search, label: 'Search' },
         { path: '/library', icon: Library, label: 'Your Library' },
     ];
@@ -123,7 +123,7 @@ function Sidepanel({ isOpen, onClose }) {
             <Link to="/signup" onClick={onClose}>
                 <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
                     <h1 className="text-primary-text">Amplify Your Experience</h1>
-                    <i className="text-sm text-muted-text mt-1 hover:text-black transition-colors">
+                    <i className="text-sm text-muted-text mt-1 hover:text-primary-bg transition-colors">
                         create your profile and evolve your personal Soundwave
                     </i>
                 </div>
@@ -140,10 +140,10 @@ function Sidepanel({ isOpen, onClose }) {
 
             {/* Mobile overlay drawer */}
             {isOpen && (
-                <div className="md:hidden fixed inset-0 z-40">
+                <div className="md:hidden fixed inset-0 z-60">
                     {/* Backdrop */}
                     <div
-                        className="absolute inset-0 bg-black/60"
+                        className="absolute inset-0 bg-primary-bg/60"
                         onClick={onClose}
                     />
                     {/* Drawer panel */}

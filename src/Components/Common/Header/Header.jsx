@@ -15,7 +15,7 @@ function Header({ onMenuToggle }) {
   };
 
   return (
-    <header className="bg-section-bg text-primary-text sticky top-0 z-50 m-2 rounded-2xl">
+    <header className="text-primary-text sticky top-2 z-50 m-2 rounded-2xl">
       <div className="flex items-center justify-between px-4 md:px-6 py-3">
 
         <div className='flex flex-row items-center gap-3 md:gap-10'>

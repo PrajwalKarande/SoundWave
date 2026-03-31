@@ -22,15 +22,15 @@ const AdminRoute = () => {
   }
 
   return (
-    <>
+    <div className='h-screen flex flex-col overflow-hidden'>
       <Header onMenuToggle={() => setSidebarOpen(prev => !prev)} />
-      <div className='flex flex-row m-2 items-start gap-1'>
+      <div className='flex flex-row flex-1 min-h-0 m-2 gap-1'>
         <Sidepanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
         <main className='flex-1 min-w-0 w-full rounded-2xl mr-2'>
           <Outlet />
         </main>
       </div>
-    </>
+    </div>
   )
 };
 

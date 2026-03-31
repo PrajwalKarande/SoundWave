@@ -9,15 +9,15 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <>
+    <div className='h-screen flex flex-col overflow-hidden'>
       <Header onMenuToggle={() => setSidebarOpen(prev => !prev)} />
-      <div className='flex flex-row m-2 items-start gap-1'>
+      <div className='flex flex-row flex-1 min-h-0 m-2 gap-1'>
         <Sidepanel isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-        <main className='flex-1 min-w-0 w-full'>
+        <main className='flex-1 min-w-0 overflow-y-auto overflow-x-hidden hide-scrollbar bg-section-bg border border-accent/10 rounded-2xl p-4'>
           <Outlet />
         </main>
       </div>
-    </>
+    </div>
   )
 }
 

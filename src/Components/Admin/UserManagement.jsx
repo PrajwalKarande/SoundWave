@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { userService } from "../../Services/userService";
 import { useAuth } from "../../Context/AuthContextProvider";
-import { Trash2 } from 'lucide-react';
+import { Trash2,X } from 'lucide-react';
 
 export default function UserManagement() {
 
@@ -59,14 +59,18 @@ export default function UserManagement() {
                 <h2 className="text-4xl font-bold mb-6 text-primary-text">User Management</h2>
 
                 {error && (
-                    <div className="bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded mb-4">
+                    <div onClick={()=>setError("")}
+                    className="bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded mb-4 w-fit">
                         {error}
+                        <X size={20} className="inline ml-2 cursor-pointer" onClick={()=>setError("")} />
                     </div>
                 )}
 
                 {success && (
-                    <div className="bg-green-900/30 border border-green-500 text-green-400 px-4 py-3 rounded mb-4">
+                    <div onClick={()=>setSuccess("")}
+                    className="bg-green-900/30 border border-green-500 text-green-400 px-4 py-3 rounded mb-4 w-fit">
                         {success}
+                        <X size={20} className="inline ml-2 cursor-pointer" onClick={()=>setSuccess("")} />
                     </div>
                 )}
 

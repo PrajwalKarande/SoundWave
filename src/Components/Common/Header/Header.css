@@ -1,11 +1,6 @@
 /* src/Components/Header/Header.css */
 @import 'tailwindcss';
 
-/* Additional custom styles if needed */
-header {
-  backdrop-filter: blur(10px);
-}
-
 /* Smooth transitions for all interactive elements */
 header a,
 header button {

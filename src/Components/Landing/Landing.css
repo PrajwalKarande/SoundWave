@@ -1,19 +1,19 @@
 /* Landing Page Styles */
 
-:root {
-  --color-primary-bg: #0B0C10;
-  --color-section-bg: #1F2937;
-  --color-accent: #FF4313;
-  --color-primary-text: #F3F4F6;
-  --color-muted-text: #9CA3AF;
-  --color-border: rgba(243, 244, 246, 0.1);
-}
-
 .landing-page {
+  --color-section-bg: #1F2937;
+  --color-border: rgba(243, 244, 246, 0.1);
   width: 100%;
   background: linear-gradient(135deg, #0B0C10 0%, #1a1f2e 100%);
   color: var(--color-primary-text);
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.landing-page::-webkit-scrollbar {
+  display: none;
 }
 
 /* ============ LANDING HEADER ============ */
