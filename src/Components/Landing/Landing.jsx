@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Music, Zap, Users, Play, ChevronRight, Star } from 'lucide-react';
+import { Music, Zap, Users, Play, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './Landing.css';
@@ -390,44 +390,6 @@ export const Landing = () => {
         </motion.div>
       </motion.section>
 
-      {/* Testimonials Section */}
-      <motion.section
-        className="testimonials-section"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: '-100px' }}
-        variants={containerVariants}
-      >
-        <motion.h2 className="section-title" variants={itemVariants}>
-          What Users Love
-        </motion.h2>
-
-        <motion.div className="testimonials-grid" variants={containerVariants}>
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={index}
-              className="testimonial-card"
-              variants={itemVariants}
-              whileHover={{ y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="testimonial-stars">
-                {[...Array(testimonial.rating)].map((_, i) => (
-                  <Star key={i} size={16} fill="currentColor" className="star" />
-                ))}
-              </div>
-              <p className="testimonial-text">"{testimonial.text}"</p>
-              <div className="testimonial-author">
-                <div className="author-avatar">{testimonial.avatar}</div>
-                <div className="author-info">
-                  <p className="author-name">{testimonial.name}</p>
-                  <p className="author-role">{testimonial.role}</p>
-                </div>
-              </div>
-            </motion.div>
-          ))}
-        </motion.div>
-      </motion.section>
 
       {/* CTA Section */}
       <motion.section
@@ -500,41 +462,10 @@ export const Landing = () => {
           </div>
         </div>
         <div className="footer-bottom">
-          <p>&copy; 2025 SoundWave. All rights reserved.</p>
+          <p>&copy; 2026 SoundWave. All rights reserved.</p>
         </div>
       </motion.footer>
     </div>
   );
 };
 
-// Testimonials data
-const testimonials = [
-  {
-    rating: 5,
-    text: 'SoundWave has completely changed how I discover music. The recommendations are spot-on and the quality is unmatched.',
-    name: 'Sarah Johnson',
-    role: 'Music Producer',
-    avatar: 'SJ',
-  },
-  {
-    rating: 5,
-    text: 'Finally a streaming service that gets it. Fast, beautiful interface, and endless music options.',
-    name: 'Alex Chen',
-    role: 'Podcast Host',
-    avatar: 'AC',
-  },
-  {
-    rating: 5,
-    text: 'The playlist sharing feature is amazing. My friends and I connect over music more than ever.',
-    name: 'Maya Patel',
-    role: 'Student',
-    avatar: 'MP',
-  },
-  {
-    rating: 5,
-    text: 'Zero buffering, incredible sound quality. This is what streaming should be.',
-    name: 'James Wilson',
-    role: 'Audio Engineer',
-    avatar: 'JW',
-  },
-];

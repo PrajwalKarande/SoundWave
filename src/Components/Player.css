@@ -1,0 +1,324 @@
+/* ═══════════════════════════════════════════
+   SoundWave Player — Right Side Panel
+   ═══════════════════════════════════════════ */
+
+/* ── Panel Container (animates width) ── */
+.player-panel {
+  width: 0;
+  flex-shrink: 0;
+  overflow: hidden;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 1rem;
+}
+
+.player-panel--active {
+  width: 288px;
+}
+
+/* ── Inner Content (fixed width so content doesn't squish during slide) ── */
+.player-panel-inner {
+  width: 288px;
+  height: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 20px 20px;
+  background: #0d0f14;
+  border: 1px solid rgba(255, 67, 19, 0.1);
+  border-radius: 1rem;
+  overflow: hidden;
+  gap: 18px;
+}
+
+/* ── Ambient blur background from album art ── */
+.player-bg-blur {
+  position: absolute;
+  inset: -30px;
+  background-size: cover;
+  background-position: center;
+  filter: blur(70px) saturate(1.8);
+  opacity: 0.18;
+  z-index: 0;
+  transition: background-image 0.6s ease;
+}
+
+.player-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(13, 15, 20, 0.2) 0%,
+    rgba(13, 15, 20, 0.7) 55%,
+    #0d0f14 100%
+  );
+  z-index: 1;
+}
+
+/* ── All content sits above blur layers ── */
+.player-artwork-wrap,
+.player-info,
+.player-progress-section,
+.player-controls,
+.player-volume {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+}
+
+/* ── Album Artwork ── */
+.player-artwork-wrap {
+  display: flex;
+  justify-content: center;
+  padding-top: 4px;
+}
+
+.player-artwork {
+  width: 210px;
+  height: 210px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(255, 255, 255, 0.06);
+  transition:
+    box-shadow 0.4s ease,
+    transform 0.4s ease;
+}
+
+.player-artwork--playing {
+  box-shadow:
+    0 24px 64px rgba(0, 0, 0, 0.65),
+    0 0 48px rgba(255, 67, 19, 0.22),
+    0 0 0 1px rgba(255, 67, 19, 0.18);
+  transform: scale(1.02);
+}
+
+.player-artwork-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.player-artwork-placeholder {
+  width: 100%;
+  height: 100%;
+  background: #1a1d24;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #3a3f50;
+}
+
+/* ── Song Info ── */
+.player-info {
+  text-align: center;
+  overflow: hidden;
+}
+
+.player-title {
+  color: #f3f4f6;
+  font-size: 1rem;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.player-artist {
+  color: #9ca3af;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: 0.01em;
+}
+
+/* ── Progress Bar ── */
+.player-progress-section {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.player-progress-bar {
+  width: 100%;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.player-progress-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+  transition: height 0.15s;
+}
+
+.player-progress-bar:hover .player-progress-track {
+  height: 5px;
+}
+
+.player-progress-fill {
+  height: 100%;
+  background: #ff4313;
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(255, 67, 19, 0.5);
+}
+
+.player-progress-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s;
+}
+
+.player-progress-bar:hover .player-progress-thumb {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.player-times {
+  display: flex;
+  justify-content: space-between;
+}
+
+.player-time {
+  color: #6b7280;
+  font-size: 0.68rem;
+  font-variant-numeric: tabular-nums;
+  font-family: monospace;
+}
+
+/* ── Playback Controls ── */
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.player-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.player-btn:hover {
+  color: #f3f4f6;
+  transform: scale(1.12);
+}
+
+.player-btn--sm {
+  padding: 4px;
+}
+
+.player-btn--active {
+  color: #ff4313;
+}
+
+.player-btn--active:hover {
+  color: #ff4313;
+  filter: brightness(1.2);
+  transform: scale(1.12);
+}
+
+.player-btn--play {
+  width: 46px;
+  height: 46px;
+  background: #ff4313;
+  color: #fff;
+  border-radius: 50%;
+  box-shadow: 0 4px 20px rgba(255, 67, 19, 0.45);
+  transition: transform 0.15s, background 0.15s, box-shadow 0.15s;
+}
+
+.player-btn--play:hover {
+  background: #ff5a30;
+  color: #fff;
+  transform: scale(1.09);
+  box-shadow: 0 6px 28px rgba(255, 67, 19, 0.6);
+}
+
+/* ── Volume ── */
+.player-volume {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.player-volume-bar {
+  flex: 1;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.player-volume-track {
+  width: 100%;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  position: relative;
+  overflow: visible;
+  transition: height 0.15s;
+}
+
+.player-volume-bar:hover .player-volume-track {
+  height: 5px;
+}
+
+.player-volume-fill {
+  height: 100%;
+  background: #9ca3af;
+  border-radius: 2px;
+  transition: background 0.2s;
+}
+
+.player-volume-bar:hover .player-volume-fill {
+  background: #ff4313;
+}
+
+.player-volume-thumb {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  width: 12px;
+  height: 12px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.5);
+  transition: transform 0.15s;
+}
+
+.player-volume-bar:hover .player-volume-thumb {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+/* ── Responsive: hide panel on small screens ── */
+@media (max-width: 900px) {
+  .player-panel--active {
+    width: 0;
+    display: none;
+  }
+}

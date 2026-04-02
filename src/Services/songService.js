@@ -28,7 +28,6 @@ const extractErrorMessage = (err, fallbackMessage) => {
 
 export const songService = {
   getAll: async () => {
-    console.log('Fetching songs from API...');
     try {
       const { data } = await api.get('/songs');
       return data.songs ?? data;

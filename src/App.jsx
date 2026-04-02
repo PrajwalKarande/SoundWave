@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
 import Header from './Components/Common/Header/Header.jsx'
 import Sidepanel from './Components/Common/Sidepanel/Sidepanel.jsx'
+import Player from './Components/Player.jsx'
 import './App.css'
 
 
@@ -16,9 +17,11 @@ function App() {
         <main className='flex-1 min-w-0 overflow-y-auto overflow-x-hidden hide-scrollbar bg-section-bg border border-accent/10 rounded-2xl p-4'>
           <Outlet />
         </main>
+        <Player />
       </div>
     </div>
   )
 }
 
 export default App
+

@@ -1,12 +1,14 @@
-import { ChevronLeft, ChevronRight, Music, User } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Music, User, Play, Pause } from 'lucide-react';
 import { useRef } from 'react';
+import { usePlayer } from '../../Context/PlayerContext';
 
 export default function HorizontalList({ title, items = [], type = 'song' }) {
   const scrollRef = useRef(null);
+  const { playSong, togglePlay, currentSong, isPlaying } = usePlayer();
   const isSong = type === 'song';
-  const displayItems = isSong ? items.slice(0, 10) : items;
+  const safeItems = Array.isArray(items) ? items : [];
+  const displayItems = isSong ? safeItems.slice(0, 10) : safeItems;
 
-  
   const scroll = (direction) => {
     if (!scrollRef.current) return;
     const scrollAmount = 220;
@@ -16,13 +18,22 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
     });
   };
 
+  const handleSongClick = (song, index) => {
+    if (!isSong) return;
+    if (currentSong?._id === song._id) {
+      togglePlay();
+    } else {
+      playSong(song, displayItems, index);
+    }
+  };
+
   if (displayItems.length === 0) return null;
 
   return (
     <section className="mb-8">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-bold text-primary-text">{title}</h2>
-        <span className='h-[0.5px] bg-amber-600 w-2xl'></span>
+        <span className='h-[0.5px] bg-gray-600 w-2xl'></span>
         <div className="flex gap-2">
           <button
             onClick={() => scroll('left')}
@@ -44,43 +55,65 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
         className="flex overflow-x-auto scrollbar-hide pb-2"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
-        {displayItems.map((item) => (
-          <div
-            key={item._id}
-            className="shrink-0 w-fit group cursor-pointer hover:bg-[#2a2d3b] p-4 rounded-2xl transition-colors"
-          >
+        {displayItems.map((item, index) => {
+          const isCurrentlyPlaying = isSong && currentSong?._id === item._id && isPlaying;
+          return (
             <div
-              className={`w-40 h-40 overflow-hidden mb-2 ${
-                isSong ? 'rounded-lg' : 'rounded-full'
-              }`}
+              key={item._id}
+              className="shrink-0 w-fit group cursor-pointer hover:bg-[#2a2d3b] p-4 rounded-2xl transition-colors"
+              onClick={() => handleSongClick(item, index)}
             >
-              {item.coverImage || item.profileImageURL ? (
-                <img
-                  src={item.coverImage || item.profileImageURL}
-                  alt={item.title || item.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-section-bg flex items-center justify-center">
-                  {isSong ? (
-                    <Music size={40} className="text-muted-text" />
+              <div className="relative">
+                <div
+                  className={`w-40 h-40 overflow-hidden mb-2 ${
+                    isSong ? 'rounded-lg' : 'rounded-full'
+                  }`}
+                >
+                  {item.coverImage || item.profileImageURL ? (
+                    <img
+                      src={item.coverImage || item.profileImageURL}
+                      alt={item.title || item.name}
+                      className="w-full h-full object-cover"
+                    />
                   ) : (
-                    <User size={40} className="text-muted-text" />
+                    <div className="w-full h-full bg-section-bg flex items-center justify-center">
+                      {isSong ? (
+                        <Music size={40} className="text-muted-text" />
+                      ) : (
+                        <User size={40} className="text-muted-text" />
+                      )}
+                    </div>
                   )}
                 </div>
+                {isSong && (
+                  <button
+                    className={`absolute bottom-4 right-2 w-10 h-10 rounded-full bg-accent flex items-center justify-center shadow-lg shadow-black/40 transition-all duration-200 ${
+                      isCurrentlyPlaying
+                        ? 'opacity-100 translate-y-0'
+                        : 'opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0'
+                    }`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSongClick(item, index);
+                    }}
+                  >
+                    {isCurrentlyPlaying ? <Pause size={18} fill="white" className="text-white" /> : <Play size={18} fill="white" className="text-white ml-0.5" />}
+                  </button>
+                )}
+              </div>
+              <p className="text-sm font-medium text-primary-text text-left group-hover:text-accent transition-colors hover:underline">
+                {item.title || item.name}
+              </p>
+              {isSong && item.artist?.[0]?.name && (
+                <p className="text-xs text-muted-text text-left hover:underline">
+                  {typeof item.artist === 'string' ? item.artist : item.artist[0].name}
+                </p>
               )}
             </div>
-            <p className="text-sm font-medium text-primary-text text-left group-hover:text-accent transition-colors">
-              {item.title || item.name}
-            </p>
-            {isSong && item.artist[0].name && (
-              <p className="text-xs text-muted-text text-left">
-                {typeof item.artist === 'string' ? item.artist : item.artist[0].name}
-              </p>
-            )}
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );
 }
+

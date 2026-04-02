@@ -10,7 +10,6 @@ export const Home = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      console.log('Loading songs and artists...');
       try {
         const [songsData, artistsData] = await Promise.all([
           songService.getAll(),

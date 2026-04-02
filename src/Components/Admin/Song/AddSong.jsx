@@ -21,8 +21,8 @@ export default function AddSong() {
   const navigate = useNavigate();
 
   const availableGenres = [
-    'Romance', 'Bollywood', 'Soft', 'Pop', 'Rock', 'Hip Hop',
-    'Jazz', 'Classical', 'Electronic', 'R&B', 'Country', 'Indie', 'Blues','Hindi','English'
+    'Romance', 'Bollywood', 'Soft', 'Pop', 'Rock', 'Hip Hop','sad','party',
+    'Jazz', 'Classical', 'Electronic', 'R&B', 'Country', 'Indie', 'Blues','Hindi','English','Instrumental'
   ];
 
   const handleInputChange = (e) => {

@@ -6,6 +6,7 @@ import Signup from './Components/Signup/Signup.jsx'
 import Login from './Components/Signup/Login.jsx'
 import './index.css'
 import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
+import { PlayerProvider } from './Context/PlayerContext.jsx'
 import { Home } from './Components/Home/Home.jsx'
 import { Landing } from './Components/Landing/Landing.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
@@ -95,8 +96,11 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById('root')).render(
     <AuthContextProvider>
-      <StrictMode>
-        <RouterProvider router={router} />
-      </StrictMode>
+      <PlayerProvider>
+        <StrictMode>
+          <RouterProvider router={router} />
+        </StrictMode>
+      </PlayerProvider>
     </AuthContextProvider>
 )
+
