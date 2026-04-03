@@ -8,6 +8,16 @@ export const usePlayer = () => {
   return ctx;
 };
 
+// True Shuffle helper (Fisher-Yates)
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(new Audio());
   const [currentSong, setCurrentSong] = useState(null);
@@ -16,7 +26,9 @@ export const PlayerProvider = ({ children }) => {
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(0.7);
   const [isMuted, setIsMuted] = useState(false);
+  
   const [queue, setQueue] = useState([]);
+  const [originalQueue, setOriginalQueue] = useState([]);
   const [queueIndex, setQueueIndex] = useState(-1);
   const [isShuffled, setIsShuffled] = useState(false);
   const [repeatMode, setRepeatMode] = useState('off'); // 'off' | 'all' | 'one'
@@ -26,7 +38,30 @@ export const PlayerProvider = ({ children }) => {
   // Sync volume
   useEffect(() => {
     audio.volume = isMuted ? 0 : volume;
-  }, [volume, isMuted]);
+  }, [volume, isMuted, audio]);
+
+  const playNext = useCallback(() => {
+    if (queue.length === 0) return;
+    let nextIndex = queueIndex + 1;
+    if (nextIndex >= queue.length) {
+      if (repeatMode === 'all') {
+        nextIndex = 0;
+      } else {
+        setIsPlaying(false);
+        return;
+      }
+    }
+    setQueueIndex(nextIndex);
+    const nextSong = queue[nextIndex];
+    if (nextSong) {
+      setCurrentSong(nextSong);
+      if (nextSong.url) {
+        audio.src = nextSong.url;
+        audio.load();
+        audio.play().catch(console.error);
+      }
+    }
+  }, [queue, queueIndex, repeatMode, audio]);
 
   // Audio event listeners
   useEffect(() => {
@@ -56,29 +91,48 @@ export const PlayerProvider = ({ children }) => {
       audio.removeEventListener('play', handlePlay);
       audio.removeEventListener('pause', handlePause);
     };
-  }, [repeatMode, queue, queueIndex]);
+  }, [repeatMode, queue, queueIndex, audio, playNext]);
 
   const playSong = useCallback((song, songList = [], index = 0) => {
     const url = song?.url || song?.url || song?.audio || song?.songUrl;
+    
+    // Normalize song list ensuring every song has a 'url' property
+    let baseList = songList.length > 0 
+      ? songList.map(s => ({ ...s, url: s.url || s.url || s.audio || s.songUrl })) 
+      : [{ ...song, url: url }];
+      
     if (!url) {
-      // Still set the song info even without audio
-      setCurrentSong(song);
-      setQueue(songList.length > 0 ? songList : [song]);
-      setQueueIndex(songList.length > 0 ? index : 0);
-      return;
+      baseList = songList.length > 0 ? songList : [song];
     }
 
-    setCurrentSong({ ...song, url: url });
-    setQueue(songList.length > 0 ? songList.map(s => ({
-      ...s,
-      url: s.url || s.url || s.audio || s.songUrl
-    })) : [{ ...song, url: url }]);
-    setQueueIndex(songList.length > 0 ? index : 0);
+    setOriginalQueue(baseList);
 
-    audio.src = url;
-    audio.load();
-    audio.play().catch(console.error);
-  }, []);
+    // If starting play while shuffled is true, we should scramble the upcoming queue immediately
+    if (isShuffled && baseList.length > 1) {
+      const playingIndex = songList.length > 0 ? index : 0;
+      const firstSong = baseList[playingIndex];
+      
+      const listWithoutCurrent = [...baseList];
+      listWithoutCurrent.splice(playingIndex, 1);
+      
+      const shuffled = shuffleArray(listWithoutCurrent);
+      setQueue([firstSong, ...shuffled]);
+      setQueueIndex(0);
+    } else {
+      setQueue(baseList);
+      setQueueIndex(songList.length > 0 ? index : 0);
+    }
+    
+    // Maintain state setting
+    const formattedSong = url ? { ...song, url: url } : song;
+    setCurrentSong(formattedSong);
+    
+    if (url) {
+      audio.src = url;
+      audio.load();
+      audio.play().catch(console.error);
+    }
+  }, [audio, isShuffled]);
 
   const togglePlay = useCallback(() => {
     if (!currentSong) return;
@@ -87,38 +141,12 @@ export const PlayerProvider = ({ children }) => {
     } else {
       audio.play().catch(console.error);
     }
-  }, [currentSong, isPlaying]);
+  }, [currentSong, isPlaying, audio]);
 
   const seek = useCallback((time) => {
     audio.currentTime = time;
     setCurrentTime(time);
-  }, []);
-
-  const playNext = useCallback(() => {
-    if (queue.length === 0) return;
-    let nextIndex;
-    if (isShuffled) {
-      nextIndex = Math.floor(Math.random() * queue.length);
-    } else {
-      nextIndex = queueIndex + 1;
-      if (nextIndex >= queue.length) {
-        if (repeatMode === 'all') {
-          nextIndex = 0;
-        } else {
-          setIsPlaying(false);
-          return;
-        }
-      }
-    }
-    setQueueIndex(nextIndex);
-    const nextSong = queue[nextIndex];
-    if (nextSong) {
-      setCurrentSong(nextSong);
-      audio.src = nextSong.url;
-      audio.load();
-      audio.play().catch(console.error);
-    }
-  }, [queue, queueIndex, isShuffled, repeatMode]);
+  }, [audio]);
 
   const playPrev = useCallback(() => {
     if (audio.currentTime > 3) {
@@ -139,19 +167,55 @@ export const PlayerProvider = ({ children }) => {
     const prevSong = queue[prevIndex];
     if (prevSong) {
       setCurrentSong(prevSong);
-      audio.src = prevSong.url;
-      audio.load();
-      audio.play().catch(console.error);
+      if (prevSong.url) {
+        audio.src = prevSong.url;
+        audio.load();
+        audio.play().catch(console.error);
+      }
     }
-  }, [queue, queueIndex, repeatMode]);
+  }, [queue, queueIndex, repeatMode, audio]);
 
   const toggleMute = useCallback(() => {
     setIsMuted(prev => !prev);
   }, []);
 
   const toggleShuffle = useCallback(() => {
-    setIsShuffled(prev => !prev);
-  }, []);
+    if (!isShuffled) {
+      // Turn Shuffle ON
+      if (originalQueue.length > 1 && currentSong) {
+        const currentSongItem = queue[queueIndex];
+        
+        let indexInOriginal = originalQueue.findIndex(s => s === currentSongItem);
+        if (indexInOriginal === -1 && currentSongItem) {
+          indexInOriginal = originalQueue.findIndex(s => s.url === currentSongItem.url);
+        }
+        
+        const listToShuffle = [...originalQueue];
+        if (indexInOriginal !== -1) {
+          listToShuffle.splice(indexInOriginal, 1);
+        } else if (listToShuffle.length > 0) {
+          listToShuffle.splice(0, 1);
+        }
+        
+        const shuffled = shuffleArray(listToShuffle);
+        setQueue([currentSongItem, ...shuffled]);
+        setQueueIndex(0);
+      }
+      setIsShuffled(true);
+    } else {
+      // Turn Shuffle OFF
+      const currentSongItem = queue[queueIndex];
+      setQueue([...originalQueue]);
+      
+      let newIndex = originalQueue.findIndex(s => s === currentSongItem);
+      if (newIndex === -1 && currentSongItem) {
+        newIndex = originalQueue.findIndex(s => s.url === currentSongItem.url);
+      }
+      
+      setQueueIndex(Math.max(0, newIndex));
+      setIsShuffled(false);
+    }
+  }, [isShuffled, queue, queueIndex, originalQueue, currentSong]);
 
   const cycleRepeat = useCallback(() => {
     setRepeatMode(prev => {
@@ -160,6 +224,18 @@ export const PlayerProvider = ({ children }) => {
       return 'off';
     });
   }, []);
+
+  const clearPlayer = useCallback(() => {
+    audio.pause();
+    audio.src = '';
+    setCurrentSong(null);
+    setIsPlaying(false);
+    setCurrentTime(0);
+    setQueue([]);
+    setOriginalQueue([]);
+    setQueueIndex(-1);
+  }, [audio]);
+
 
   const value = {
     currentSong,
@@ -181,6 +257,7 @@ export const PlayerProvider = ({ children }) => {
     toggleMute,
     toggleShuffle,
     cycleRepeat,
+    clearPlayer,
   };
 
   return (

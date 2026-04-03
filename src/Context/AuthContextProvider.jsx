@@ -1,12 +1,14 @@
 // src/context/AuthContext.jsx
 import { createContext, useState, useContext, useEffect } from 'react';
 import { authService } from '../Services/api';
+import { usePlayer } from './PlayerContext';
 
 const AuthContext = createContext(null);
 
 export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { clearPlayer } = usePlayer();
 
   useEffect(() => {
     // Check if user is logged in on mount
@@ -42,6 +44,9 @@ export const AuthContextProvider = ({ children }) => {
   const logout = () => {
     authService.logout();
     setUser(null);
+    if (clearPlayer) {
+      clearPlayer();
+    }
   };
 
   const isAdmin = () => {

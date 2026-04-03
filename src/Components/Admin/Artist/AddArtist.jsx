@@ -11,23 +11,28 @@ export default function AddArtist() {
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData({ ...formData, [e.target.name]: e.target.value});
   };
 
   const handleSubmit = async (e) => {
+    const trimmedData = {
+      ...formData,
+      name: formData.name.trim(),
+      bio: formData.bio.trim(),
+      profileImageURL: formData.profileImageURL.trim(),
+    };
     e.preventDefault();
     setError('');
     setSuccess('');
 
-    if (!formData.name.trim()) {
+    if (!trimmedData.name) {
       setError('Artist name is required');
       return;
     }
 
     setLoading(true);
     try {
-      console.log('Submitting artist:', formData);
-      await artistService.create(formData);
+      await artistService.create(trimmedData);
       setSuccess('Artist added successfully!');
       setFormData({ name: '', bio: '', profileImageURL: '' });
       setTimeout(() => navigate('/admin/manage/artists'), 1000);

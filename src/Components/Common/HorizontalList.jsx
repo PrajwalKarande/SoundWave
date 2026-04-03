@@ -1,13 +1,17 @@
 import { ChevronLeft, ChevronRight, Music, User, Play, Pause } from 'lucide-react';
 import { useRef } from 'react';
 import { usePlayer } from '../../Context/PlayerContext';
+import { useAuth } from '../../Context/AuthContextProvider';
+import { useNavigate } from 'react-router-dom';
 
 export default function HorizontalList({ title, items = [], type = 'song' }) {
   const scrollRef = useRef(null);
   const { playSong, togglePlay, currentSong, isPlaying } = usePlayer();
+  const { user } = useAuth();
   const isSong = type === 'song';
   const safeItems = Array.isArray(items) ? items : [];
   const displayItems = isSong ? safeItems.slice(0, 10) : safeItems;
+  const navigate = useNavigate();
 
   const scroll = (direction) => {
     if (!scrollRef.current) return;
@@ -19,6 +23,10 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
   };
 
   const handleSongClick = (song, index) => {
+    if(!user) {
+      navigate('/login')
+      return;
+    }
     if (!isSong) return;
     if (currentSong?._id === song._id) {
       togglePlay();
@@ -101,11 +109,11 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
                   </button>
                 )}
               </div>
-              <p className="text-sm font-medium text-primary-text text-left group-hover:text-accent transition-colors hover:underline">
+              <p className="text-sm font-medium text-primary-text text-left group-hover:text-accent transition-colors hover:underline w-40 truncate">
                 {item.title || item.name}
               </p>
               {isSong && item.artist?.[0]?.name && (
-                <p className="text-xs text-muted-text text-left hover:underline">
+                <p className="text-xs text-muted-text text-left hover:underline w-40 truncate">
                   {typeof item.artist === 'string' ? item.artist : item.artist[0].name}
                 </p>
               )}

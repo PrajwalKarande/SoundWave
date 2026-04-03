@@ -95,12 +95,12 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById('root')).render(
-    <AuthContextProvider>
-      <PlayerProvider>
+    <PlayerProvider>
+      <AuthContextProvider>
         <StrictMode>
           <RouterProvider router={router} />
         </StrictMode>
-      </PlayerProvider>
-    </AuthContextProvider>
+      </AuthContextProvider>
+    </PlayerProvider>
 )
 

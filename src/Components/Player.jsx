@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { usePlayer } from '../Context/PlayerContext';
 import './Player.css';
 import {
@@ -42,6 +43,30 @@ export default function Player() {
   } = usePlayer();
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+
+  // Spacebar play/pause shortcut
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Ignore spacebar if user is typing in an input/textarea
+      if (
+        e.target.tagName === 'INPUT' ||
+        e.target.tagName === 'TEXTAREA' ||
+        e.target.isContentEditable
+      ) {
+        return;
+      }
+
+      if (e.code === 'Space') {
+        e.preventDefault(); // Prevent page scrolling
+        if (currentSong) {
+          togglePlay();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentSong, togglePlay]);
 
   const handleSeek = (e) => {
     const bar = e.currentTarget;
