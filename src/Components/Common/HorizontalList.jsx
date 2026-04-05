@@ -38,10 +38,9 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
   if (displayItems.length === 0) return null;
 
   return (
-    <section className="mb-8">
-      <div className="flex items-center justify-between mb-4">
+    <section className="mb-6">
+      <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-primary-text">{title}</h2>
-        <span className='h-[0.5px] bg-gray-600 w-2xl'></span>
         <div className="flex gap-2">
           <button
             onClick={() => scroll('left')}
@@ -68,13 +67,13 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
           return (
             <div
               key={item._id}
-              className="shrink-0 w-fit group cursor-pointer hover:bg-[#2a2d3b] p-4 rounded-2xl transition-colors"
+              className="shrink-0 w-fit group cursor-pointer p-4 transition-colors"
               onClick={() => handleSongClick(item, index)}
             >
               <div className="relative">
                 <div
                   className={`w-40 h-40 overflow-hidden mb-2 ${
-                    isSong ? 'rounded-lg' : 'rounded-full'
+                    isSong ? 'rounded-sm' : 'rounded-full'
                   }`}
                 >
                   {item.coverImage || item.profileImageURL ? (

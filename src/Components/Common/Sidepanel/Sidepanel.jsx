@@ -1,8 +1,8 @@
 // src/Components/Sidepanel/Sidepanel.jsx
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     Home,
-    Search,
     Library,
     PlusSquare,
     UserCog,
@@ -11,21 +11,16 @@ import {
     X
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
+import { CreatePlaylist } from '../../CreatePlaylist';
 
-function Sidepanel({ isOpen, onClose }) {
+function Sidepanel({ isOpen, onClose, setSidebarOpen }) {
     const location = useLocation();
     const { user } = useAuth();
+    const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
 
     const isActive = (path) => location.pathname === path;
 
-    const menuItems = [
-        { path: '/home', icon: Home, label: 'Home' },
-        { path: '/search', icon: Search, label: 'Search' },
-        { path: '/library', icon: Library, label: 'Your Library' },
-    ];
-
     const libraryItems = [
-        { path: '/create-playlist', icon: PlusSquare, label: 'Create Playlist' },
         { path: '/liked-songs', icon: Heart, label: 'Liked Songs' },
     ];
 
@@ -47,7 +42,7 @@ function Sidepanel({ isOpen, onClose }) {
                             to={path}
                             onClick={onClose}
                             className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
-                                ? 'bg-accent/20 text-accent'
+                                ? 'text-accent'
                                 : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
                                 }`}
                         >
@@ -59,46 +54,20 @@ function Sidepanel({ isOpen, onClose }) {
             </ul>
         </nav>
     ) : user ? (
-        <nav className="flex-1 px-2 py-6">
-            <ul className="space-y-2">
-                {menuItems.map(({ path, icon: Icon, label }) => (
-                    <li key={path}>
-                        <Link
-                            to={path}
-                            onClick={onClose}
-                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
-                                ? 'bg-accent/20 text-accent'
-                                : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                }`}
-                        >
-                            <Icon size={24} />
-                            <span className="font-semibold">{label}</span>
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-
-            <div className="mt-8">
-                <ul className="space-y-2">
-                    {libraryItems.map(({ path, icon: Icon, label }) => (
-                        <li key={path}>
-                            <Link
-                                to={path}
-                                onClick={onClose}
-                                className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
-                                    ? 'bg-accent/20 text-accent'
-                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                    }`}
-                            >
-                                <Icon size={24} />
-                                <span className="font-semibold">{label}</span>
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+        <div className="flex-1 px-2 py-3">
+            <div className='flex justify-between px-4 py-3 rounded-lg transition-colors text-accent'>
+                <div className='flex gap-1 hover:text-accent'>
+                    <Library size={24}/>
+                    <span className="font-semibold">Your Library</span>
+                </div>
+                <div className='text-muted-text rounded-full hover:text-accent hover:bg-primary-bg/50'
+                    onClick={() => setShowCreatePlaylist(true)}    
+                >
+                    <PlusSquare size={24} />
+                </div>
             </div>
 
-            <div className="mt-8 border-t border-muted-text/20 pt-4">
+            <div className="mt-4 border-t border-muted-text/20 pt-4">
                 <div className="px-4 mb-2">
                     <h3 className="text-xs font-semibold text-muted-text uppercase tracking-wider">Playlists</h3>
                 </div>
@@ -116,15 +85,14 @@ function Sidepanel({ isOpen, onClose }) {
                     ))}
                 </ul>
             </div>
-        </nav>
+        </div>
     ) : (
         <div className="p-2">
-            <h1 className="p-2 text-primary-text">Your mixes</h1>
             <Link to="/signup" onClick={onClose}>
                 <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
                     <h1 className="text-primary-text">Amplify Your Experience</h1>
                     <i className="text-sm text-muted-text mt-1 hover:text-primary-bg transition-colors">
-                        create your profile and evolve your personal Soundwave
+                        create your profile and evolve your personal Soundwave :)
                     </i>
                 </div>
             </Link>
@@ -134,7 +102,7 @@ function Sidepanel({ isOpen, onClose }) {
     return (
         <>
             {/* Desktop sidebar */}
-            <aside className={`hidden md:flex sticky top-20 ${sidebarClasses}`}>
+            <aside className={`hidden md:flex h-full ${sidebarClasses}`}>
                 {navContent}
             </aside>
 
@@ -160,6 +128,14 @@ function Sidepanel({ isOpen, onClose }) {
                         {navContent}
                     </aside>
                 </div>
+            )}
+
+            {/* Create Playlist Modal */}
+            {showCreatePlaylist && (
+                <CreatePlaylist
+                    onClose={() => setShowCreatePlaylist(false)}
+                    onCreated={() => setShowCreatePlaylist(false)}
+                />
             )}
         </>
     );

@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { usePlayer } from '../Context/PlayerContext';
+import { usePlayer } from '../../Context/PlayerContext';
 import './Player.css';
 import {
   Play,
@@ -13,6 +13,7 @@ import {
   Volume1,
   VolumeX,
   Music,
+  ListMusic,
 } from 'lucide-react';
 
 const formatTime = (seconds) => {
@@ -32,10 +33,13 @@ export default function Player() {
     isMuted,
     isShuffled,
     repeatMode,
+    queue,
+    queueIndex,
     togglePlay,
     seek,
     playNext,
     playPrev,
+    playAtIndex,
     setVolume,
     toggleMute,
     toggleShuffle,
@@ -99,7 +103,6 @@ export default function Player() {
       <div className="player-panel-inner">
         {currentSong ? (
           <>
-            {/* Blurred ambient background from album art */}
             {currentSong.coverImage && (
               <div
                 className="player-bg-blur"
@@ -108,7 +111,6 @@ export default function Player() {
             )}
             <div className="player-bg-overlay" />
 
-            {/* Artwork */}
             <div className="player-artwork-wrap">
               <div className={`player-artwork ${isPlaying ? 'player-artwork--playing' : ''}`}>
                 {currentSong.coverImage ? (
@@ -125,13 +127,11 @@ export default function Player() {
               </div>
             </div>
 
-            {/* Song Info */}
             <div className="player-info">
               <p className="player-title">{currentSong.title}</p>
               <p className="player-artist">{artistName}</p>
             </div>
 
-            {/* Progress */}
             <div className="player-progress-section">
               <div className="player-progress-bar" onClick={handleSeek}>
                 <div className="player-progress-track">
@@ -214,6 +214,49 @@ export default function Player() {
                 </div>
               </div>
             </div>
+
+            {/* Queue */}
+            {queue.length > 1 && (
+              <div className="player-queue">
+                <div className="player-queue-header">
+                  <ListMusic size={13} />
+                  <span>Queue · {queue.length}</span>
+                </div>
+                <div className="player-queue-list">
+                  {queue.map((song, i) => {
+                    const isActive = i === queueIndex;
+                    const qArtist = typeof song.artist === 'string'
+                      ? song.artist
+                      : Array.isArray(song.artist)
+                        ? song.artist.map((a) => a.name || a).join(', ')
+                        : '';
+                    return (
+                      <div
+                        key={song._id || i}
+                        className={`player-queue-item ${isActive ? 'player-queue-item--active' : ''}`}
+                        onClick={() => playAtIndex(i)}
+                      >
+                        <div className="player-queue-cover">
+                          {song.coverImage
+                            ? <img src={song.coverImage} alt={song.title} className="player-queue-cover-img" />
+                            : <Music size={13} />
+                          }
+                          {isActive && isPlaying && (
+                            <div className="player-queue-eq">
+                              <span /><span /><span />
+                            </div>
+                          )}
+                        </div>
+                        <div className="player-queue-info">
+                          <p className="player-queue-title">{song.title}</p>
+                          {qArtist && <p className="player-queue-artist">{qArtist}</p>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </>
         ) : null}
       </div>

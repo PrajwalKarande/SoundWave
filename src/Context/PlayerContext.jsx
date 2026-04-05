@@ -225,6 +225,19 @@ export const PlayerProvider = ({ children }) => {
     });
   }, []);
 
+  const playAtIndex = useCallback((index) => {
+    if (index < 0 || index >= queue.length) return;
+    const song = queue[index];
+    if (!song) return;
+    setQueueIndex(index);
+    setCurrentSong(song);
+    if (song.url) {
+      audio.src = song.url;
+      audio.load();
+      audio.play().catch(console.error);
+    }
+  }, [queue, audio]);
+
   const clearPlayer = useCallback(() => {
     audio.pause();
     audio.src = '';
@@ -249,6 +262,7 @@ export const PlayerProvider = ({ children }) => {
     queue,
     queueIndex,
     playSong,
+    playAtIndex,
     togglePlay,
     seek,
     playNext,

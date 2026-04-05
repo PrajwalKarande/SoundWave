@@ -27,10 +27,10 @@ const extractErrorMessage = (err, fallbackMessage) => {
 };
 
 export const songService = {
-  getAll: async () => {
+  getAll: async (params = {}) => {
     try {
-      const { data } = await api.get('/songs');
-      return data.songs ?? data;
+      const { data } = await api.get('/songs', { params });
+      return data;
     } catch (err) {
       throw new Error(extractErrorMessage(err, 'Failed to fetch songs'));
     }

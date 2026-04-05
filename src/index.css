@@ -6,8 +6,8 @@
   --color-primary-bg: #0B0C10;
   --color-section-bg: #15171d;
   --color-accent: #FF4313;
-  --color-primary-text: #F3F4F6;
-  --color-muted-text: #9CA3AF;
+  --color-primary-text: #FFFFFF;
+  --color-muted-text: #FFFFFF;
 }
 
 @layer base {

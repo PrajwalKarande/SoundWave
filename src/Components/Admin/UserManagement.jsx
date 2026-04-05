@@ -17,8 +17,8 @@ export default function UserManagement() {
 
     const fetchUsers = async () => {
         try {
-            const data = await userService.getAll();
-            setUsers(data);
+            const data = await userService.getAll({limit:20});
+            setUsers(data.data);
         } catch (err) {
             setError('Failed to fetch users', err.message);
         } finally {
@@ -54,7 +54,7 @@ export default function UserManagement() {
 
     return (
         <main className="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div className="px-4 py-6 sm:px-0">
+            <div className="px-4 py-2 sm:px-0">
 
                 <h2 className="text-4xl font-bold mb-6 text-primary-text">User Management</h2>
 

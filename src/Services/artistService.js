@@ -36,10 +36,10 @@ export const artistService = {
    * Fetches all artists.
    * @returns {Promise<Artist[]>}
    */
-  getAll: async () => {
+  getAll: async (params = {}) => {
     try {
-      const { data } = await api.get('/artists');
-      return data.artists ?? data;
+      const { data } = await api.get('/artists', { params });
+      return data;
     } catch (err) {
       throw new Error(extractErrorMessage(err, 'Failed to fetch artists'));
     }
