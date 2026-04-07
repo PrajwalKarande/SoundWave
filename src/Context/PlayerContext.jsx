@@ -94,11 +94,11 @@ export const PlayerProvider = ({ children }) => {
   }, [repeatMode, queue, queueIndex, audio, playNext]);
 
   const playSong = useCallback((song, songList = [], index = 0) => {
-    const url = song?.url || song?.url || song?.audio || song?.songUrl;
+    const url = song?.url
     
     // Normalize song list ensuring every song has a 'url' property
     let baseList = songList.length > 0 
-      ? songList.map(s => ({ ...s, url: s.url || s.url || s.audio || s.songUrl })) 
+      ? songList.map(s => ({ ...s, url: s.url })) 
       : [{ ...song, url: url }];
       
     if (!url) {

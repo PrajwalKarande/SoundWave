@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { forwardRef, useEffect } from 'react';
 import { usePlayer } from '../../Context/PlayerContext';
 import './Player.css';
 import {
@@ -23,7 +23,7 @@ const formatTime = (seconds) => {
   return `${mins}:${secs.toString().padStart(2, '0')}`;
 };
 
-export default function Player() {
+const Player = forwardRef(function Player({ width = 288 }, ref) {
   const {
     currentSong,
     isPlaying,
@@ -99,8 +99,12 @@ export default function Player() {
   const RepeatIcon = repeatMode === 'one' ? Repeat1 : Repeat;
 
   return (
-    <div className={`player-panel ${currentSong ? 'player-panel--active' : ''}`}>
-      <div className="player-panel-inner">
+    <div
+      ref={ref}
+      className={`player-panel ${currentSong ? 'player-panel--active' : ''}`}
+      style={currentSong ? { width: `${width}px` } : {}}
+    >
+      <div className="player-panel-inner" style={{ width: `${width}px` }}>
         {currentSong ? (
           <>
             {currentSong.coverImage && (
@@ -112,7 +116,10 @@ export default function Player() {
             <div className="player-bg-overlay" />
 
             <div className="player-artwork-wrap">
-              <div className={`player-artwork ${isPlaying ? 'player-artwork--playing' : ''}`}>
+              <div
+                className={`player-artwork ${isPlaying ? 'player-artwork--playing' : ''}`}
+                style={{ width: width - 78, height: width - 78 }}
+              >
                 {currentSong.coverImage ? (
                   <img
                     src={currentSong.coverImage}
@@ -262,4 +269,6 @@ export default function Player() {
       </div>
     </div>
   );
-}
+});
+
+export default Player;

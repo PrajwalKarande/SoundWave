@@ -7,8 +7,14 @@
   width: 0;
   flex-shrink: 0;
   overflow: hidden;
+  /* transition only fires on song load/unload, NOT during resize (inline style bypasses this) */
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 1rem;
+}
+
+/* Suppress transition while the user is actively dragging */
+.player-panel.is-resizing {
+  transition: none;
 }
 
 .player-panel--active {

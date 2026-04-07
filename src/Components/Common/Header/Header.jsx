@@ -32,8 +32,8 @@ function Header({ onMenuToggle }) {
             <img src={logo} alt="Soundwave" className="h-8 w-8" />
           </Link>
 
-          <Link to="/home" className="flex items-center shrink-0 hover:opacity-80 transition-opacity p-2 rounded-full bg-primary-bg">
-            <Home size={24} />
+          <Link to="/home" className="p-2 rounded-full bg-primary-bg hover:bg-accent/80 text-primary-text">
+            <Home size={24}/>
           </Link>
 
           <search className='px-3 py-2 flex flex-row items-center w-32 sm:w-48 md:w-64 lg:w-1/2 bg-primary-bg border border-muted-text/30 rounded-full gap-2 text-accent hover:bg-primary-bg/80'>

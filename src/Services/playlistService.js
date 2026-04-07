@@ -9,9 +9,9 @@ export const createPlaylist = async (name) => {
     }
 }
 
-export const getPlaylist = async (id) => {
+export const getPlaylist = async () => {
     try {
-        const response = await api.get(`/playlists/${id}`);
+        const response = await api.get(`/playlists`);
         return response.data;
     } catch (error) {
         return response.data.message || response.message
