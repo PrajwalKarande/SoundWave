@@ -28,7 +28,7 @@ function Header({ onMenuToggle }) {
             <Menu size={22} />
           </button>
 
-          <Link to="/home" className="flex items-center shrink-0 hover:opacity-80 transition-opacity">
+          <Link to="/home" className="flex items-center shrink-0 hover:opacity-80 transition-opacity lg:w-14 md:w-10">
             <img src={logo} alt="Soundwave" className="h-8 w-8" />
           </Link>
 

@@ -12,3 +12,8 @@
   scrollbar-width: none;
   /* Firefox */
 }
+
+/* Suppress all transitions on the panel being actively dragged */
+.is-resizing {
+  transition: none !important;
+}

@@ -8,14 +8,36 @@ import {
     UserCog,
     MicVocal,
     X,
-    Loader2
+    Loader2,
+    Music2
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
 import { CreatePlaylist } from '../../CreatePlaylist';
 import { getPlaylist } from '../../../Services/playlistService';
 import PlaylistSection from './PlaylistSection';
 
-const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpen, width = 256 }, ref) {
+const TINTS = [
+    'bg-orange-950/70',
+    'bg-indigo-950/70',
+    'bg-teal-950/70',
+    'bg-rose-950/70',
+    'bg-amber-950/70',
+    'bg-sky-950/70',
+    'bg-violet-950/70',
+    'bg-emerald-950/70',
+];
+
+const adminItems = [
+    { path: '/admin/dashboard', icon: Home,      label: 'Dashboard' },
+    { path: '/admin/manage/songs',   icon: PlusSquare, label: 'Songs'     },
+    { path: '/admin/manage/users',   icon: UserCog,    label: 'Users'     },
+    { path: '/admin/manage/artists', icon: MicVocal,   label: 'Artists'   },
+];
+
+const Sidepanel = forwardRef(function Sidepanel(
+    { isOpen, onClose, setSidebarOpen, width = 256, collapsed = false, onToggle },
+    ref
+) {
     const location = useLocation();
     const { user } = useAuth();
     const [playlists, setPlaylists] = useState([]);
@@ -39,16 +61,67 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
         setRefreshKey(k => k + 1);
     };
 
-    const adminItems = [
-        { path: '/admin/dashboard', icon: Home, label: 'Dashboard' },
-        { path: '/admin/manage/songs', icon: PlusSquare, label: 'Songs' },
-        { path: '/admin/manage/users', icon: UserCog, label: 'Users' },
-        { path: '/admin/manage/artists', icon: MicVocal, label: 'Artists' },
-    ];
+    const baseClasses = 'work-sans bg-section-bg text-accent h-full flex flex-col rounded-lg overflow-hidden';
 
-    const baseClasses = 'sidepanel-font bg-section-bg text-accent h-full p-2 flex flex-col rounded-2xl overflow-hidden';
+    // ── Mini (collapsed) bar ──────────────────────────────────────────────────
+    const miniBar = (
+        <>
+            {/* Library icon — click to expand */}
+            <button
+                onClick={onToggle}
+                className="flex items-center justify-center py-3 shrink-0 text-accent hover:text-primary-text transition-colors"
+                title="Expand sidebar"
+            >
+                <Library size={20} />
+            </button>
 
-    const navContent = user?.role === 'admin' ? (
+            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-2">
+                {user?.role === 'admin'
+                    ? adminItems.map(({ path, icon: Icon, label }) => (
+                        <Link
+                            key={path}
+                            to={path}
+                            title={label}
+                            className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
+                                isActive(path)
+                                    ? 'text-accent bg-accent/10'
+                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                            }`}
+                        >
+                            <Icon size={20} />
+                        </Link>
+                    ))
+                    : playlists.map((playlist, i) => {
+                        const tint = TINTS[i % TINTS.length];
+                        return (
+                            <Link
+                                key={playlist._id}
+                                to={`/playlist/${playlist._id}`}
+                                onClick={onClose}
+                                title={playlist.name}
+                                className={`w-9 h-9 shrink-0 rounded-lg overflow-hidden flex items-center justify-center ${tint} ${
+                                    isActive(`/playlist/${playlist._id}`) ? 'ring-1 ring-accent/40' : ''
+                                }`}
+                            >
+                                {playlist.coverImage ? (
+                                    <img
+                                        src={playlist.coverImage}
+                                        alt={playlist.name}
+                                        className="w-full h-full object-cover"
+                                    />
+                                ) : (
+                                    <Music2 size={14} className="text-muted-text/60" />
+                                )}
+                            </Link>
+                        );
+                    })
+                }
+            </div>
+        </>
+    );
+
+    // ── Full (expanded) content ───────────────────────────────────────────────
+    const fullContent = user?.role === 'admin' ? (
         <nav className="flex-1 px-2 py-6">
             <ul className="space-y-2">
                 {adminItems.map(({ path, icon: Icon, label }) => (
@@ -56,10 +129,11 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
                         <Link
                             to={path}
                             onClick={onClose}
-                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
-                                ? 'text-accent'
-                                : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                                }`}
+                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${
+                                isActive(path)
+                                    ? 'text-accent'
+                                    : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
+                            }`}
                         >
                             <Icon size={24} />
                             <span className="font-semibold">{label}</span>
@@ -72,10 +146,14 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
         <div className="flex-1 flex flex-col min-h-0 px-2 py-3">
             {/* Library header */}
             <div className='flex justify-between items-center px-3 py-2 rounded-lg text-accent mb-1'>
-                <div className='flex items-center gap-2'>
-                    <Library size={20} />
-                    <span className="font-semibold text-sm">Your Library</span>
-                </div>
+                <button
+                    onClick={onToggle}
+                    className='flex items-center gap-2 hover:text-primary-text transition-colors'
+                    title="Collapse sidebar"
+                >
+                    <Library size={24} />
+                    <span className="font-semibold text-lg">Your Library</span>
+                </button>
                 <button
                     className='text-muted-text rounded-full hover:text-accent hover:bg-primary-bg/50 p-1 transition-colors'
                     onClick={() => setShowCreatePlaylist(true)}
@@ -111,13 +189,16 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
 
     return (
         <>
-            {/* Desktop sidebar — width driven by prop */}
+            {/* Desktop sidebar */}
             <aside
                 ref={ref}
-                className={`hidden md:flex ${baseClasses}`}
-                style={{ width: `${width}px`, minWidth: `${width}px` }}
+                className={`hidden md:flex ${baseClasses} transition-[width,min-width,padding] duration-200 ease-in-out`}
+                style={collapsed
+                    ? { width: '52px', minWidth: '52px', padding: '4px' }
+                    : { width: `${width}px`, minWidth: `${width}px`, padding: '8px' }
+                }
             >
-                {navContent}
+                {collapsed ? miniBar : fullContent}
             </aside>
 
             {/* Mobile overlay drawer */}
@@ -127,7 +208,7 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
                         className="absolute inset-0 bg-primary-bg/60"
                         onClick={onClose}
                     />
-                    <aside className={`absolute left-2 top-2 bottom-2 w-64 ${baseClasses} overflow-y-auto`}>
+                    <aside className={`absolute left-2 top-2 bottom-2 w-64 p-2 ${baseClasses} overflow-y-auto`}>
                         <div className="flex justify-end px-2 pt-2">
                             <button
                                 onClick={onClose}
@@ -137,7 +218,7 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
                                 <X size={20} />
                             </button>
                         </div>
-                        {navContent}
+                        {fullContent}
                     </aside>
                 </div>
             )}
@@ -152,4 +233,5 @@ const Sidepanel = forwardRef(function Sidepanel({ isOpen, onClose, setSidebarOpe
         </>
     );
 });
+
 export default Sidepanel;

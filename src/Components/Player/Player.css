@@ -31,8 +31,6 @@
   align-items: center;
   padding: 24px 20px 20px;
   background: #0d0f14;
-  border: 1px solid rgba(255, 67, 19, 0.1);
-  border-radius: 1rem;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;

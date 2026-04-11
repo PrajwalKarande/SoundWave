@@ -8,33 +8,15 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true, // send cookies on every request
 });
-
-// Request interceptor to add token to requests
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
 
 // Response interceptor to handle token expiration
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     const originalRequest = error.config;
-    // Don't redirect if the error is from the login endpoint itself or landing page
     if (error.response?.status === 401 && originalRequest && !originalRequest.url.includes('/auth/login')) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-
-      // Prevent redirect loops on auth pages and landing page
       if (window.location.pathname !== '/login' && window.location.pathname !== '/signup' && window.location.pathname !== '/') {
         window.location.href = '/login';
       }
@@ -46,30 +28,16 @@ api.interceptors.response.use(
 export const authService = {
   login: async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
     return response.data.user;
   },
 
   signup: async (email, username, password) => {
     const response = await api.post('/auth/signup', { email, username, password });
-    if (response.data.token) {
-      localStorage.setItem('token', response.data.token);
-      localStorage.setItem('user', JSON.stringify(response.data));
-    }
     return response.data.user;
   },
 
-  logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-  },
-
-  getCurrentUser: () => {
-    const userStr = localStorage.getItem('user');
-    return userStr ? JSON.parse(userStr) : null;
+  logout: async () => {
+    await api.post('/auth/logout');
   },
 
   validateToken: async () => {

@@ -10,6 +10,7 @@ import { PlayerProvider } from './Context/PlayerContext.jsx'
 import { Home } from './Components/Home/Home.jsx'
 import { Landing } from './Components/Landing/Landing.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
+import PlaylistPage from './Components/Playlist/PlaylistPage.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
 import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
 import AddSong from './Components/Admin/Song/AddSong.jsx'
@@ -29,7 +30,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Home />
-        //loader function needed to fetch songs and albums
       },
       {
         path: 'search',
@@ -46,6 +46,16 @@ const router = createBrowserRouter([
       {
         path: 'liked-songs',
         element: <div>Liked Songs - Coming Soon</div>
+      }
+    ]
+  },
+  {
+    path: '/playlist',
+    element: <App />,
+    children: [
+      {
+        path: ':id',
+        element: <PlaylistPage />
       }
     ]
   },

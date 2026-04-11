@@ -41,20 +41,7 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
     <section className="mb-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-primary-text">{title}</h2>
-        <div className="flex gap-2">
-          <button
-            onClick={() => scroll('left')}
-            className="p-1.5 rounded-full border border-amber-600 bg-section-bg hover:bg-muted-text/20 text-muted-text transition-colors"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={() => scroll('right')}
-            className="p-1.5 rounded-full border border-amber-600 bg-section-bg hover:bg-muted-text/20 text-muted-text transition-colors"
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
+
       </div>
 
       <div

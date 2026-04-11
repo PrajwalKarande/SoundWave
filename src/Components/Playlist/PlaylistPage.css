@@ -1,0 +1,20 @@
+/* ── EQ bars for currently playing song ── */
+@keyframes pl-eq {
+  0%, 100% { transform: scaleY(0.35); }
+  50%       { transform: scaleY(1);    }
+}
+
+.pl-eq-wrap {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 16px;
+}
+
+.pl-eq-bar {
+  width: 3px;
+  border-radius: 2px;
+  background-color: #ff4313;
+  transform-origin: bottom center;
+  animation: pl-eq 0.75s ease-in-out infinite;
+}

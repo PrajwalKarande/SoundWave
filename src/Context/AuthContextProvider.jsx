@@ -11,17 +11,12 @@ export const AuthContextProvider = ({ children }) => {
   const { clearPlayer } = usePlayer();
 
   useEffect(() => {
-    // Check if user is logged in on mount
     const initAuth = async () => {
-      const token = localStorage.getItem('token');
-      if (token) {
-        try {
-          const userData = await authService.validateToken();
-          setUser(userData);
-        } catch (error) {
-          console.error('Token validation failed:', error);
-          authService.logout();
-        }
+      try {
+        const userData = await authService.validateToken();
+        setUser(userData);
+      } catch {
+        // No valid session cookie — user is not logged in
       }
       setLoading(false);
     };
@@ -41,8 +36,8 @@ export const AuthContextProvider = ({ children }) => {
     return userData;
   };
 
-  const logout = () => {
-    authService.logout();
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
     if (clearPlayer) {
       clearPlayer();

@@ -36,7 +36,7 @@ export default function PlaylistSection({ playlists, onNavigate }) {
             <Link
               to={`/playlist/${playlist._id}`}
               onClick={onNavigate}
-              className={`flex items-center gap-3 px-4 py-2 rounded-xl transition-all duration-150 group ${
+              className={`flex items-center gap-3 px-2 py-2 rounded-xl transition-all duration-150 group ${
                 isActive
                   ? 'bg-accent/15 text-accent'
                   : 'text-muted-text hover:bg-primary-bg/60 hover:text-primary-text'
@@ -69,7 +69,7 @@ export default function PlaylistSection({ playlists, onNavigate }) {
               {/* Name + count */}
               <div className="min-w-0 flex-1">
                 <p
-                  className={`text-sm font-medium truncate leading-tight transition-colors ${
+                  className={`text-lg font-medium truncate leading-tight transition-colors ${
                     isActive
                       ? 'text-accent'
                       : 'text-primary-text/90 group-hover:text-accent'
@@ -77,11 +77,6 @@ export default function PlaylistSection({ playlists, onNavigate }) {
                 >
                   {playlist.name}
                 </p>
-                {songCount !== null && (
-                  <p className="text-xs text-muted-text/50 leading-tight mt-0.5">
-                    {songCount} {songCount === 1 ? 'song' : 'songs'}
-                  </p>
-                )}
               </div>
             </Link>
           </li>
