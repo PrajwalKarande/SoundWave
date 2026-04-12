@@ -8,6 +8,8 @@ export const usePlayer = () => {
   return ctx;
 };
 
+const STORAGE_KEY = 'sw_last_song';
+
 // True Shuffle helper (Fisher-Yates)
 const shuffleArray = (array) => {
   const shuffled = [...array];
@@ -18,24 +20,42 @@ const shuffleArray = (array) => {
   return shuffled;
 };
 
+const loadLastSong = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
 export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(new Audio());
-  const [currentSong, setCurrentSong] = useState(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.7);
-  const [isMuted, setIsMuted] = useState(false);
-  
-  const [queue, setQueue] = useState([]);
+
+  // Restore last song so the player shows it on refresh (paused, no audio loaded)
+  const [currentSong,   setCurrentSong]   = useState(() => loadLastSong());
+  const [queue,         setQueue]         = useState([]);
   const [originalQueue, setOriginalQueue] = useState([]);
-  const [queueIndex, setQueueIndex] = useState(-1);
-  const [isShuffled, setIsShuffled] = useState(false);
-  const [repeatMode, setRepeatMode] = useState('off'); // 'off' | 'all' | 'one'
+  const [queueIndex,    setQueueIndex]    = useState(-1);
+  const [isShuffled,    setIsShuffled]    = useState(false);
+  const [repeatMode,    setRepeatMode]    = useState('off');
+  const [volume,        setVolume]        = useState(0.7);
+
+  const [isPlaying,   setIsPlaying]   = useState(false);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration,    setDuration]    = useState(0);
+  const [isMuted,     setIsMuted]     = useState(false);
 
   const audio = audioRef.current;
 
-  // Sync volume
+  // ── Persist current song whenever it changes ──────────────────────────────
+  useEffect(() => {
+    if (currentSong) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSong));
+    }
+  }, [currentSong]);
+
+  // ── Sync volume ────────────────────────────────────────────────────────────
   useEffect(() => {
     audio.volume = isMuted ? 0 : volume;
   }, [volume, isMuted, audio]);
@@ -63,7 +83,7 @@ export const PlayerProvider = ({ children }) => {
     }
   }, [queue, queueIndex, repeatMode, audio]);
 
-  // Audio event listeners
+  // ── Audio event listeners ──────────────────────────────────────────────────
   useEffect(() => {
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
@@ -75,46 +95,42 @@ export const PlayerProvider = ({ children }) => {
         playNext();
       }
     };
-    const handlePlay = () => setIsPlaying(true);
+    const handlePlay  = () => setIsPlaying(true);
     const handlePause = () => setIsPlaying(false);
 
-    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('timeupdate',     handleTimeUpdate);
     audio.addEventListener('loadedmetadata', handleLoadedMetadata);
-    audio.addEventListener('ended', handleEnded);
-    audio.addEventListener('play', handlePlay);
-    audio.addEventListener('pause', handlePause);
+    audio.addEventListener('ended',          handleEnded);
+    audio.addEventListener('play',           handlePlay);
+    audio.addEventListener('pause',          handlePause);
 
     return () => {
-      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('timeupdate',     handleTimeUpdate);
       audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
-      audio.removeEventListener('ended', handleEnded);
-      audio.removeEventListener('play', handlePlay);
-      audio.removeEventListener('pause', handlePause);
+      audio.removeEventListener('ended',          handleEnded);
+      audio.removeEventListener('play',           handlePlay);
+      audio.removeEventListener('pause',          handlePause);
     };
   }, [repeatMode, queue, queueIndex, audio, playNext]);
 
   const playSong = useCallback((song, songList = [], index = 0) => {
-    const url = song?.url
-    
-    // Normalize song list ensuring every song has a 'url' property
-    let baseList = songList.length > 0 
-      ? songList.map(s => ({ ...s, url: s.url })) 
-      : [{ ...song, url: url }];
-      
+    const url = song?.url;
+
+    let baseList = songList.length > 0
+      ? songList.map(s => ({ ...s, url: s.url }))
+      : [{ ...song, url }];
+
     if (!url) {
       baseList = songList.length > 0 ? songList : [song];
     }
 
     setOriginalQueue(baseList);
 
-    // If starting play while shuffled is true, we should scramble the upcoming queue immediately
     if (isShuffled && baseList.length > 1) {
       const playingIndex = songList.length > 0 ? index : 0;
       const firstSong = baseList[playingIndex];
-      
       const listWithoutCurrent = [...baseList];
       listWithoutCurrent.splice(playingIndex, 1);
-      
       const shuffled = shuffleArray(listWithoutCurrent);
       setQueue([firstSong, ...shuffled]);
       setQueueIndex(0);
@@ -122,11 +138,10 @@ export const PlayerProvider = ({ children }) => {
       setQueue(baseList);
       setQueueIndex(songList.length > 0 ? index : 0);
     }
-    
-    // Maintain state setting
-    const formattedSong = url ? { ...song, url: url } : song;
+
+    const formattedSong = url ? { ...song, url } : song;
     setCurrentSong(formattedSong);
-    
+
     if (url) {
       audio.src = url;
       audio.load();
@@ -175,43 +190,34 @@ export const PlayerProvider = ({ children }) => {
     }
   }, [queue, queueIndex, repeatMode, audio]);
 
-  const toggleMute = useCallback(() => {
-    setIsMuted(prev => !prev);
-  }, []);
+  const toggleMute = useCallback(() => setIsMuted(prev => !prev), []);
 
   const toggleShuffle = useCallback(() => {
     if (!isShuffled) {
-      // Turn Shuffle ON
       if (originalQueue.length > 1 && currentSong) {
         const currentSongItem = queue[queueIndex];
-        
         let indexInOriginal = originalQueue.findIndex(s => s === currentSongItem);
         if (indexInOriginal === -1 && currentSongItem) {
           indexInOriginal = originalQueue.findIndex(s => s.url === currentSongItem.url);
         }
-        
         const listToShuffle = [...originalQueue];
         if (indexInOriginal !== -1) {
           listToShuffle.splice(indexInOriginal, 1);
         } else if (listToShuffle.length > 0) {
           listToShuffle.splice(0, 1);
         }
-        
         const shuffled = shuffleArray(listToShuffle);
         setQueue([currentSongItem, ...shuffled]);
         setQueueIndex(0);
       }
       setIsShuffled(true);
     } else {
-      // Turn Shuffle OFF
       const currentSongItem = queue[queueIndex];
       setQueue([...originalQueue]);
-      
       let newIndex = originalQueue.findIndex(s => s === currentSongItem);
       if (newIndex === -1 && currentSongItem) {
         newIndex = originalQueue.findIndex(s => s.url === currentSongItem.url);
       }
-      
       setQueueIndex(Math.max(0, newIndex));
       setIsShuffled(false);
     }
@@ -247,8 +253,8 @@ export const PlayerProvider = ({ children }) => {
     setQueue([]);
     setOriginalQueue([]);
     setQueueIndex(-1);
+    localStorage.removeItem(STORAGE_KEY);
   }, [audio]);
-
 
   const value = {
     currentSong,

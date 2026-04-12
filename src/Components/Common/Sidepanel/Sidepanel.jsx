@@ -12,7 +12,7 @@ import {
     Music2
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
-import { CreatePlaylist } from '../../CreatePlaylist';
+import { CreatePlaylist } from '../../Playlist/CreatePlaylist';
 import { getPlaylist } from '../../../Services/playlistService';
 import PlaylistSection from './PlaylistSection';
 
@@ -28,10 +28,10 @@ const TINTS = [
 ];
 
 const adminItems = [
-    { path: '/admin/dashboard', icon: Home,      label: 'Dashboard' },
-    { path: '/admin/manage/songs',   icon: PlusSquare, label: 'Songs'     },
-    { path: '/admin/manage/users',   icon: UserCog,    label: 'Users'     },
-    { path: '/admin/manage/artists', icon: MicVocal,   label: 'Artists'   },
+    { path: '/admin/dashboard', icon: Home, label: 'Dashboard' },
+    { path: '/admin/manage/songs', icon: PlusSquare, label: 'Songs' },
+    { path: '/admin/manage/users', icon: UserCog, label: 'Users' },
+    { path: '/admin/manage/artists', icon: MicVocal, label: 'Artists' },
 ];
 
 const Sidepanel = forwardRef(function Sidepanel(
@@ -82,11 +82,10 @@ const Sidepanel = forwardRef(function Sidepanel(
                             key={path}
                             to={path}
                             title={label}
-                            className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${
-                                isActive(path)
+                            className={`w-9 h-9 flex items-center justify-center rounded-lg transition-colors ${isActive(path)
                                     ? 'text-accent bg-accent/10'
                                     : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                            }`}
+                                }`}
                         >
                             <Icon size={20} />
                         </Link>
@@ -99,9 +98,8 @@ const Sidepanel = forwardRef(function Sidepanel(
                                 to={`/playlist/${playlist._id}`}
                                 onClick={onClose}
                                 title={playlist.name}
-                                className={`w-9 h-9 shrink-0 rounded-lg overflow-hidden flex items-center justify-center ${tint} ${
-                                    isActive(`/playlist/${playlist._id}`) ? 'ring-1 ring-accent/40' : ''
-                                }`}
+                                className={`w-9 h-9 shrink-0 rounded-lg overflow-hidden flex items-center justify-center ${tint} ${isActive(`/playlist/${playlist._id}`) ? 'ring-1 ring-accent/40' : ''
+                                    }`}
                             >
                                 {playlist.coverImage ? (
                                     <img
@@ -129,11 +127,10 @@ const Sidepanel = forwardRef(function Sidepanel(
                         <Link
                             to={path}
                             onClick={onClose}
-                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${
-                                isActive(path)
+                            className={`flex items-center space-x-4 px-4 py-3 rounded-lg transition-colors ${isActive(path)
                                     ? 'text-accent'
                                     : 'text-muted-text hover:text-accent hover:bg-primary-bg/50'
-                            }`}
+                                }`}
                         >
                             <Icon size={24} />
                             <span className="font-semibold">{label}</span>
@@ -177,7 +174,7 @@ const Sidepanel = forwardRef(function Sidepanel(
     ) : (
         <div className="p-2">
             <Link to="/signup" onClick={onClose}>
-                <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-2xl hover:bg-accent transition-colors cursor-pointer">
+                <div className="flex flex-col p-6 text-left m-4 gap-2 bg-primary-bg rounded-lg hover:bg-accent transition-colors cursor-pointer">
                     <h1 className="text-primary-text">Amplify Your Experience</h1>
                     <i className="text-sm text-muted-text mt-1 hover:text-primary-bg transition-colors">
                         create your profile and evolve your personal Soundwave :)

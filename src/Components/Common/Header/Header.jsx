@@ -15,7 +15,7 @@ function Header({ onMenuToggle }) {
   };
 
   return (
-    <header className="text-primary-text sticky top-0 z-50 mt-2">
+    <header className="text-primary-text sticky top-0 z-50 mt-2 p-1">
       <div className="flex items-center justify-between px-2 md:px-6 py-1 gap-2">
 
         <div className='flex flex-row items-center lg:gap-2 md:gap-0 flex-1 min-w-0'>
@@ -36,7 +36,7 @@ function Header({ onMenuToggle }) {
             <Home size={24}/>
           </Link>
 
-          <search className='px-3 py-2 flex flex-row items-center w-32 sm:w-48 md:w-64 lg:w-1/2 bg-primary-bg border border-muted-text/30 rounded-full gap-2 text-accent hover:bg-primary-bg/80'>
+          <search className='px-3 py-2 flex flex-row items-center w-32 sm:w-48 md:w-64 lg:w-1/2 bg-primary-bg border border-muted-text/30 rounded-full gap-2 text-accent hover:bg-accent/20 hover:border-accent/10 hover:border-2'>
             <Search size={18} className="shrink-0 text-muted-text" />
             <input
               type='text'

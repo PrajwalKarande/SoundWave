@@ -108,7 +108,7 @@ function App() {
         <div className="h-10 w-0.5 rounded-full bg-muted-text/20 group-hover:bg-accent/50 transition-colors duration-150" />
       </div>
 
-      <main className='flex-1 min-w-0 overflow-y-auto overflow-x-hidden hide-scrollbar bg-section-bg rounded-lg'>
+      <main className='flex-1 min-w-0 overflow-y-auto overflow-x-hidden hide-scrollbar bg-section-bg rounded-lg pb-16 md:pb-0'>
         <Outlet />
       </main>
 

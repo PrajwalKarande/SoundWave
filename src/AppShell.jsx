@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import Header from './Components/Common/Header/Header.jsx'
 import Sidepanel from './Components/Common/Sidepanel/Sidepanel.jsx'
+import MobilePlayer from './Components/Player/MobilePlayer.jsx'
 
 const AppShell = ({ sidebarRef, sidebarWidth = 256, sidebarCollapsed = false, onToggleSidebar, children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false)
@@ -20,6 +21,7 @@ const AppShell = ({ sidebarRef, sidebarWidth = 256, sidebarCollapsed = false, on
         />
         {children}
       </div>
+      <MobilePlayer />
     </div>
   )
 }

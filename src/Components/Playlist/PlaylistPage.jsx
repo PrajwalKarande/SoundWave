@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Play, Pause, Shuffle, Plus, Trash2,
-  Loader2, Music, Search, X, CheckCircle2,
+  Loader2, Music, Search, X, CheckCircle2, Clock,
 } from 'lucide-react';
 import {
   getPlaylistById,
@@ -12,6 +12,7 @@ import {
 import { songService } from '../../Services/songService';
 import { usePlayer } from '../../Context/PlayerContext';
 import './PlaylistPage.css';
+import { useAuth } from '../../Context/AuthContextProvider';
 
 const GRADIENT_COLORS = [
   '#7C3AED', '#DC2626', '#2563EB', '#059669',
@@ -34,6 +35,8 @@ const getArtistName = (artist) => {
 };
 
 export default function PlaylistPage() {
+
+  const { user } = useAuth();
   const { id } = useParams();
   const { playSong, currentSong, isPlaying, togglePlay } = usePlayer();
 
@@ -155,25 +158,38 @@ export default function PlaylistPage() {
   return (
     <div className="relative min-h-full">
 
-      {/* ── Gradient bg ── */}
+      {/* ── Header section with gradient background ── */}
       <div
-        className="absolute inset-x-0 top-0 h-80 pointer-events-none"
         style={{
-          background: `linear-gradient(180deg, ${gradientColor}bb 0%, ${gradientColor}33 55%, transparent 100%)`,
+          background: `linear-gradient(to bottom, ${gradientColor}d0 0%, ${gradientColor}50 55%, transparent 100%)`,
         }}
-      />
-
-      <div className="relative">
-
+      >
         {/* ── Header ── */}
         <div className="flex flex-col sm:flex-row items-end gap-6 p-6 pb-4">
-          {/* Cover art */}
+          {/* Cover art — mosaic if ≥4 songs, single cover otherwise */}
           <div
             className="w-44 h-44 shrink-0 rounded-xl overflow-hidden"
-            style={{ boxShadow: `0 24px 64px ${gradientColor}55` }}
+            style={{
+              boxShadow: `0 10px 40px rgba(0,0,0,0.6), 0 0 60px ${gradientColor}60`,
+            }}
           >
-            {playlist.coverImage ? (
-              <img src={playlist.coverImage} alt={playlist.name} className="w-full h-full object-cover" />
+            {songs.length >= 4 ? (
+              <div className="w-full h-full grid grid-cols-2 grid-rows-2">
+                {songs.slice(0, 4).map((s, i) => (
+                  <div key={i} className="overflow-hidden">
+                    {s.coverImage
+                      ? <img src={s.coverImage} alt={s.title} className="w-full h-full object-cover" />
+                      : <div className="w-full h-full flex items-center justify-center" style={{ background: `${gradientColor}55` }}><Music size={16} className="text-white/30" /></div>
+                    }
+                  </div>
+                ))}
+              </div>
+            ) : (songs[0]?.coverImage || playlist.coverImage) ? (
+              <img
+                src={songs[0]?.coverImage || playlist.coverImage}
+                alt={playlist.name}
+                className="w-full h-full object-cover"
+              />
             ) : (
               <div
                 className="w-full h-full flex items-center justify-center"
@@ -190,8 +206,8 @@ export default function PlaylistPage() {
             <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-2 truncate">
               {playlist.name}
             </h1>
-            <p className="text-sm text-white/40">
-              {songs.length} {songs.length === 1 ? 'song' : 'songs'}
+            <p className="text-sm text-white/80">
+              {user?.username} &bull; {songs.length} {songs.length === 1 ? 'song' : 'songs'} 
             </p>
           </div>
         </div>
@@ -229,85 +245,101 @@ export default function PlaylistPage() {
           </button>
         </div>
 
-        {/* ── Divider ── */}
-        <div className="mx-6 border-t border-white/8 mb-1" />
+      </div>
 
-        {/* ── Song list ── */}
-        {songs.length === 0 ? (
-          <div className="flex flex-col items-center gap-3 py-16 text-muted-text/40">
-            <Music size={36} />
-            <p className="text-sm">No songs yet — hit + to add some</p>
-          </div>
-        ) : (
-          <div className="pb-8">
+      {/* ── Song list ── */}
+      {songs.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 py-16 text-muted-text/40">
+          <Music size={36} />
+          <p className="text-sm">No songs yet — hit + to add some</p>
+        </div>
+      ) : (
+        <table className="w-full pb-8 border-collapse">
+          <thead>
+            <tr>
+              <th className="w-10 px-6 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">#</th>
+              <th className="px-3 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">Title</th>
+              <th className="px-3 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">Artist</th>
+              <th className="px-6 pb-3 text-right">
+                <Clock size={12} className="text-muted-text/40 ml-auto" />
+              </th>
+            </tr>
+          </thead>
+          <tbody>
             {songs.map((song, idx) => {
               const isCurrent = currentSong?._id === song._id;
               const isRowPlaying = isCurrent && isPlaying;
               return (
-                <div
+                <tr
                   key={song._id}
-                  className={`group flex items-center gap-3 px-6 py-2.5 cursor-pointer transition-colors ${
-                    isCurrent ? 'bg-accent/8' : 'hover:bg-white/5'
-                  }`}
+                  className={`group cursor-pointer transition-colors ${isCurrent ? 'bg-accent/8' : 'hover:bg-white/5'
+                    }`}
                   onClick={() => handleSongClick(song, idx)}
                 >
-                  {/* Index / EQ / play indicator */}
-                  <div className="w-6 flex items-center justify-center shrink-0">
-                    {isRowPlaying ? (
-                      <div className="pl-eq-wrap">
-                        <span className="pl-eq-bar" style={{ height: '60%' }} />
-                        <span className="pl-eq-bar" style={{ height: '100%', animationDelay: '0.2s' }} />
-                        <span className="pl-eq-bar" style={{ height: '45%', animationDelay: '0.4s' }} />
+                  {/* Index / EQ */}
+                  <td className="w-10 px-6 py-2.5">
+                    <div className="w-6 flex items-center justify-center">
+                      {isRowPlaying ? (
+                        <div className="pl-eq-wrap">
+                          <span className="pl-eq-bar" style={{ height: '60%' }} />
+                          <span className="pl-eq-bar" style={{ height: '100%', animationDelay: '0.2s' }} />
+                          <span className="pl-eq-bar" style={{ height: '45%', animationDelay: '0.4s' }} />
+                        </div>
+                      ) : (
+                        <>
+                          <span className={`text-sm group-hover:hidden ${isCurrent ? 'text-accent' : 'text-muted-text/50'}`}>
+                            {idx + 1}
+                          </span>
+                          <Play size={13} fill="currentColor" className="hidden group-hover:block text-white/80" />
+                        </>
+                      )}
+                    </div>
+                  </td>
+
+                  {/* Cover + Title */}
+                  <td className="px-3 py-2.5">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-white/5">
+                        {song.coverImage
+                          ? <img src={song.coverImage} alt={song.title} className="w-full h-full object-cover" />
+                          : <div className="w-full h-full flex items-center justify-center"><Music size={13} className="text-white/20" /></div>
+                        }
                       </div>
-                    ) : (
-                      <>
-                        <span className={`text-sm group-hover:hidden ${isCurrent ? 'text-accent' : 'text-muted-text/50'}`}>
-                          {idx + 1}
-                        </span>
-                        <Play size={13} fill="currentColor" className="hidden group-hover:block text-white/80" />
-                      </>
-                    )}
-                  </div>
+                      <p className={`text-sm font-medium truncate ${isCurrent ? 'text-accent' : 'text-primary-text'}`}>
+                        {song.title}
+                      </p>
+                    </div>
+                  </td>
 
-                  {/* Cover */}
-                  <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-white/5">
-                    {song.coverImage
-                      ? <img src={song.coverImage} alt={song.title} className="w-full h-full object-cover" />
-                      : <div className="w-full h-full flex items-center justify-center"><Music size={13} className="text-white/20" /></div>
-                    }
-                  </div>
+                  {/* Artist */}
+                  <td className="px-3 py-2.5">
+                    <p className="text-sm text-muted-text/60 truncate">{getArtistName(song.artist)}</p>
+                  </td>
 
-                  {/* Title + artist */}
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium truncate ${isCurrent ? 'text-accent' : 'text-primary-text'}`}>
-                      {song.title}
-                    </p>
-                    <p className="text-xs text-muted-text/60 truncate">{getArtistName(song.artist)}</p>
-                  </div>
-
-                  {/* Duration — hidden on hover to make room for delete */}
-                  <span className="text-xs text-muted-text/40 tabular-nums shrink-0 group-hover:hidden">
-                    {formatDuration(song.duration)}
-                  </span>
-
-                  {/* Delete button */}
-                  <button
-                    className="hidden group-hover:flex w-7 h-7 items-center justify-center rounded-full text-muted-text/50 hover:text-red-400 hover:bg-red-400/10 transition-all"
-                    onClick={(e) => handleRemoveSong(e, song._id)}
-                    disabled={removingId === song._id}
-                    aria-label="Remove from playlist"
-                  >
-                    {removingId === song._id
-                      ? <Loader2 size={13} className="animate-spin" />
-                      : <Trash2 size={13} />
-                    }
-                  </button>
-                </div>
+                  {/* Duration + delete */}
+                  <td className="px-6 py-2.5 text-right">
+                    <span className="text-xs text-muted-text/40 tabular-nums group-hover:hidden">
+                      {formatDuration(song.duration)}
+                    </span>
+                    <button
+                      className="hidden group-hover:inline-flex w-7 h-7 items-center justify-center rounded-full text-muted-text/50 hover:text-red-400 hover:bg-red-400/10 transition-all"
+                      onClick={(e) => handleRemoveSong(e, song._id)}
+                      disabled={removingId === song._id}
+                      aria-label="Remove from playlist"
+                      title="Remove from playlist"
+                    >
+                      {removingId === song._id
+                        ? <Loader2 size={13} className="animate-spin" />
+                        : <Trash2 size={13} />
+                      }
+                    </button>
+                  </td>
+                </tr>
               );
             })}
-          </div>
-        )}
-      </div>
+          </tbody>
+        </table>
+      )}
 
       {/* ── Add Songs Modal ── */}
       {showAddModal && (
@@ -316,7 +348,7 @@ export default function PlaylistPage() {
             className="absolute inset-0 bg-black/65 backdrop-blur-sm"
             onClick={() => setShowAddModal(false)}
           />
-          <div className="relative bg-[#141618] border border-white/10 rounded-2xl w-full max-w-md max-h-[78vh] flex flex-col shadow-2xl">
+          <div className="relative bg-[#141618] border border-white/10 rounded-lg w-full max-w-md max-h-[78vh] flex flex-col shadow-2xl">
 
             {/* Modal header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-white/8">
@@ -365,9 +397,8 @@ export default function PlaylistPage() {
                   return (
                     <div
                       key={song._id}
-                      className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${
-                        inPlaylist ? 'opacity-40 cursor-default' : 'hover:bg-white/6 cursor-pointer'
-                      }`}
+                      className={`flex items-center gap-3 px-3 py-2 rounded-xl transition-all group ${inPlaylist ? 'opacity-40 cursor-default' : 'hover:bg-white/6 cursor-pointer'
+                        }`}
                       onClick={() => handleAddSong(song)}
                     >
                       <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-white/5">

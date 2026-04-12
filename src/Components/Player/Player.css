@@ -1,15 +1,10 @@
-/* ═══════════════════════════════════════════
-   SoundWave Player — Right Side Panel
-   ═══════════════════════════════════════════ */
-
-/* ── Panel Container (animates width) ── */
-.player-panel {
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap');.player-panel {
   width: 0;
   flex-shrink: 0;
   overflow: hidden;
   /* transition only fires on song load/unload, NOT during resize (inline style bypasses this) */
   transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-  border-radius: 1rem;
+  border-radius: 0.5rem;
 }
 
 /* Suppress transition while the user is actively dragging */
@@ -90,6 +85,7 @@
   transition:
     box-shadow 0.4s ease,
     transform 0.4s ease;
+  border-radius: 0.5rem;
 }
 
 .player-artwork--playing {
@@ -204,8 +200,7 @@
 .player-time {
   color: #6b7280;
   font-size: 0.68rem;
-  font-variant-numeric: tabular-nums;
-  font-family: monospace;
+  font-family:'Nunito';
 }
 
 /* ── Playback Controls ── */

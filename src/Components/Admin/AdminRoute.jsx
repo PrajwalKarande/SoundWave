@@ -21,7 +21,7 @@ const AdminRoute = () => {
 
   return (
     <AppShell>
-      <main className='flex-1 min-w-0 w-full overflow-y-auto hide-scrollbar rounded-2xl mr-2'>
+      <main className='flex-1 min-w-0 w-full overflow-y-auto hide-scrollbar rounded-lg mr-2'>
         <Outlet />
       </main>
     </AppShell>

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createPlaylist } from "../Services/playlistService";
+import { createPlaylist } from "../../Services/playlistService";
 import { Loader2, Check, X } from "lucide-react";
 
 export const CreatePlaylist = ({ onClose, onCreated }) => {
@@ -44,7 +44,7 @@ export const CreatePlaylist = ({ onClose, onCreated }) => {
             onClick={handleBackdropClick}
             onKeyDown={(e) => e.key === 'Escape' && onClose?.()}
         >
-            <div className="relative w-full max-w-md mx-4 bg-section-bg rounded-2xl shadow-2xl border border-accent/10 overflow-hidden animate-fade-in">
+            <div className="relative w-full max-w-md mx-4 bg-section-bg rounded-lg shadow-2xl border border-accent/10 overflow-hidden animate-fade-in">
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-6 pb-2">
                     <h2 className="text-xl font-bold text-primary-text">Create Playlist</h2>
