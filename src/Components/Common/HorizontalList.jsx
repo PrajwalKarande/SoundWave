@@ -4,7 +4,17 @@ import { usePlayer } from '../../Context/PlayerContext';
 import { useAuth } from '../../Context/AuthContextProvider';
 import { useNavigate } from 'react-router-dom';
 
-export default function HorizontalList({ title, items = [], type = 'song' }) {
+function SkeletonCard({ round }) {
+  return (
+    <div className="shrink-0 p-4 animate-pulse">
+      <div className={`w-40 h-40 bg-white/5 mb-2 ${round ? 'rounded-full' : 'rounded-sm'}`} />
+      <div className="h-3.5 w-28 bg-white/5 rounded mb-1.5" />
+      <div className="h-3 w-20 bg-white/3 rounded" />
+    </div>
+  );
+}
+
+export default function HorizontalList({ title, items = [], type = 'song', loading = false }) {
   const scrollRef = useRef(null);
   const { playSong, togglePlay, currentSong, isPlaying } = usePlayer();
   const { user } = useAuth();
@@ -35,18 +45,27 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
     }
   };
 
-  if (displayItems.length === 0) return null;
+  if (!loading && displayItems.length === 0) return null;
 
   return (
     <section className="mb-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-primary-text">{title}</h2>
-
+        {loading
+          ? <div className="h-7 w-40 bg-white/5 rounded animate-pulse" />
+          : <h2 className="text-2xl font-bold text-primary-text">{title}</h2>
+        }
       </div>
 
+      {loading ? (
+        <div className="flex overflow-hidden p-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <SkeletonCard key={i} round={!isSong} />
+          ))}
+        </div>
+      ) : (
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto scrollbar-hide pb-2"
+        className="flex overflow-x-auto scrollbar-hide p-3"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {displayItems.map((item, index) => {
@@ -54,8 +73,14 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
           return (
             <div
               key={item._id}
-              className="shrink-0 w-fit group cursor-pointer p-4 transition-colors"
-              onClick={() => handleSongClick(item, index)}
+              className="shrink-0 w-fit group cursor-pointer p-4 rounded-lg transition-all duration-300 ease-out 
+           hover:bg-white/5 hover:shadow-[0_20px_50px_rgba(0,0,0,0.3)] 
+           hover:-translate-y-2 hover:scale-[1.02] 
+           active:scale-[0.98] active:duration-75"
+              onClick={() => {
+                if(isSong)handleSongClick(item, index)
+                else navigate('/artist/')
+              }}
             >
               <div className="relative">
                 <div
@@ -107,6 +132,7 @@ export default function HorizontalList({ title, items = [], type = 'song' }) {
           );
         })}
       </div>
+      )}
     </section>
   );
 }

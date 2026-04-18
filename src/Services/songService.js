@@ -35,4 +35,22 @@ export const songService = {
       throw new Error(extractErrorMessage(err, 'Failed to fetch songs'));
     }
   },
+
+  markPlayed: async (songId) => {
+    try {
+      const { data } = await api.post(`/songs/${songId}/played`);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to mark song as played'));
+    }
+  },
+
+  getRecentlyPlayed: async () => {
+    try {
+      const { data } = await api.get('/songs/recently-played');
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch recently played'));
+    }
+  },
 };

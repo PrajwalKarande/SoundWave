@@ -11,6 +11,7 @@ import { Home } from './Components/Home/Home.jsx'
 import { Landing } from './Components/Landing/Landing.jsx'
 import AdminRoute from './Components/Admin/AdminRoute.jsx'
 import PlaylistPage from './Components/Playlist/PlaylistPage.jsx'
+import ArtistPage from './Components/Artist/ArtistPage.jsx'
 import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
 import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
 import AddSong from './Components/Admin/Song/AddSong.jsx'
@@ -56,6 +57,16 @@ const router = createBrowserRouter([
       {
         path: ':id',
         element: <PlaylistPage />
+      }
+    ]
+  },
+  {
+    path: '/artist',
+    element: <App />,
+    children: [
+      {
+        path: ':id',
+        element: <ArtistPage />
       }
     ]
   },

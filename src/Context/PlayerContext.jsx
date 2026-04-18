@@ -1,4 +1,5 @@
 import { createContext, useContext, useRef, useState, useEffect, useCallback } from 'react';
+import { songService } from '../Services/songService';
 
 const PlayerContext = createContext(null);
 
@@ -54,6 +55,16 @@ export const PlayerProvider = ({ children }) => {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSong));
     }
   }, [currentSong]);
+
+  // ── Record play after 30 seconds of continuous playback ───────────────────
+  useEffect(() => {
+    if (!currentSong?._id) return;
+    const songId = currentSong._id;
+    const timer = setTimeout(() => {
+      songService.markPlayed(songId).catch(console.error);
+    }, 30000);
+    return () => clearTimeout(timer);
+  }, [currentSong?._id]);
 
   // ── Sync volume ────────────────────────────────────────────────────────────
   useEffect(() => {

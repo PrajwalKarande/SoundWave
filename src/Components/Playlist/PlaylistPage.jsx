@@ -132,8 +132,40 @@ export default function PlaylistPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="animate-spin text-accent" size={32} />
+      <div className="relative min-h-full animate-pulse">
+        {/* Header skeleton */}
+        <div
+          style={{ background: `linear-gradient(to bottom, ${gradientColor}d0 0%, ${gradientColor}50 55%, transparent 100%)` }}
+        >
+          <div className="flex flex-col sm:flex-row items-end gap-6 p-6 pb-4">
+            <div className="w-44 h-44 shrink-0 rounded-xl bg-white/10" />
+            <div className="flex-1 min-w-0 pb-1 space-y-3">
+              <div className="h-3 w-16 bg-white/10 rounded" />
+              <div className="h-8 w-52 bg-white/10 rounded" />
+              <div className="h-3.5 w-32 bg-white/10 rounded" />
+            </div>
+          </div>
+          <div className="flex items-center gap-3 px-6 pb-5">
+            <div className="w-12 h-12 rounded-full bg-white/10" />
+            <div className="w-10 h-10 rounded-full bg-white/5" />
+            <div className="w-10 h-10 rounded-full bg-white/5" />
+          </div>
+        </div>
+
+        {/* Table skeleton */}
+        <div className="px-6 pt-4 space-y-1">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <div key={i} className="flex items-center gap-3 py-2.5">
+              <div className="w-6 h-4 bg-white/5 rounded ml-2" />
+              <div className="w-9 h-9 rounded bg-white/5 shrink-0" />
+              <div className="flex-1 min-w-0 space-y-1.5">
+                <div className="h-3.5 w-36 bg-white/5 rounded" />
+              </div>
+              <div className="h-3 w-20 bg-white/5 rounded hidden sm:block" />
+              <div className="h-3 w-10 bg-white/[0.03] rounded mr-4" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

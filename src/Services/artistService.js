@@ -60,6 +60,20 @@ export const artistService = {
   },
 
   /**
+   * Fetches a single artist by ID (with populated songs).
+   * @param {string} id
+   * @returns {Promise<Artist>}
+   */
+  getById: async (id) => {
+    try {
+      const { data } = await api.get(`/artists/${id}`);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch artist'));
+    }
+  },
+
+  /**
    * Deletes an artist by ID.
    * @param {string} artistId
    * @returns {Promise<void>}
