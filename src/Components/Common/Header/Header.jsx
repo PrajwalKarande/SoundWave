@@ -1,18 +1,95 @@
-// src/Components/Header/Header.jsx
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../Context/AuthContextProvider';
 import logo from '../../../assets/logo.png';
 import './Header.css';
 import { Home, Search, Menu } from 'lucide-react';
+import SearchDropdown from './SearchDropdown';
+import { songService } from '../../../Services/songService';
+import { artistService } from '../../../Services/artistService';
 
 function Header({ onMenuToggle }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
+  const [query, setQuery]       = useState('');
+  const [isOpen, setIsOpen]     = useState(false);
+  const [loading, setLoading]   = useState(false);
+  const [results, setResults]   = useState({ songs: [], artists: [] });
+
+  const searchRef  = useRef(null);
+  const cacheRef   = useRef(new Map());
+  const abortRef   = useRef(null);
+  const debounceRef = useRef(null);
+
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+
+  const runSearch = useCallback(async (q) => {
+    // Serve from cache if available
+    if (cacheRef.current.has(q)) {
+      setResults(cacheRef.current.get(q));
+      setLoading(false);
+      return;
+    }
+
+    if (abortRef.current) abortRef.current.abort();
+    abortRef.current = new AbortController();
+    const { signal } = abortRef.current;
+
+    try {
+      const [songsRes, artistsRes] = await Promise.all([
+        songService.search(q, signal),
+        artistService.search(q, signal),
+      ]);
+
+      if (songsRes === null || artistsRes === null) return; // aborted
+
+      const hit = { songs: songsRes.data ?? [], artists: artistsRes.data ?? [] };
+      cacheRef.current.set(q, hit);
+      setResults(hit);
+    } catch {
+      // silently ignore search errors
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    clearTimeout(debounceRef.current);
+
+    if (query.length < 2) {
+      setResults({ songs: [], artists: [] });
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    debounceRef.current = setTimeout(() => runSearch(query), 300);
+
+    return () => clearTimeout(debounceRef.current);
+  }, [query, runSearch]);
+
+  useEffect(() => {
+    const onMouseDown = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setIsOpen(false);
+      }
+    };
+    const onKeyDown = (e) => {
+      if (e.key === 'Escape') setIsOpen(false);
+    };
+    document.addEventListener('mousedown', onMouseDown);
+    document.addEventListener('keydown', onKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', onMouseDown);
+      document.removeEventListener('keydown', onKeyDown);
+    };
+  }, []);
+
+  const showDropdown = isOpen && query.length >= 2;
 
   return (
     <header className="text-primary-text sticky top-0 z-50 mt-2 p-1">
@@ -36,14 +113,54 @@ function Header({ onMenuToggle }) {
             <Home size={24}/>
           </Link>
 
-          <search className='px-3 py-2 flex flex-row items-center w-32 sm:w-48 md:w-64 lg:w-1/2 bg-primary-bg border border-muted-text/30 rounded-full gap-2 text-accent hover:bg-accent/20 hover:border-accent/10 hover:border-2'>
-            <Search size={18} className="shrink-0 text-muted-text" />
-            <input
-              type='text'
-              placeholder='Search'
-              className='focus:outline-none bg-transparent text-primary-text placeholder:text-muted-text flex-1 min-w-0'
-            />
-          </search>
+          {/* Search wrapper — position:relative so dropdown anchors to it */}
+          <div
+            ref={searchRef}
+            className="relative w-32 sm:w-48 md:w-64 lg:w-1/2"
+          >
+            <search className={`px-3 py-2 flex flex-row items-center w-full bg-primary-bg border rounded-full gap-2 transition-colors ${
+              isOpen && query.length >= 2
+                ? 'border-accent/60 text-accent'
+                : 'border-muted-text/30 text-accent hover:bg-accent/20 hover:border-accent/10 hover:border-2'
+            }`}>
+              <Search size={18} className="shrink-0 text-muted-text" />
+              <input
+                type='text'
+                placeholder='Search songs, artists…'
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setIsOpen(true);
+                }}
+                onFocus={() => { if (query.length >= 2) setIsOpen(true); }}
+                className='focus:outline-none bg-transparent text-primary-text placeholder:text-muted-text flex-1 min-w-0 text-sm'
+                aria-label="Search songs and artists"
+                aria-expanded={showDropdown}
+                aria-autocomplete="list"
+                autoComplete="off"
+              />
+              {query.length > 0 && (
+                <button
+                  onClick={() => { setQuery(''); setIsOpen(false); }}
+                  className="shrink-0 text-muted-text hover:text-primary-text transition-colors leading-none"
+                  aria-label="Clear search"
+                >
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+                  </svg>
+                </button>
+              )}
+            </search>
+
+            {showDropdown && (
+              <SearchDropdown
+                songs={results.songs}
+                artists={results.artists}
+                loading={loading}
+                query={query}
+              />
+            )}
+          </div>
         </div>
 
         <div className="flex items-center shrink-0 space-x-2 md:space-x-4">

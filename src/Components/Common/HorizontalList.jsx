@@ -79,7 +79,7 @@ export default function HorizontalList({ title, items = [], type = 'song', loadi
            active:scale-[0.98] active:duration-75"
               onClick={() => {
                 if(isSong)handleSongClick(item, index)
-                else navigate('/artist/')
+                else navigate(`/artist/${item._id}`)
               }}
             >
               <div className="relative">
@@ -92,6 +92,7 @@ export default function HorizontalList({ title, items = [], type = 'song', loadi
                     <img
                       src={item.coverImage || item.profileImageURL}
                       alt={item.title || item.name}
+                      loading="lazy"
                       className="w-full h-full object-cover"
                     />
                   ) : (

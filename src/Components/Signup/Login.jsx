@@ -5,55 +5,32 @@ import logo from '../../assets/logo.png';
 import './login.css';
 
 function Login() {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login } = useAuth();
 
-  // Email validation regex
-  const validateEmail = (email) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  };
-
-  const validatePassword = (password) => {
-    return password.length >= 8;
-  };
+  const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validatePassword = (password) => password.length >= 8;
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    // Clear errors when user types
+    setFormData({ ...formData, [name]: value });
     setError('');
-    setFieldErrors({
-      ...fieldErrors,
-      [name]: '',
-    });
+    setFieldErrors({ ...fieldErrors, [name]: '' });
   };
 
   const handleBlur = (e) => {
     const { name, value } = e.target;
     const errors = { ...fieldErrors };
-
-    // Validate on blur
-    if (name === 'email' && value && !validateEmail(value)) {
+    if (name === 'email' && value && !validateEmail(value))
       errors.email = 'Please enter a valid email address';
-    }
-
-    if (name === 'password' && value && !validatePassword(value)) {
+    if (name === 'password' && value && !validatePassword(value))
       errors.password = 'Password must be at least 8 characters long';
-    }
-
     setFieldErrors(errors);
   };
 
@@ -62,20 +39,11 @@ function Login() {
     setLoading(true);
     setError('');
 
-    // Validate all fields
     const errors = {};
-
-    if (!formData.email.trim()) {
-      errors.email = 'Email is required';
-    } else if (!validateEmail(formData.email)) {
-      errors.email = 'Please enter a valid email address';
-    }
-
-    if (!formData.password) {
-      errors.password = 'Password is required';
-    } else if (formData.password.length < 8) {
-      errors.password = "Password must be at least 8 characters long"
-    }
+    if (!formData.email.trim()) errors.email = 'Email is required';
+    else if (!validateEmail(formData.email)) errors.email = 'Please enter a valid email address';
+    if (!formData.password) errors.password = 'Password is required';
+    else if (formData.password.length < 8) errors.password = 'Password must be at least 8 characters long';
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
@@ -85,8 +53,8 @@ function Login() {
 
     try {
       const user = await login(formData.email, formData.password);
-      if(user.role === 'admin') navigate('/admin/dashboard') // redirect admin to dashboard
-      else navigate('/home'); // Redirect to home after successful login
+      if (user.role === 'admin') navigate('/admin/dashboard');
+      else navigate('/home');
     } catch (err) {
       setError(err.response?.data?.message || 'Login failed. Please try again.');
     } finally {
@@ -95,83 +63,90 @@ function Login() {
   };
 
   return (
-    <div className="bg-primary-bg min-h-screen flex flex-col items-center justify-center text-primary-text">
-      {/* Header with logo */}
-      <header className="mb-8">
-        <img src={logo} alt="Soundwave" className="h-14 mx-auto" />
-      </header>
+    <div className="auth-page">
+      {/* Ambient orbs */}
+      <div className="auth-orb auth-orb-1" />
+      <div className="auth-orb auth-orb-2" />
 
-      {/* Login Form */}
-      <main className="bg-primary-bg p-12 w-screen">
-        <h1 className="text-2xl mb-6 text-center font-bold text-accent">
-          Welcome back to Soundwave
-        </h1>
-
-        {/* Global Error Message */}
-        {error && (
-          <div className="max-w-80 mx-auto mb-4 bg-red-900/30 border border-red-500 text-red-400 px-4 py-3 rounded">
-            {error}
+      <div className="auth-card">
+        {/* Logo + EQ decoration */}
+        <div className="auth-header">
+          <div className="auth-eq-bars">
+            {[0,1,2,3,4].map(i => <span key={i} className="auth-eq-bar" />)}
           </div>
-        )}
+          <img src={logo} alt="Soundwave" className="auth-logo" />
+        </div>
 
-        <form onSubmit={handleSubmit} className="flex flex-col space-y-4 max-w-80 mx-auto">
-          {/* Email Field */}
-          <div>
+        <h1 className="auth-title">Welcome back</h1>
+        <p className="auth-subtitle">Sign in to continue listening</p>
+
+        {error && <div className="auth-error">{error}</div>}
+
+        <form onSubmit={handleSubmit} className="auth-form">
+          {/* Email */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="login-email">Email</label>
             <input
+              id="login-email"
               type="email"
               name="email"
               placeholder="name@domain.com"
               value={formData.email}
               onChange={handleChange}
               onBlur={handleBlur}
-              className={`w-full px-4 py-2 rounded border ${fieldErrors.email
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-muted-text/30 focus:ring-accent'
-                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
+              className={`auth-input${fieldErrors.email ? ' auth-input--error' : ''}`}
+              autoComplete="email"
             />
-            {fieldErrors.email && (
-              <p className="text-red-400 text-xs mt-1">{fieldErrors.email}</p>
-            )}
+            {fieldErrors.email && <p className="auth-field-error">{fieldErrors.email}</p>}
           </div>
 
-          {/* Password Field */}
-          <div>
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formData.password}
-              onChange={handleChange}
-              className={`w-full px-4 py-2 rounded border ${fieldErrors.password
-                ? 'border-red-500 focus:ring-red-500'
-                : 'border-muted-text/30 focus:ring-accent'
-                } bg-primary-bg text-primary-text focus:outline-none focus:ring-2`}
-            />
-            {fieldErrors.password && (
-              <p className="text-red-400 text-xs mt-1">{fieldErrors.password}</p>
-            )}
+          {/* Password */}
+          <div className="auth-field">
+            <label className="auth-label" htmlFor="login-password">Password</label>
+            <div className="auth-input-wrap">
+              <input
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                name="password"
+                placeholder="••••••••"
+                value={formData.password}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                className={`auth-input${fieldErrors.password ? ' auth-input--error' : ''}`}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="auth-pw-toggle"
+                onClick={() => setShowPassword(v => !v)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94"/>
+                    <path d="M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19"/>
+                    <line x1="1" y1="1" x2="23" y2="23"/>
+                  </svg>
+                ) : (
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                    <circle cx="12" cy="12" r="3"/>
+                  </svg>
+                )}
+              </button>
+            </div>
+            {fieldErrors.password && <p className="auth-field-error">{fieldErrors.password}</p>}
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="bg-accent hover:bg-accent/80 text-primary-bg font-semibold py-2 px-4 rounded-full transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {loading ? 'Logging in...' : 'Login'}
+          <button type="submit" disabled={loading} className="auth-btn">
+            {loading ? <span className="auth-spinner" /> : 'Login'}
           </button>
         </form>
 
-        {/* Signup link */}
-        <div className="mt-6 text-sm text-muted-text text-center">
-          <p>Don't have an account?</p>
-          <Link
-            to="/signup"
-            className="text-accent hover:underline font-medium"
-          >
-            Sign Up
-          </Link>
+        <div className="auth-footer">
+          <p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
         </div>
-      </main>
+      </div>
     </div>
   );
 }

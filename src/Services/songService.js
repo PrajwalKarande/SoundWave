@@ -53,4 +53,17 @@ export const songService = {
       throw new Error(extractErrorMessage(err, 'Failed to fetch recently played'));
     }
   },
+
+  search: async (query, signal) => {
+    try {
+      const { data } = await api.get('/songs/search', {
+        params: { q: query, limit: 4 },
+        signal,
+      });
+      return data;
+    } catch (err) {
+      if (err.name === 'CanceledError' || err.name === 'AbortError') return null;
+      throw new Error(extractErrorMessage(err, 'Search failed'));
+    }
+  },
 };

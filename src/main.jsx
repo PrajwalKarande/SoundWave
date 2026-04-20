@@ -1,23 +1,32 @@
-import { StrictMode } from 'react'
+import { StrictMode, lazy, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import App from './App.jsx'
-import Signup from './Components/Signup/Signup.jsx'
-import Login from './Components/Signup/Login.jsx'
+import { Landing } from './Components/Landing/Landing.jsx'
 import './index.css'
 import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
 import { PlayerProvider } from './Context/PlayerContext.jsx'
-import { Home } from './Components/Home/Home.jsx'
-import { Landing } from './Components/Landing/Landing.jsx'
-import AdminRoute from './Components/Admin/AdminRoute.jsx'
-import PlaylistPage from './Components/Playlist/PlaylistPage.jsx'
-import ArtistPage from './Components/Artist/ArtistPage.jsx'
-import AdminDashboard from './Components/Admin/AdminDashboard.jsx'
-import AdminUploadSong from './Components/Admin/Song/AdminUploadSong.jsx'
-import AddSong from './Components/Admin/Song/AddSong.jsx'
-import AdminUploadArtist from './Components/Admin/Artist/AdminUploadArtist.jsx'
-import AddArtist from './Components/Admin/Artist/AddArtist.jsx'
-import UserManagement from './Components/Admin/UserManagement.jsx'
+
+const Home            = lazy(() => import('./Components/Home/Home.jsx'))
+const Signup          = lazy(() => import('./Components/Signup/Signup.jsx'))
+const Login           = lazy(() => import('./Components/Signup/Login.jsx'))
+const PlaylistPage    = lazy(() => import('./Components/Playlist/PlaylistPage.jsx'))
+const ArtistPage      = lazy(() => import('./Components/Artist/ArtistPage.jsx'))
+const AdminRoute      = lazy(() => import('./Components/Admin/AdminRoute.jsx'))
+const AdminDashboard  = lazy(() => import('./Components/Admin/AdminDashboard.jsx'))
+const AdminUploadSong = lazy(() => import('./Components/Admin/Song/AdminUploadSong.jsx'))
+const AddSong         = lazy(() => import('./Components/Admin/Song/AddSong.jsx'))
+const AdminUploadArtist = lazy(() => import('./Components/Admin/Artist/AdminUploadArtist.jsx'))
+const AddArtist       = lazy(() => import('./Components/Admin/Artist/AddArtist.jsx'))
+const UserManagement  = lazy(() => import('./Components/Admin/UserManagement.jsx'))
+
+const Loader = () => (
+  <div className="flex items-center justify-center min-h-64 w-full">
+    <div className="w-5 h-5 rounded-full border-2 border-white/10 border-t-white/60 animate-spin" />
+  </div>
+)
+
+const wrap = (el) => <Suspense fallback={<Loader />}>{el}</Suspense>
 
 const router = createBrowserRouter([
   {
@@ -30,7 +39,7 @@ const router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <Home />
+        element: wrap(<Home />)
       },
       {
         path: 'search',
@@ -56,7 +65,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: ':id',
-        element: <PlaylistPage />
+        element: wrap(<PlaylistPage />)
       }
     ]
   },
@@ -66,48 +75,48 @@ const router = createBrowserRouter([
     children: [
       {
         path: ':id',
-        element: <ArtistPage />
+        element: wrap(<ArtistPage />)
       }
     ]
   },
   {
     path: '/signup',
-    element: <Signup />
+    element: wrap(<Signup />)
   },
   {
     path: '/login',
-    element: <Login />
+    element: wrap(<Login />)
   },
   {
     path: "/admin",
-    element: <AdminRoute/>,
+    element: wrap(<AdminRoute />),
     children: [
       {
         path: "dashboard",
-        element:<AdminDashboard />
+        element: wrap(<AdminDashboard />)
       },
       {
         path: "manage",
-        children:[
+        children: [
           {
             path: "songs",
-            element:<AdminUploadSong />
+            element: wrap(<AdminUploadSong />)
           },
           {
-            path:"songs/upload",
-            element:<AddSong />
+            path: "songs/upload",
+            element: wrap(<AddSong />)
           },
           {
-            path:"artists",
-            element:<AdminUploadArtist />
+            path: "artists",
+            element: wrap(<AdminUploadArtist />)
           },
           {
-            path:"artists/add",
-            element:<AddArtist />
+            path: "artists/add",
+            element: wrap(<AddArtist />)
           },
           {
-            path:"users",
-            element:<UserManagement />
+            path: "users",
+            element: wrap(<UserManagement />)
           }
         ]
       }
@@ -124,4 +133,3 @@ createRoot(document.getElementById('root')).render(
       </AuthContextProvider>
     </PlayerProvider>
 )
-

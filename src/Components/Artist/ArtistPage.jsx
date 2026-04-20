@@ -111,7 +111,7 @@ export default function ArtistPage() {
                 <div className="h-3.5 w-36 bg-white/5 rounded" />
               </div>
               <div className="h-3 w-20 bg-white/5 rounded hidden sm:block" />
-              <div className="h-3 w-10 bg-white/[0.03] rounded mr-4" />
+              <div className="h-3 w-10 bg-white/30 rounded mr-4" />
             </div>
           ))}
         </div>
@@ -216,10 +216,10 @@ export default function ArtistPage() {
         <table className="w-full pb-8 border-collapse">
           <thead>
             <tr>
-              <th className="w-10 px-6 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">#</th>
+              <th className="w-10 px-2 sm:px-6 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">#</th>
               <th className="px-3 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">Title</th>
-              <th className="px-3 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">Artist</th>
-              <th className="px-6 pb-3 text-right">
+              <th className="hidden sm:table-cell px-3 pb-3 text-left text-xs font-medium text-muted-text/40 uppercase tracking-wider">Artist</th>
+              <th className="px-2 sm:px-4 pb-3 text-right">
                 <Clock size={12} className="text-muted-text/40 ml-auto" />
               </th>
             </tr>
@@ -235,7 +235,7 @@ export default function ArtistPage() {
                   onClick={() => handleSongClick(song, idx)}
                 >
                   {/* Index / EQ */}
-                  <td className="w-10 px-6 py-2.5">
+                  <td className="w-10 px-2 sm:px-6 py-2.5">
                     <div className="w-6 flex items-center justify-center">
                       {isRowPlaying ? (
                         <div className="ar-eq-wrap">
@@ -259,7 +259,7 @@ export default function ArtistPage() {
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-white/5">
                         {song.coverImage
-                          ? <img src={song.coverImage} alt={song.title} className="w-full h-full object-cover" />
+                          ? <img src={song.coverImage} alt={song.title} loading="lazy" className="w-full h-full object-cover" />
                           : <div className="w-full h-full flex items-center justify-center"><Music size={13} className="text-white/20" /></div>
                         }
                       </div>
@@ -270,12 +270,12 @@ export default function ArtistPage() {
                   </td>
 
                   {/* Artist */}
-                  <td className="px-3 py-2.5">
+                  <td className="hidden sm:table-cell px-3 py-2.5">
                     <p className="text-sm text-muted-text/60 truncate">{getArtistName(song.artist)}</p>
                   </td>
 
                   {/* Duration */}
-                  <td className="px-6 py-2.5 text-right">
+                  <td className="px-2 sm:px-4 py-2.5 text-right">
                     <span className="text-xs text-muted-text/40 tabular-nums">
                       {formatDuration(song.duration)}
                     </span>
