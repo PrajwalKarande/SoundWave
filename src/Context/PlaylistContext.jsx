@@ -1,0 +1,43 @@
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { getPlaylist } from '../Services/playlistService';
+import { useAuth } from './AuthContextProvider';
+
+const PlaylistContext = createContext(null);
+
+export function PlaylistProvider({ children }) {
+  const { user } = useAuth();
+  const [playlists, setPlaylists] = useState([]);
+  const [loading, setLoading]   = useState(true);
+
+  const refreshPlaylists = useCallback(async () => {
+    if (!user) { setPlaylists([]); setLoading(false); return; }
+    setLoading(true);
+    try {
+      const data = await getPlaylist();
+      setPlaylists(data.data || data || []);
+    } catch {
+      // ignore fetch errors silently
+    } finally {
+      setLoading(false);
+    }
+  }, [user]);
+
+  useEffect(() => { refreshPlaylists(); }, [refreshPlaylists]);
+
+  const addPlaylist = useCallback((playlist) => {
+    const item = playlist?.data || playlist;
+    setPlaylists(prev => [item, ...prev]);
+  }, []);
+
+  const removePlaylist = useCallback((id) => {
+    setPlaylists(prev => prev.filter(p => p._id !== id));
+  }, []);
+
+  return (
+    <PlaylistContext.Provider value={{ playlists, loading, addPlaylist, removePlaylist, refreshPlaylists }}>
+      {children}
+    </PlaylistContext.Provider>
+  );
+}
+
+export const usePlaylist = () => useContext(PlaylistContext);

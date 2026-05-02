@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { userService } from "../../Services/userService";
 import { useAuth } from "../../Context/AuthContextProvider";
 import { Trash2,X } from 'lucide-react';
+import { useConfirm } from "../../Context/ConfirmContext";
 
 export default function UserManagement() {
 
@@ -10,6 +11,7 @@ export default function UserManagement() {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const { user } = useAuth();
+    const confirm  = useConfirm();
 
     useEffect(() => {
         fetchUsers();
@@ -37,7 +39,10 @@ export default function UserManagement() {
     };
 
     const handleDeleteUser = async (userId) => {
-        if (!window.confirm('Are you sure you want to delete this user?')) return;
+        const ok = await confirm('This will permanently remove the user and cannot be undone.', {
+            title: 'Delete User',
+        });
+        if (!ok) return;
 
         try {
             await userService.delete(userId);

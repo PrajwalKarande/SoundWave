@@ -4,12 +4,14 @@ import { Trash2, Plus, Music } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../../Services/api';
 import { songService } from '../../../Services/songService';
+import { useConfirm } from '../../../Context/ConfirmContext';
 
 export default function AdminUploadSong() {
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const confirm  = useConfirm();
 
   useEffect(() => {
     fetchSongs();
@@ -27,7 +29,10 @@ export default function AdminUploadSong() {
   };
 
   const handleDelete = async (songId) => {
-    if (!window.confirm('Are you sure you want to delete this song?')) return;
+    const ok = await confirm('This will permanently remove the song and cannot be undone.', {
+      title: 'Delete Song',
+    });
+    if (!ok) return;
     try {
       await api.delete(`/songs/manage/${songId}`);
       setSongs(songs.filter((s) => s._id !== songId));

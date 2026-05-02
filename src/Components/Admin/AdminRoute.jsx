@@ -14,7 +14,7 @@ const AdminRoute = () => {
     )
   }
 
-  if (!isAdmin()) {
+  if (!isAdmin) {
     navigate('/home')
     return null
   }

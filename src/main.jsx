@@ -6,6 +6,8 @@ import { Landing } from './Components/Landing/Landing.jsx'
 import './index.css'
 import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
 import { PlayerProvider } from './Context/PlayerContext.jsx'
+import { ConfirmProvider } from './Context/ConfirmContext.jsx'
+import { PlaylistProvider } from './Context/PlaylistContext.jsx'
 
 const Home            = lazy(() => import('./Components/Home/Home.jsx'))
 const Signup          = lazy(() => import('./Components/Signup/Signup.jsx'))
@@ -19,6 +21,8 @@ const AddSong         = lazy(() => import('./Components/Admin/Song/AddSong.jsx')
 const AdminUploadArtist = lazy(() => import('./Components/Admin/Artist/AdminUploadArtist.jsx'))
 const AddArtist       = lazy(() => import('./Components/Admin/Artist/AddArtist.jsx'))
 const UserManagement  = lazy(() => import('./Components/Admin/UserManagement.jsx'))
+const About           = lazy(() => import('./Components/About/About.jsx'))
+const NotFound        = lazy(() => import('./Components/NotFound/NotFound.jsx'))
 
 const Loader = () => (
   <div className="flex items-center justify-center min-h-64 w-full">
@@ -40,22 +44,6 @@ const router = createBrowserRouter([
       {
         index: true,
         element: wrap(<Home />)
-      },
-      {
-        path: 'search',
-        element: <div>Search Page - Coming Soon</div>
-      },
-      {
-        path: 'library',
-        element: <div>Your Library - Coming Soon</div>
-      },
-      {
-        path: 'create-playlist',
-        element: <div>Create Playlist - Coming Soon</div>
-      },
-      {
-        path: 'liked-songs',
-        element: <div>Liked Songs - Coming Soon</div>
       }
     ]
   },
@@ -78,6 +66,10 @@ const router = createBrowserRouter([
         element: wrap(<ArtistPage />)
       }
     ]
+  },
+  {
+    path: '/about',
+    element: wrap(<About />)
   },
   {
     path: '/signup',
@@ -121,15 +113,23 @@ const router = createBrowserRouter([
         ]
       }
     ]
+  },
+  {
+    path: '*',
+    element: wrap(<NotFound />)
   }
 ])
 
 createRoot(document.getElementById('root')).render(
     <PlayerProvider>
       <AuthContextProvider>
-        <StrictMode>
-          <RouterProvider router={router} />
-        </StrictMode>
+        <PlaylistProvider>
+        <ConfirmProvider>
+          <StrictMode>
+            <RouterProvider router={router} />
+          </StrictMode>
+        </ConfirmProvider>
+        </PlaylistProvider>
       </AuthContextProvider>
     </PlayerProvider>
 )

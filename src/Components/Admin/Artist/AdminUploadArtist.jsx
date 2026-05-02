@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { Trash2, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { artistService } from '../../../Services/artistService';
+import { useConfirm } from '../../../Context/ConfirmContext';
 
 export default function AdminUploadArtist() {
   const [artists, setArtists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const confirm  = useConfirm();
 
   useEffect(() => {
     fetchArtists();
@@ -25,7 +27,10 @@ export default function AdminUploadArtist() {
   };
 
   const handleDelete = async (artistId) => {
-    if (!window.confirm('Are you sure you want to delete this artist?')) return;
+    const ok = await confirm('This will permanently remove the artist and cannot be undone.', {
+      title: 'Delete Artist',
+    });
+    if (!ok) return;
     try {
       await artistService.delete(artistId);
       setArtists(artists.filter(a => a._id !== artistId));

@@ -1,0 +1,97 @@
+/* Backdrop */
+.cd-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: cd-backdrop-in 0.2s ease;
+}
+@keyframes cd-backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Card */
+.cd-card {
+  width: 100%;
+  max-width: 380px;
+  background: #15171d;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  padding: 28px 28px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255,255,255,0.04);
+  animation: cd-card-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes cd-card-in {
+  from { opacity: 0; transform: scale(0.94) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);   }
+}
+
+/* Icon */
+.cd-icon-wrap {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 18px;
+  color: #ef4444;
+}
+
+/* Text */
+.cd-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 8px;
+}
+.cd-message {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.52);
+  line-height: 1.55;
+  margin: 0 0 24px;
+}
+
+/* Actions */
+.cd-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+.cd-btn {
+  padding: 9px 20px;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: 'Nunito', sans-serif;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.12s;
+  border: none;
+}
+.cd-btn:hover   { opacity: 0.85; transform: translateY(-1px); }
+.cd-btn:active  { transform: translateY(0); }
+
+.cd-btn-cancel {
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+.cd-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.11);
+  opacity: 1;
+}
+
+.cd-btn-confirm {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+}

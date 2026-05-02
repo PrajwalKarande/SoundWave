@@ -1,0 +1,345 @@
+/* ═══════════════════════════════════════════
+   Keyframes
+   ═══════════════════════════════════════════ */
+
+/* Floating note glyphs drift upward and fade */
+@keyframes nf-float {
+    0%   { transform: translateY(0)     rotate(0deg);   opacity: 0.14; }
+    40%  {                                              opacity: 0.22; }
+    100% { transform: translateY(-90px) rotate(18deg);  opacity: 0;    }
+}
+
+/* Ambient icons pulse gently */
+@keyframes nf-icon-pulse {
+    0%,  100% { opacity: 0.07; transform: scale(1);    }
+    50%        { opacity: 0.14; transform: scale(1.12); }
+}
+
+/* Orb float */
+@keyframes nf-orb-drift {
+    0%,  100% { transform: translateY(0)    scale(1);    }
+    50%        { transform: translateY(-24px) scale(1.04); }
+}
+
+/* Vinyl spin */
+@keyframes nf-spin {
+    from { transform: rotate(0deg);   }
+    to   { transform: rotate(360deg); }
+}
+
+/* Outer ring counter-spin — creates depth */
+@keyframes nf-spin-rev {
+    from { transform: rotate(0deg);    }
+    to   { transform: rotate(-360deg); }
+}
+
+/* 404 entrance */
+@keyframes nf-enter {
+    from { opacity: 0; transform: translateY(22px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* Orange zero pulse glow */
+@keyframes nf-glow {
+    0%,  100% { text-shadow: 0 0 24px rgba(255,67,19,0.35), 0 0 60px rgba(255,67,19,0.1); }
+    50%        { text-shadow: 0 0 40px rgba(255,67,19,0.6),  0 0 90px rgba(255,67,19,0.25); }
+}
+
+/* Glitchy EQ bars — broken signal */
+@keyframes nf-glitch-eq {
+    0%   { transform: scaleY(0.06); }
+    7%   { transform: scaleY(0.90); }
+    14%  { transform: scaleY(0.12); }
+    21%  { transform: scaleY(0.78); }
+    28%  { transform: scaleY(0.04); }
+    35%  { transform: scaleY(0.65); }
+    42%  { transform: scaleY(0.08); }
+    49%  { transform: scaleY(0.85); }
+    56%  { transform: scaleY(0.18); }
+    63%  { transform: scaleY(0.55); }
+    70%  { transform: scaleY(0.05); }
+    77%  { transform: scaleY(0.72); }
+    84%  { transform: scaleY(0.10); }
+    91%  { transform: scaleY(0.42); }
+    100% { transform: scaleY(0.06); }
+}
+
+
+/* ═══════════════════════════════════════════
+   Page shell
+   ═══════════════════════════════════════════ */
+.nf-page {
+    position: relative;
+    min-height: 100dvh;
+    overflow: hidden;
+    background: #0d0e12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* ═══════════════════════════════════════════
+   Floating note glyphs
+   ═══════════════════════════════════════════ */
+.nf-glyph {
+    position: absolute;
+    color: rgba(255, 67, 19, 0.15);
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+    animation: nf-float linear infinite;
+    z-index: 0;
+}
+
+
+/* ═══════════════════════════════════════════
+   Ambient lucide icons
+   ═══════════════════════════════════════════ */
+.nf-ambient-icon {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.06);
+    pointer-events: none;
+    z-index: 0;
+    animation: nf-icon-pulse 4s ease-in-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════
+   Gradient orbs
+   ═══════════════════════════════════════════ */
+.nf-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.nf-orb-1 {
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255,67,19,0.5) 0%, transparent 70%);
+    top: -200px;
+    right: -180px;
+    opacity: 0.2;
+    animation: nf-orb-drift 10s ease-in-out infinite;
+}
+
+.nf-orb-2 {
+    width: 380px;
+    height: 380px;
+    background: radial-gradient(circle, rgba(124,58,237,0.6) 0%, transparent 70%);
+    bottom: -120px;
+    left: -120px;
+    opacity: 0.18;
+    animation: nf-orb-drift 13s ease-in-out infinite reverse;
+}
+
+.nf-orb-3 {
+    width: 240px;
+    height: 240px;
+    background: radial-gradient(circle, rgba(255,67,19,0.3) 0%, transparent 70%);
+    bottom: 20%;
+    right: 10%;
+    opacity: 0.1;
+    animation: nf-orb-drift 16s ease-in-out infinite 2s;
+}
+
+
+/* ═══════════════════════════════════════════
+   Center content
+   ═══════════════════════════════════════════ */
+.nf-center {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0;
+    padding: 32px 24px 48px;
+    animation: nf-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+
+/* ═══════════════════════════════════════════
+   Vinyl disc
+   ═══════════════════════════════════════════ */
+.nf-disc-shell {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+.nf-disc-ring {
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 67, 19, 0.18);
+}
+
+.nf-disc-ring-outer {
+    width: 100%;
+    height: 100%;
+    animation: nf-spin 18s linear infinite;
+    background: conic-gradient(
+        rgba(255,67,19,0.05) 0deg,
+        transparent 60deg,
+        rgba(255,67,19,0.04) 120deg,
+        transparent 180deg,
+        rgba(255,67,19,0.06) 240deg,
+        transparent 300deg,
+        rgba(255,67,19,0.05) 360deg
+    );
+}
+
+.nf-disc-ring-mid {
+    width: 74%;
+    height: 74%;
+    border-color: rgba(255, 67, 19, 0.1);
+    animation: nf-spin-rev 12s linear infinite;
+}
+
+.nf-disc-core {
+    width: 52%;
+    height: 52%;
+    border-radius: 50%;
+    background: rgba(255, 67, 19, 0.07);
+    border: 1px solid rgba(255, 67, 19, 0.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.nf-disc-icon {
+    color: rgba(255, 67, 19, 0.65);
+    animation: nf-spin 6s linear infinite;
+}
+
+
+/* ═══════════════════════════════════════════
+   404
+   ═══════════════════════════════════════════ */
+.nf-code-wrap {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.nf-digit {
+    font-size: clamp(5.5rem, 16vw, 8.5rem);
+    font-weight: 900;
+    color: rgba(255, 255, 255, 0.9);
+    letter-spacing: -6px;
+    font-variant-numeric: tabular-nums;
+}
+
+.nf-digit-zero {
+    color: #ff4313;
+    animation: nf-glow 2.8s ease-in-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════
+   Broken EQ bars
+   ═══════════════════════════════════════════ */
+.nf-eq-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 2.5px;
+    height: 18px;
+    margin-bottom: 22px;
+}
+
+.nf-eq-bar {
+    width: 3px;
+    height: 100%;
+    border-radius: 2px;
+    background: rgba(255, 67, 19, 0.55);
+    transform-origin: bottom center;
+    animation: nf-glitch-eq 1.8s ease-in-out infinite;
+}
+
+
+/* ═══════════════════════════════════════════
+   Text
+   ═══════════════════════════════════════════ */
+.nf-tagline {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    color: rgba(255, 255, 255, 0.35);
+    margin-bottom: 10px;
+}
+
+.nf-body {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.28);
+    max-width: 300px;
+    line-height: 1.65;
+    margin-bottom: 28px;
+}
+
+
+/* ═══════════════════════════════════════════
+   Action buttons
+   ═══════════════════════════════════════════ */
+.nf-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.nf-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, #ff4313, #c73000);
+    color: white;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+    box-shadow: 0 6px 28px rgba(255, 67, 19, 0.38);
+}
+
+.nf-btn-primary:hover {
+    opacity: 0.88;
+    transform: translateY(-2px);
+}
+
+.nf-btn-primary:active {
+    transform: translateY(0);
+}
+
+.nf-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 100px;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.nf-btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.75);
+    border-color: rgba(255, 255, 255, 0.2);
+}

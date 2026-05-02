@@ -1,0 +1,346 @@
+/* ── Ambient float animation ── */
+@keyframes ab-float {
+    0%,  100% { transform: translateY(0)    scale(1);    }
+    50%        { transform: translateY(-28px) scale(1.04); }
+}
+
+/* ── Card entrance ── */
+@keyframes ab-enter {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0);    }
+}
+
+/* ── EQ bars ── */
+@keyframes ab-eq {
+    0%,  100% { transform: scaleY(0.22); }
+    50%        { transform: scaleY(1);    }
+}
+
+/* ── Page wrapper ── */
+.ab-page {
+    position: relative;
+    min-height: 100dvh;
+    overflow-x: hidden;
+    background: #0d0e12;
+    padding: 24px 20px 64px;
+}
+
+/* ── Back button ── */
+.ab-back-btn {
+    position: relative;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 16px;
+    padding: 7px 14px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+
+.ab-back-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+}
+
+/* ── Ambient orbs ── */
+.ab-orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.28;
+}
+
+.ab-orb-1 {
+    width: 420px;
+    height: 420px;
+    background: radial-gradient(circle, #ff4313 0%, transparent 70%);
+    top: -120px;
+    right: -120px;
+    animation: ab-float 9s ease-in-out infinite;
+}
+
+.ab-orb-2 {
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(circle, #7c3aed 0%, transparent 70%);
+    bottom: 80px;
+    left: -80px;
+    animation: ab-float 12s ease-in-out infinite reverse;
+}
+
+/* ── Content column ── */
+.ab-content {
+    position: relative;
+    z-index: 1;
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+/* ── Hero ── */
+.ab-hero {
+    text-align: center;
+    padding: 8px 0 0;
+    animation: ab-enter 0.45s ease both;
+}
+
+.ab-eq-wrap {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    height: 26px;
+    margin-bottom: 18px;
+}
+
+.ab-eq-bar {
+    width: 4px;
+    height: 100%;
+    border-radius: 3px;
+    background: #ff4313;
+    transform-origin: bottom center;
+    animation: ab-eq 0.85s ease-in-out infinite;
+}
+
+.ab-title {
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+
+.ab-subtitle {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.45);
+    margin-bottom: 16px;
+}
+
+.ab-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 100px;
+    background: rgba(255, 67, 19, 0.1);
+    border: 1px solid rgba(255, 67, 19, 0.25);
+    color: #ff4313;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+}
+
+/* ── Generic glass card ── */
+.ab-card {
+    background: rgba(21, 23, 29, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 20px 22px;
+    backdrop-filter: blur(14px);
+    animation: ab-enter 0.5s ease both;
+}
+
+.ab-about-text {
+    font-size: 0.88rem;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.75;
+}
+
+/* ── Section heading ── */
+.ab-section-title {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.8px;
+    color: rgba(255, 255, 255, 0.28);
+    margin-bottom: 11px;
+    padding-left: 2px;
+}
+
+/* ── Tech Stack grid ── */
+.ab-stack-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 9px;
+}
+
+@media (max-width: 460px) {
+    .ab-stack-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.ab-stack-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 13px;
+    background: rgba(21, 23, 29, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+    animation: ab-enter 0.5s ease both;
+}
+
+.ab-stack-card:hover {
+    border-color: rgba(255, 67, 19, 0.2);
+    transform: translateY(-1px);
+}
+
+.ab-stack-icon {
+    flex-shrink: 0;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.ab-stack-text {
+    min-width: 0;
+}
+
+.ab-stack-name {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ab-stack-cat {
+    font-size: 0.65rem;
+    color: rgba(255, 255, 255, 0.3);
+    margin-top: 2px;
+}
+
+/* ── Features grid ── */
+.ab-features-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 9px;
+}
+
+@media (max-width: 380px) {
+    .ab-features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ab-feature-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    padding: 13px 14px;
+    background: rgba(21, 23, 29, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    backdrop-filter: blur(8px);
+    transition: border-color 0.2s ease;
+    animation: ab-enter 0.5s ease both;
+}
+
+.ab-feature-card:hover {
+    border-color: rgba(255, 67, 19, 0.18);
+}
+
+.ab-feature-icon {
+    color: #ff4313;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.ab-feature-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+    margin-bottom: 3px;
+}
+
+.ab-feature-desc {
+    font-size: 0.68rem;
+    color: rgba(255, 255, 255, 0.38);
+    line-height: 1.5;
+}
+
+/* ── Creator card ── */
+.ab-creator-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 20px;
+    background: rgba(21, 23, 29, 0.72);
+    border: 1px solid rgba(255, 67, 19, 0.18);
+    border-radius: 14px;
+    backdrop-filter: blur(14px);
+    animation: ab-enter 0.5s ease both;
+}
+
+.ab-creator-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #ff4313, #c73000);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.82rem;
+    color: white;
+    flex-shrink: 0;
+    box-shadow: 0 4px 18px rgba(255, 67, 19, 0.4);
+}
+
+.ab-creator-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ab-creator-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.ab-creator-role {
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.38);
+    margin-top: 2px;
+}
+
+.ab-github-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ff4313, #c73000);
+    color: white;
+    font-size: 0.78rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: opacity 0.2s ease, transform 0.15s ease;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(255, 67, 19, 0.35);
+}
+
+.ab-github-btn:hover {
+    opacity: 0.88;
+    transform: translateY(-1px);
+}

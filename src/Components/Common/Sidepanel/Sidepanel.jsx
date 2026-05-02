@@ -1,5 +1,5 @@
 // src/Components/Sidepanel/Sidepanel.jsx
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     Home,
@@ -9,11 +9,12 @@ import {
     MicVocal,
     X,
     Loader2,
-    Music2
+    Music2,
+    Info,
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
+import { usePlaylist } from '../../../Context/PlaylistContext';
 import { CreatePlaylist } from '../../Playlist/CreatePlaylist';
-import { getPlaylist } from '../../../Services/playlistService';
 import PlaylistSection from './PlaylistSection';
 
 const TINTS = [
@@ -40,25 +41,14 @@ const Sidepanel = forwardRef(function Sidepanel(
 ) {
     const location = useLocation();
     const { user } = useAuth();
-    const [playlists, setPlaylists] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const { playlists, loading, addPlaylist } = usePlaylist();
     const [showCreatePlaylist, setShowCreatePlaylist] = useState(false);
-    const [refreshKey, setRefreshKey] = useState(0);
 
     const isActive = (path) => location.pathname === path;
 
-    useEffect(() => {
-        if (!user) { setLoading(false); return; }
-        setLoading(true);
-        getPlaylist()
-            .then(data => setPlaylists(data.data || data || []))
-            .catch(err => console.error('Error fetching playlists:', err))
-            .finally(() => setLoading(false));
-    }, [user, refreshKey]);
-
-    const handleCreated = () => {
+    const handleCreated = (result) => {
         setShowCreatePlaylist(false);
-        setRefreshKey(k => k + 1);
+        addPlaylist(result);
     };
 
     const baseClasses = 'work-sans bg-section-bg text-accent h-full flex flex-col rounded-lg overflow-hidden';
@@ -75,7 +65,7 @@ const Sidepanel = forwardRef(function Sidepanel(
                 <Library size={20} />
             </button>
 
-            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-2">
+            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-1">
                 {user?.role === 'admin'
                     ? adminItems.map(({ path, icon: Icon, label }) => (
                         <Link
@@ -115,6 +105,17 @@ const Sidepanel = forwardRef(function Sidepanel(
                     })
                 }
             </div>
+
+            {/* About icon — collapsed */}
+            <Link
+                to="/about"
+                title="About SoundWave"
+                className={`w-9 h-9 mb-1 mx-auto flex items-center justify-center rounded-lg transition-colors ${
+                    isActive('/about') ? 'text-accent bg-accent/10' : 'text-muted-text/30 hover:text-muted-text hover:bg-primary-bg/50'
+                }`}
+            >
+                <Info size={16} />
+            </Link>
         </>
     );
 
@@ -196,6 +197,22 @@ const Sidepanel = forwardRef(function Sidepanel(
                 }
             >
                 {collapsed ? miniBar : fullContent}
+                {!collapsed && (
+                    <div className="px-2 pb-1 border-t border-muted-text/10 pt-2">
+                        <Link
+                            to="/about"
+                            onClick={onClose}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors ${
+                                isActive('/about')
+                                    ? 'text-accent'
+                                    : 'text-muted-text/35 hover:text-muted-text hover:bg-primary-bg/30'
+                            }`}
+                        >
+                            <Info size={13} />
+                            <span>About SoundWave</span>
+                        </Link>
+                    </div>
+                )}
             </aside>
 
             {/* Mobile overlay drawer */}
@@ -216,6 +233,20 @@ const Sidepanel = forwardRef(function Sidepanel(
                             </button>
                         </div>
                         {fullContent}
+                        <div className="px-2 pb-2 border-t border-muted-text/10 pt-2 mt-auto">
+                            <Link
+                                to="/about"
+                                onClick={onClose}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs transition-colors ${
+                                    isActive('/about')
+                                        ? 'text-accent'
+                                        : 'text-muted-text/35 hover:text-muted-text hover:bg-primary-bg/30'
+                                }`}
+                            >
+                                <Info size={13} />
+                                <span>About SoundWave</span>
+                            </Link>
+                        </div>
                     </aside>
                 </div>
             )}

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   Play, Pause, Shuffle, Plus, Trash2,
   Loader2, Music, Search, X, CheckCircle2, Clock,
@@ -8,11 +8,14 @@ import {
   getPlaylistById,
   addSongToPlaylist,
   deleteSongFromPlaylist,
+  deletePlaylist,
 } from '../../Services/playlistService';
 import { songService } from '../../Services/songService';
 import { usePlayer } from '../../Context/PlayerContext';
 import './PlaylistPage.css';
 import { useAuth } from '../../Context/AuthContextProvider';
+import { useConfirm } from '../../Context/ConfirmContext';
+import { usePlaylist } from '../../Context/PlaylistContext';
 
 const GRADIENT_COLORS = [
   '#7C3AED', '#DC2626', '#2563EB', '#059669',
@@ -39,6 +42,9 @@ export default function PlaylistPage() {
   const { user } = useAuth();
   const { id } = useParams();
   const { playSong, currentSong, isPlaying, togglePlay } = usePlayer();
+  const confirm        = useConfirm();
+  const navigate       = useNavigate();
+  const { removePlaylist } = usePlaylist();
 
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -143,6 +149,16 @@ export default function PlaylistPage() {
     const idx = Math.floor(Math.random() * songs.length);
     playSong(songs[idx], songs, idx);
   };
+
+  const handleDelete = async () => {
+    const ok = await confirm('This will permanently delete the playlist and cannot be undone.', {
+      title: 'Delete Playlist',
+    });
+    if (!ok) return;
+    await deletePlaylist(id);
+    removePlaylist(id);
+    navigate('/home');
+  }
 
   if (loading) {
     return (
@@ -280,6 +296,13 @@ export default function PlaylistPage() {
             aria-label="Add songs"
           >
             <Plus size={20} />
+          </button>
+          <button
+            onClick={handleDelete}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white/50 hover:text-accent hover:bg-accent/10 transition-all"
+            aria-label="Delete playlist"
+          >
+            <Trash2 size={20} />
           </button>
         </div>
 

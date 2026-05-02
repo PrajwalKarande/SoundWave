@@ -15,10 +15,14 @@ export const AuthContextProvider = ({ children }) => {
       try {
         const userData = await authService.validateToken();
         setUser(userData);
-      } catch {
-        // No valid session cookie — user is not logged in
+      } catch (err) {
+        // 401 = expected (no active session), anything else is unexpected
+        if (err?.response?.status !== 401) {
+          console.error('Auth validation failed unexpectedly:', err);
+        }
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     initAuth();
@@ -37,16 +41,18 @@ export const AuthContextProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await authService.logout();
-    setUser(null);
-    if (clearPlayer) {
-      clearPlayer();
+    try {
+      await authService.logout();
+    } catch (err) {
+      // Server-side logout failed (network error, etc.) — clear local state anyway
+      console.error('Logout failed on server, clearing local state anyway:', err);
+    } finally {
+      setUser(null);
+      clearPlayer?.();
     }
   };
 
-  const isAdmin = () => {
-    return user?.role === 'admin';
-  };
+  const isAdmin = user?.role === 'admin';
 
   return (
     <AuthContext.Provider value={{ user, login, signup, logout, loading, isAdmin }}>
