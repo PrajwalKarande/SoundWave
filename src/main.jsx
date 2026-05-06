@@ -24,11 +24,42 @@ const UserManagement  = lazy(() => import('./Components/Admin/UserManagement.jsx
 const About           = lazy(() => import('./Components/About/About.jsx'))
 const NotFound        = lazy(() => import('./Components/NotFound/NotFound.jsx'))
 
-const Loader = () => (
-  <div className="flex items-center justify-center min-h-64 w-full">
-    <div className="w-5 h-5 rounded-full border-2 border-white/10 border-t-white/60 animate-spin" />
-  </div>
-)
+const BARS = [
+  { delay: '0s',    dur: '0.80s' },
+  { delay: '0.14s', dur: '0.95s' },
+  { delay: '0.06s', dur: '0.72s' },
+  { delay: '0.21s', dur: '0.88s' },
+  { delay: '0.10s', dur: '0.82s' },
+]
+
+const LOADING_MSGS = [
+  'adding songs to your personality...',
+  'teaching the algorithm what taste is...',
+  'buffering like your wifi at 2am...',
+  'ur queue is loading, no cap',
+  'manifesting your next banger rn',
+  'the vibes are on their way bestie',
+  'loading... as if you had somewhere to be',
+  'gaslit by a slow connection, again',
+]
+
+const Loader = () => {
+  const msg = LOADING_MSGS[Math.floor(Math.random() * LOADING_MSGS.length)]
+  return (
+    <div className="flex flex-col items-center justify-center min-h-64 w-full gap-3">
+      <div className="flex items-end gap-[5px] h-[36px]">
+        {BARS.map(({ delay, dur }, i) => (
+          <div
+            key={i}
+            className="soundbar-bar"
+            style={{ animationDelay: delay, animationDuration: dur }}
+          />
+        ))}
+      </div>
+      <p className="text-xs text-white/30 tracking-wide italic">{msg}</p>
+    </div>
+  )
+}
 
 const wrap = (el) => <Suspense fallback={<Loader />}>{el}</Suspense>
 

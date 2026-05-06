@@ -91,20 +91,21 @@ export default function NotFound() {
                 </div>
 
                 {/* Text */}
-                <p className="nf-tagline">Track Not Found</p>
+                <p className="nf-tagline">bestie, this ain't it</p>
                 <p className="nf-body">
-                    Looks like this page was removed from the playlist.
+                    you deadass navigated to a page that doesn't exist.<br />
+                    the url gaslit you. respectfully.
                 </p>
 
                 {/* Actions */}
                 <div className="nf-actions">
                     <Link to="/home" className="nf-btn-primary">
                         <Home size={15} />
-                        <span>Take Me Home</span>
+                        <span>get me outta here</span>
                     </Link>
                     <button onClick={() => navigate(-1)} className="nf-btn-ghost">
                         <ArrowLeft size={15} />
-                        <span>Go Back</span>
+                        <span>undo that L</span>
                     </button>
                 </div>
 

@@ -54,6 +54,42 @@ export const songService = {
     }
   },
 
+  delete: async (songId) => {
+    try {
+      const { data } = await api.delete(`/songs/${songId}`);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to delete song'));
+    }
+  },
+
+  update: async (songId, payload) => {
+    try {
+      const { data } = await api.put(`/songs/${songId}`, payload);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to update song'));
+    }
+  },
+
+  getRecommendations: async (params = {}) => {
+    try {
+      const { data } = await api.get('/songs/recommendations', { params });
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch recommendations'));
+    }
+  },
+
+  getTrending: async (params = {}) => {
+    try {
+      const { data } = await api.get('/songs/trending', { params });
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch trending songs'));
+    }
+  },
+
   search: async (query, signal) => {
     try {
       const { data } = await api.get('/songs/search', {

@@ -78,6 +78,15 @@ export const artistService = {
    * @param {string} artistId
    * @returns {Promise<void>}
    */
+  update: async (artistId, payload) => {
+    try {
+      const { data } = await api.put(`/artists/update/${artistId}`, payload);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to update artist'));
+    }
+  },
+
   delete: async (artistId) => {
     try {
       const { data } = await api.delete(`/artists/delete/${artistId}`);
