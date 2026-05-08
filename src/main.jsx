@@ -23,6 +23,7 @@ const AddArtist       = lazy(() => import('./Components/Admin/Artist/AddArtist.j
 const UserManagement  = lazy(() => import('./Components/Admin/UserManagement.jsx'))
 const About           = lazy(() => import('./Components/About/About.jsx'))
 const NotFound        = lazy(() => import('./Components/NotFound/NotFound.jsx'))
+const UserProfile     = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
 
 const BARS = [
   { delay: '0s',    dur: '0.80s' },
@@ -101,6 +102,16 @@ const router = createBrowserRouter([
   {
     path: '/about',
     element: wrap(<About />)
+  },
+  {
+    path: '/profile',
+    element: <App />,
+    children: [
+      {
+        index: true,
+        element: wrap(<UserProfile />)
+      }
+    ]
   },
   {
     path: '/signup',

@@ -1,0 +1,41 @@
+/* ── Avatar circle ── */
+.up-avatar {
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.up-avatar-letter {
+    font-size: 4.5rem;
+    font-weight: 900;
+    color: white;
+    line-height: 1;
+}
+
+/* ── Playlist card ── */
+.up-card {
+    display: block;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.up-cover {
+    aspect-ratio: 1;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.up-card:hover .up-cover {
+    transform: scale(1.04);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+}

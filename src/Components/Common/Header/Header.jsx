@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../Context/AuthContextProvider';
 import logo from '../../../assets/logo.png';
 import './Header.css';
-import { Home, Search, Menu } from 'lucide-react';
+import { Home, Search, Menu, User, LogOut } from 'lucide-react';
 import SearchDropdown from './SearchDropdown';
 import { songService } from '../../../Services/songService';
 import { artistService } from '../../../Services/artistService';
@@ -16,10 +16,12 @@ function Header({ onMenuToggle }) {
   const [isOpen, setIsOpen]     = useState(false);
   const [loading, setLoading]   = useState(false);
   const [results, setResults]   = useState({ songs: [], artists: [] });
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const searchRef  = useRef(null);
-  const cacheRef   = useRef(new Map());
-  const abortRef   = useRef(null);
+  const searchRef   = useRef(null);
+  const menuRef     = useRef(null);
+  const cacheRef    = useRef(new Map());
+  const abortRef    = useRef(null);
   const debounceRef = useRef(null);
 
   const handleLogout = () => {
@@ -77,9 +79,12 @@ function Header({ onMenuToggle }) {
       if (searchRef.current && !searchRef.current.contains(e.target)) {
         setIsOpen(false);
       }
+      if (menuRef.current && !menuRef.current.contains(e.target)) {
+        setMenuOpen(false);
+      }
     };
     const onKeyDown = (e) => {
-      if (e.key === 'Escape') setIsOpen(false);
+      if (e.key === 'Escape') { setIsOpen(false); setMenuOpen(false); }
     };
     document.addEventListener('mousedown', onMouseDown);
     document.addEventListener('keydown', onKeyDown);
@@ -163,19 +168,43 @@ function Header({ onMenuToggle }) {
           </div>
         </div>
 
-        <div className="flex items-center shrink-0 space-x-2 md:space-x-4">
+        <div className="flex items-center shrink-0">
           {user ? (
-            <>
-              <p className="text-sm md:text-xl font-medium text-accent">{user.username}</p>
+            <div ref={menuRef} className="relative">
+              {/* Avatar circle */}
               <button
-                onClick={handleLogout}
-                className="px-3 md:px-4 py-2 text-sm md:text-lg font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors"
+                onClick={() => setMenuOpen(v => !v)}
+                className="w-9 h-9 rounded-full bg-accent flex items-center justify-center font-bold text-white text-sm select-none hover:opacity-85 active:scale-95 transition-all cursor-pointer"
+                aria-label="Account menu"
+                aria-expanded={menuOpen}
               >
-                Logout
+                {user.username[0].toUpperCase()}
               </button>
-            </>
+
+              {/* Dropdown */}
+              {menuOpen && (
+                <div className="hd-menu">
+                  <Link
+                    to="/profile"
+                    onClick={() => setMenuOpen(false)}
+                    className="hd-menu-item"
+                  >
+                    <User size={13} className="shrink-0" />
+                    <span>Your Profile</span>
+                  </Link>
+                  <div className="mx-3 border-t border-white/[0.07]" />
+                  <button
+                    onClick={() => { setMenuOpen(false); handleLogout(); }}
+                    className="hd-menu-item w-full text-left"
+                  >
+                    <LogOut size={13} className="shrink-0" />
+                    <span>Logout</span>
+                  </button>
+                </div>
+              )}
+            </div>
           ) : (
-            <>
+            <div className="flex items-center gap-1">
               <Link to="/login">
                 <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors">
                   Login
@@ -186,7 +215,7 @@ function Header({ onMenuToggle }) {
                   Sign-up
                 </button>
               </Link>
-            </>
+            </div>
           )}
         </div>
 

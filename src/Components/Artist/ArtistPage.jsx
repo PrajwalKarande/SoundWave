@@ -90,11 +90,6 @@ export default function ArtistPage() {
               <div className="h-3.5 w-32 bg-white/10 rounded" />
             </div>
           </div>
-          {/* Bio placeholder */}
-          <div className="px-6 pb-2 space-y-2">
-            <div className="h-3 w-3/4 bg-white/5 rounded" />
-            <div className="h-3 w-1/2 bg-white/5 rounded" />
-          </div>
           <div className="flex items-center gap-3 px-6 pb-5">
             <div className="w-12 h-12 rounded-full bg-white/10" />
             <div className="w-10 h-10 rounded-full bg-white/5" />
@@ -172,13 +167,6 @@ export default function ArtistPage() {
             </p>
           </div>
         </div>
-
-        {/* ── About ── */}
-        {artist.bio && (
-          <div className="px-6 pb-2">
-            <p className="text-sm text-white/70 leading-relaxed max-w-2xl">{artist.bio}</p>
-          </div>
-        )}
 
         {/* ── Controls ── */}
         <div className="flex items-center gap-3 px-6 pb-5">
@@ -286,6 +274,16 @@ export default function ArtistPage() {
           </tbody>
         </table>
       )}
+      {/* ── About article ── */}
+      {artist.bio && (
+        <div className="px-6 py-8">
+          <article className="max-w-lg bg-white/[0.03] border border-white/[0.06] rounded-2xl px-6 py-5">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-white/35 mb-3">About</h2>
+            <p className="text-sm text-white/60 leading-relaxed">{artist.bio}</p>
+          </article>
+        </div>
+      )}
+
     </div>
   );
 }
