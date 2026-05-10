@@ -179,3 +179,56 @@
   0%, 100% { opacity: 0.5; }
   50%       { opacity: 1;   }
 }
+
+/* History mode */
+.sd-history-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px 4px;
+}
+.sd-clear-btn {
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 67, 19, 0.7);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s;
+}
+.sd-clear-btn:hover {
+  color: #FF4313;
+}
+.sd-history-item {
+  cursor: default;
+}
+.sd-history-query {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+}
+.sd-history-query:hover .sd-name {
+  color: #FF4313;
+}
+.sd-remove-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.25);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  display: flex;
+  align-items: center;
+}
+.sd-history-item:hover .sd-remove-btn {
+  opacity: 1;
+}
+.sd-remove-btn:hover {
+  color: #FF4313;
+}

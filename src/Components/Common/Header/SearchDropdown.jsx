@@ -32,6 +32,11 @@ const ArrowIcon = () => (
     <path d="M9 18l6-6-6-6"/>
   </svg>
 );
+const XSmallIcon = () => (
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+    <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+  </svg>
+);
 
 function SkeletonRows({ count = 3 }) {
   return Array.from({ length: count }).map((_, i) => (
@@ -45,21 +50,59 @@ function SkeletonRows({ count = 3 }) {
   ));
 }
 
-function SearchDropdown({ songs, artists, loading, query }) {
+function SearchDropdown({ songs, artists, loading, query, history = [], onSongPlayedFromSearch, onRemoveHistoryItem, onClearHistory }) {
   const { playSong } = usePlayer();
   const navigate = useNavigate();
 
   const hasSongs   = songs.length > 0;
   const hasArtists = artists.length > 0;
   const isEmpty    = !hasSongs && !hasArtists;
+  const showHistory = query.length < 2 && history.length > 0;
 
   const handleSongClick = (song) => {
     playSong(song, songs, songs.indexOf(song));
+    onSongPlayedFromSearch?.(song);
   };
 
   const handleArtistClick = (artist) => {
     navigate(`/artist/${artist._id}`);
   };
+
+  // Show history when input is focused but nothing typed yet
+  if (showHistory) {
+    return (
+      <div className="sd-wrap" role="listbox" aria-label="Search history">
+        <div className="sd-history-header">
+          <p className="sd-section-title" style={{ margin: 0 }}>Recently played from search</p>
+          <button className="sd-clear-btn" onClick={onClearHistory}>Clear all</button>
+        </div>
+        {history.map((song) => (
+          <div key={song._id} className="sd-item sd-history-item">
+            {song.coverImage
+              ? <img src={song.coverImage} alt={song.title} className="sd-thumb" />
+              : <span className="sd-thumb-fallback"><MusicIcon /></span>
+            }
+            <button
+              className="sd-text sd-history-query"
+              onClick={() => { playSong(song, history, history.indexOf(song)); onSongPlayedFromSearch?.(song); }}
+            >
+              <span className="sd-name">{song.title}</span>
+              {song.artist?.length > 0 && (
+                <span className="sd-sub">{song.artist.map(a => a.name).join(', ')}</span>
+              )}
+            </button>
+            <button
+              className="sd-remove-btn"
+              onClick={(e) => { e.stopPropagation(); onRemoveHistoryItem(song._id); }}
+              aria-label={`Remove ${song.title} from history`}
+            >
+              <XSmallIcon />
+            </button>
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   if (loading) {
     return (

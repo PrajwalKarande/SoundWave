@@ -12,11 +12,13 @@ function Header({ onMenuToggle }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
-  const [query, setQuery]       = useState('');
-  const [isOpen, setIsOpen]     = useState(false);
-  const [loading, setLoading]   = useState(false);
-  const [results, setResults]   = useState({ songs: [], artists: [] });
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery]         = useState('');
+  const [isOpen, setIsOpen]       = useState(false);
+  const [loading, setLoading]     = useState(false);
+  const [results, setResults]     = useState({ songs: [], artists: [] });
+  const [menuOpen, setMenuOpen]   = useState(false);
+  const [history, setHistory]     = useState([]);
+  const historyFetched            = useRef(false);
 
   const searchRef   = useRef(null);
   const menuRef     = useRef(null);
@@ -27,6 +29,34 @@ function Header({ onMenuToggle }) {
   const handleLogout = () => {
     logout();
     navigate('/');
+  };
+
+  const fetchHistory = useCallback(async () => {
+    if (historyFetched.current || !user) return;
+    historyFetched.current = true;
+    try {
+      const data = await songService.getSearchHistory();
+      setHistory(data.songs ?? []);
+    } catch {
+      // silently ignore
+    }
+  }, [user]);
+
+  const handleSongPlayedFromSearch = useCallback((song) => {
+    // Optimistically prepend song to history
+    setHistory(prev => [song, ...prev.filter(h => h._id !== song._id).slice(0, 19)]);
+    // Persist to backend fire-and-forget
+    songService.addSongToSearchHistory(song._id).catch(() => {});
+  }, []);
+
+  const handleRemoveHistoryItem = async (songId) => {
+    setHistory(prev => prev.filter(h => h._id !== songId));
+    try { await songService.removeSearchHistoryItem(songId); } catch { /* ignore */ }
+  };
+
+  const handleClearHistory = async () => {
+    setHistory([]);
+    try { await songService.clearSearchHistory(); } catch { /* ignore */ }
   };
 
   const runSearch = useCallback(async (q) => {
@@ -94,7 +124,7 @@ function Header({ onMenuToggle }) {
     };
   }, []);
 
-  const showDropdown = isOpen && query.length >= 2;
+  const showDropdown = isOpen && (query.length >= 2 || history.length > 0);
 
   return (
     <header className="text-primary-text sticky top-0 z-50 mt-2 p-1">
@@ -137,7 +167,7 @@ function Header({ onMenuToggle }) {
                   setQuery(e.target.value);
                   setIsOpen(true);
                 }}
-                onFocus={() => { if (query.length >= 2) setIsOpen(true); }}
+                onFocus={() => { fetchHistory(); setIsOpen(true); }}
                 className='focus:outline-none bg-transparent text-primary-text placeholder:text-muted-text flex-1 min-w-0 text-sm'
                 aria-label="Search songs and artists"
                 aria-expanded={showDropdown}
@@ -163,6 +193,10 @@ function Header({ onMenuToggle }) {
                 artists={results.artists}
                 loading={loading}
                 query={query}
+                history={history}
+                onSongPlayedFromSearch={handleSongPlayedFromSearch}
+                onRemoveHistoryItem={handleRemoveHistoryItem}
+                onClearHistory={handleClearHistory}
               />
             )}
           </div>

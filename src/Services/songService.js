@@ -102,4 +102,40 @@ export const songService = {
       throw new Error(extractErrorMessage(err, 'Search failed'));
     }
   },
+
+  getSearchHistory: async () => {
+    try {
+      const { data } = await api.get('/songs/search-history');
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch search history'));
+    }
+  },
+
+  addSongToSearchHistory: async (songId) => {
+    try {
+      const { data } = await api.post(`/songs/search-history/${songId}`);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to save search history'));
+    }
+  },
+
+  clearSearchHistory: async () => {
+    try {
+      const { data } = await api.delete('/songs/search-history');
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to clear search history'));
+    }
+  },
+
+  removeSearchHistoryItem: async (songId) => {
+    try {
+      const { data } = await api.delete(`/songs/search-history/${songId}`);
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to remove search history item'));
+    }
+  },
 };
