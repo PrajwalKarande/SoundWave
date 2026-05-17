@@ -19,7 +19,7 @@ import { usePlaylist } from '../../Context/PlaylistContext';
 
 const GRADIENT_COLORS = [
   '#7C3AED', '#DC2626', '#2563EB', '#059669',
-  '#D97706', '#DB2777', '#0891B2', '#FF4313',
+  '#D97706', '#DB2777', '#0891B2', '#06C9E0',
   '#7C2D12', '#065F46', '#1E3A8A', '#831843',
 ];
 

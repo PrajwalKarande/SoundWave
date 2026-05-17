@@ -3,6 +3,7 @@ import { forwardRef, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import {
     Home,
+    ArrowRightToLine,
     Library,
     PlusSquare,
     UserCog,
@@ -62,10 +63,10 @@ const Sidepanel = forwardRef(function Sidepanel(
                 className="flex items-center justify-center py-3 shrink-0 text-accent hover:text-primary-text transition-colors"
                 title="Expand sidebar"
             >
-                <Library size={20} />
+                <ArrowRightToLine size={20} />
             </button>
 
-            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-1">
+            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-1 py-1">
                 {user?.role === 'admin'
                     ? adminItems.map(({ path, icon: Icon, label }) => (
                         <Link

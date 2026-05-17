@@ -37,18 +37,11 @@ function App() {
       const delta = ev.clientX - startX
       if (which === 'sidebar') {
         const raw = startW + delta
-        if (raw < SIDEBAR_MIN) {
-          // Stay at mini bar width — no further shrinkage
-          if (sidebarRef.current) {
-            sidebarRef.current.style.width    = `${SIDEBAR_MINI}px`
-            sidebarRef.current.style.minWidth = `${SIDEBAR_MINI}px`
-          }
-        } else {
-          const w = Math.min(SIDEBAR_MAX, raw)
-          if (sidebarRef.current) {
-            sidebarRef.current.style.width    = `${w}px`
-            sidebarRef.current.style.minWidth = `${w}px`
-          }
+        // Track smoothly from SIDEBAR_MAX all the way down to SIDEBAR_MINI — no mid-drag snap
+        const w = Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MINI, raw))
+        if (sidebarRef.current) {
+          sidebarRef.current.style.width    = `${w}px`
+          sidebarRef.current.style.minWidth = `${w}px`
         }
       } else {
         const w = Math.min(PLAYER_MAX, Math.max(PLAYER_MIN, startW - delta))
@@ -70,7 +63,6 @@ function App() {
       document.body.style.cursor        = ''
       document.body.style.userSelect    = ''
       document.body.style.pointerEvents = ''
-      panelEl?.classList.remove('is-resizing')
       document.removeEventListener('mousemove', onMove)
       document.removeEventListener('mouseup',   onUp)
 
@@ -78,12 +70,17 @@ function App() {
       if (which === 'sidebar') {
         const raw = startW + delta
         if (raw < SIDEBAR_MIN) {
-          setSidebarCollapsed(true)
+          // Remove is-resizing first, then let React apply collapsed styles in the
+          // next animation frame so the CSS transition actually fires
+          panelEl?.classList.remove('is-resizing')
+          requestAnimationFrame(() => setSidebarCollapsed(true))
         } else {
+          panelEl?.classList.remove('is-resizing')
           setSidebarCollapsed(false)
           setSidebarWidth(Math.min(SIDEBAR_MAX, raw))
         }
       } else {
+        panelEl?.classList.remove('is-resizing')
         setPlayerWidth(Math.min(PLAYER_MAX, Math.max(PLAYER_MIN, startW - delta)))
       }
     }

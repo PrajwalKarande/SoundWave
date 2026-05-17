@@ -1,13 +1,11 @@
 /* src/Components/Header/Header.css */
 @import 'tailwindcss';
 
-/* Smooth transitions for all interactive elements */
 header a,
 header button {
   transition: all 0.2s ease-in-out;
 }
 
-/* Logo hover effect */
 header img {
   transition: transform 0.2s ease-in-out;
 }
@@ -27,11 +25,14 @@ header a:hover img {
   right: 0;
   top: calc(100% + 8px);
   width: 176px;
-  background: #13151b;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #0A1628;
+  border: 1px solid rgba(6, 201, 224, 0.14);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6), 0 4px 16px rgba(0, 0, 0, 0.4);
+  box-shadow:
+    0 16px 48px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(6, 201, 224, 0.06),
+    0 4px 16px rgba(0, 0, 0, 0.5);
   z-index: 200;
   animation: hd-drop-in 0.14s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
@@ -42,7 +43,7 @@ header a:hover img {
   gap: 10px;
   padding: 11px 16px;
   font-size: 0.82rem;
-  color: rgba(255, 255, 255, 0.6);
+  color: rgba(175, 210, 230, 0.65);
   transition: background 0.15s ease, color 0.15s ease;
   cursor: pointer;
   text-decoration: none;
@@ -52,6 +53,6 @@ header a:hover img {
 }
 
 .hd-menu-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.9);
+  background: rgba(6, 201, 224, 0.08);
+  color: rgba(239, 246, 255, 0.9);
 }

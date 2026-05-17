@@ -62,7 +62,7 @@
 .ab-orb-1 {
     width: 420px;
     height: 420px;
-    background: radial-gradient(circle, #ff4313 0%, transparent 70%);
+    background: radial-gradient(circle, #06C9E0 0%, transparent 70%);
     top: -120px;
     right: -120px;
     animation: ab-float 9s ease-in-out infinite;
@@ -108,7 +108,7 @@
     width: 4px;
     height: 100%;
     border-radius: 3px;
-    background: #ff4313;
+    background: #06C9E0;
     transform-origin: bottom center;
     animation: ab-eq 0.85s ease-in-out infinite;
 }
@@ -132,9 +132,9 @@
     display: inline-block;
     padding: 4px 14px;
     border-radius: 100px;
-    background: rgba(255, 67, 19, 0.1);
-    border: 1px solid rgba(255, 67, 19, 0.25);
-    color: #ff4313;
+    background: rgba(6, 201, 224, 0.1);
+    border: 1px solid rgba(6, 201, 224, 0.25);
+    color: #06C9E0;
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.6px;
@@ -195,7 +195,7 @@
 }
 
 .ab-stack-card:hover {
-    border-color: rgba(255, 67, 19, 0.2);
+    border-color: rgba(6, 201, 224, 0.2);
     transform: translateY(-1px);
 }
 
@@ -257,11 +257,11 @@
 }
 
 .ab-feature-card:hover {
-    border-color: rgba(255, 67, 19, 0.18);
+    border-color: rgba(6, 201, 224, 0.18);
 }
 
 .ab-feature-icon {
-    color: #ff4313;
+    color: #06C9E0;
     flex-shrink: 0;
     margin-top: 1px;
 }
@@ -286,7 +286,7 @@
     gap: 14px;
     padding: 18px 20px;
     background: rgba(21, 23, 29, 0.72);
-    border: 1px solid rgba(255, 67, 19, 0.18);
+    border: 1px solid rgba(6, 201, 224, 0.18);
     border-radius: 14px;
     backdrop-filter: blur(14px);
     animation: ab-enter 0.5s ease both;
@@ -296,7 +296,7 @@
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #ff4313, #c73000);
+    background: linear-gradient(135deg, #06C9E0, #7C4DFF);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -304,7 +304,7 @@
     font-size: 0.82rem;
     color: white;
     flex-shrink: 0;
-    box-shadow: 0 4px 18px rgba(255, 67, 19, 0.4);
+    box-shadow: 0 4px 18px rgba(6, 201, 224, 0.4);
 }
 
 .ab-creator-info {
@@ -330,14 +330,14 @@
     gap: 6px;
     padding: 8px 16px;
     border-radius: 8px;
-    background: linear-gradient(135deg, #ff4313, #c73000);
+    background: linear-gradient(135deg, #06C9E0, #7C4DFF);
     color: white;
     font-size: 0.78rem;
     font-weight: 600;
     text-decoration: none;
     transition: opacity 0.2s ease, transform 0.15s ease;
     flex-shrink: 0;
-    box-shadow: 0 4px 16px rgba(255, 67, 19, 0.35);
+    box-shadow: 0 4px 16px rgba(6, 201, 224, 0.35);
 }
 
 .ab-github-btn:hover {

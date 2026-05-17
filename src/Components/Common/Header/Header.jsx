@@ -240,12 +240,12 @@ function Header({ onMenuToggle }) {
           ) : (
             <div className="flex items-center gap-1">
               <Link to="/login">
-                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors">
+                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-accent rounded-full hover:text-primary-bg hover:bg-accent transition-colors">
                   Login
                 </button>
               </Link>
               <Link to="/signup">
-                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-[#FF4313] rounded-full hover:text-[#F3F4F6] hover:bg-accent transition-colors">
+                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-accent rounded-full hover:text-primary-bg hover:bg-accent transition-colors">
                   Sign-up
                 </button>
               </Link>

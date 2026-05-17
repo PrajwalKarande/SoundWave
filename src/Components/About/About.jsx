@@ -29,7 +29,7 @@ const TECH_STACK = [
     { name: 'Tailwind CSS v4', category: 'Styling',         color: '#38BDF8', Icon: Layers   },
     { name: 'Vite',            category: 'Build Tool',      color: '#BD34FE', Icon: Zap      },
     { name: 'Cloudflare R2',   category: 'Object Storage',  color: '#F6821F', Icon: Cloud    },
-    { name: 'JWT + Cookies',   category: 'Authentication',  color: '#FF4313', Icon: Lock     },
+    { name: 'JWT + Cookies',   category: 'Authentication',  color: '#06C9E0', Icon: Lock     },
 ];
 
 const FEATURES = [

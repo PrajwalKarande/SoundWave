@@ -65,7 +65,7 @@ export default function HorizontalList({ title, items = [], type = 'song', loadi
       ) : (
       <div
         ref={scrollRef}
-        className="flex overflow-x-auto scrollbar-hide p-3"
+        className="flex overflow-x-auto scrollbar-hide p-3 list-fade-in"
         style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
       >
         {displayItems.map((item, index) => {

@@ -12,7 +12,7 @@ const StatCard = ({ title, value, icon: Icon, delay, onclick }) => (
     transition={{ duration: 0.4, delay }}
     whileHover={{
       scale: 1.05,
-      borderColor: "rgba(255, 67, 19, 0.4)",
+      borderColor: "rgba(6, 201, 224, 0.4)",
       backgroundColor: "rgba(31, 41, 55, 0.7)"
     }}
     className="bg-section-bg/50 backdrop-blur-md border border-accent/10 p-8 rounded-lg flex flex-col items-center justify-center gap-4 transition-all duration-300 cursor-pointer group"

@@ -165,6 +165,11 @@ export const PlayerProvider = ({ children }) => {
     if (isPlaying) {
       audio.pause();
     } else {
+      // On fresh load the Audio element has no src (restored song came from localStorage only)
+      if (!audio.src && currentSong.url) {
+        audio.src = currentSong.url;
+        audio.load();
+      }
       audio.play().catch(console.error);
     }
   }, [currentSong, isPlaying, audio]);

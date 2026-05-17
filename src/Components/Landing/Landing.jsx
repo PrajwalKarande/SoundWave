@@ -3,7 +3,7 @@ import { Music, Zap, Users, Play, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../assets/logo.png';
 import './Landing.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import api from '../../Services/api';
 import { useAuth } from '../../Context/AuthContextProvider';
 
@@ -11,6 +11,15 @@ export const Landing = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState({ songs: 100, artists: 30, users: 50 });
+
+  // Compute once on mount so re-renders (e.g. stats load) don't re-randomize the bars
+  const waveformBars = useMemo(() =>
+    Array.from({ length: 40 }, () => ({
+      height: Math.random() * 80 + 20,
+      duration: Math.random() * 0.8 + 0.8,
+    })),
+    []
+  );
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -64,9 +73,9 @@ export const Landing = () => {
     animate: {
       scale: [1, 1.05, 1],
       boxShadow: [
-        '0 0 20px rgba(255, 67, 19, 0)',
-        '0 0 40px rgba(255, 67, 19, 0.6)',
-        '0 0 20px rgba(255, 67, 19, 0)',
+        '0 0 20px rgba(6, 201, 224, 0)',
+        '0 0 40px rgba(6, 201, 224, 0.6)',
+        '0 0 20px rgba(6, 201, 224, 0)',
       ],
       transition: {
         duration: 3,
@@ -224,20 +233,18 @@ export const Landing = () => {
 
         {/* Animated waveform visualization */}
         <motion.div className="waveform-container" variants={itemVariants}>
-          {[...Array(40)].map((_, i) => (
+          {waveformBars.map((bar, i) => (
             <motion.div
               key={i}
               className="waveform-bar"
               animate={{
-                height: [20, Math.random() * 100 + 20, 20],
+                height: [20, bar.height, 20],
               }}
               transition={{
-                duration: Math.random() * 0.5 + 0.3,
+                duration: bar.duration,
                 ease: 'easeInOut',
                 repeat: Infinity,
-              }}
-              style={{
-                animationDelay: `${i * 0.05}s`,
+                delay: i * 0.04,
               }}
             />
           ))}
@@ -263,7 +270,7 @@ export const Landing = () => {
             variants={itemVariants}
             whileHover={{
               y: -10,
-              boxShadow: '0 20px 40px rgba(255, 67, 19, 0.15)',
+              boxShadow: '0 20px 40px rgba(6, 201, 224, 0.15)',
             }}
             transition={{ duration: 0.3 }}
           >
@@ -284,7 +291,7 @@ export const Landing = () => {
             variants={itemVariants}
             whileHover={{
               y: -10,
-              boxShadow: '0 20px 40px rgba(255, 67, 19, 0.15)',
+              boxShadow: '0 20px 40px rgba(6, 201, 224, 0.15)',
             }}
             transition={{ duration: 0.3 }}
           >
@@ -305,7 +312,7 @@ export const Landing = () => {
             variants={itemVariants}
             whileHover={{
               y: -10,
-              boxShadow: '0 20px 40px rgba(255, 67, 19, 0.15)',
+              boxShadow: '0 20px 40px rgba(6, 201, 224, 0.15)',
             }}
             transition={{ duration: 0.3 }}
           >

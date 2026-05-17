@@ -14,7 +14,7 @@
 .ar-eq-bar {
   width: 3px;
   border-radius: 2px;
-  background-color: #ff4313;
+  background-color: #06C9E0;
   transform-origin: bottom center;
   animation: ar-eq 0.75s ease-in-out infinite;
 }

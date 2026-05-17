@@ -7,7 +7,7 @@ import './UserProfile.css';
 
 const GRADIENT_COLORS = [
     '#7C3AED', '#DC2626', '#2563EB', '#059669',
-    '#D97706', '#DB2777', '#0891B2', '#FF4313',
+    '#D97706', '#DB2777', '#0891B2', '#06C9E0',
     '#7C2D12', '#065F46', '#1E3A8A', '#831843',
 ];
 
@@ -116,7 +116,7 @@ export default function UserProfile() {
     const navigate = useNavigate();
 
     const gradientColor = useMemo(() => {
-        if (!user?._id) return '#FF4313';
+        if (!user?._id) return '#06C9E0';
         return GRADIENT_COLORS[seedFromStr(user._id) % GRADIENT_COLORS.length];
     }, [user?._id]);
 
