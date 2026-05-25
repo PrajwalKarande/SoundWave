@@ -167,9 +167,7 @@ createRoot(document.getElementById('root')).render(
       <AuthContextProvider>
         <PlaylistProvider>
         <ConfirmProvider>
-          <StrictMode>
             <RouterProvider router={router} />
-          </StrictMode>
         </ConfirmProvider>
         </PlaylistProvider>
       </AuthContextProvider>

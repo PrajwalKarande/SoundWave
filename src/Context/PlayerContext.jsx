@@ -260,6 +260,14 @@ export const PlayerProvider = ({ children }) => {
     }
   }, [queue, audio]);
 
+  const appendToQueue = useCallback((songs, triggerSongId) => {
+    setQueue(prev => {
+      // If the trigger song is no longer in the queue the user started a new session — abort
+      if (triggerSongId && !prev.some(s => s._id === triggerSongId)) return prev;
+      return [...prev, ...songs];
+    });
+  }, []);
+
   const clearPlayer = useCallback(() => {
     audio.pause();
     audio.src = '';
@@ -284,6 +292,7 @@ export const PlayerProvider = ({ children }) => {
     queue,
     queueIndex,
     playSong,
+    appendToQueue,
     playAtIndex,
     togglePlay,
     seek,

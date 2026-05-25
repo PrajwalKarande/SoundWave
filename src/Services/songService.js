@@ -90,6 +90,17 @@ export const songService = {
     }
   },
 
+  getByGenres: async (genres, limit = 20) => {
+    try {
+      const { data } = await api.get('/songs', {
+        params: { genres: genres.join(','), limit },
+      });
+      return data;
+    } catch (err) {
+      throw new Error(extractErrorMessage(err, 'Failed to fetch songs by genre'));
+    }
+  },
+
   search: async (query, signal) => {
     try {
       const { data } = await api.get('/songs/search', {

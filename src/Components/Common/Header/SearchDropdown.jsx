@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { usePlayer } from '../../../Context/PlayerContext';
+import { songService } from '../../../Services/songService';
+import { artistService } from '../../../Services/artistService';
 import './SearchDropdown.css';
 
 const formatDuration = (seconds) => {
@@ -51,7 +53,7 @@ function SkeletonRows({ count = 3 }) {
 }
 
 function SearchDropdown({ songs, artists, loading, query, history = [], onSongPlayedFromSearch, onRemoveHistoryItem, onClearHistory }) {
-  const { playSong } = usePlayer();
+  const { playSong, appendToQueue } = usePlayer();
   const navigate = useNavigate();
 
   const hasSongs   = songs.length > 0;
@@ -59,9 +61,45 @@ function SearchDropdown({ songs, artists, loading, query, history = [], onSongPl
   const isEmpty    = !hasSongs && !hasArtists;
   const showHistory = query.length < 2 && history.length > 0;
 
-  const handleSongClick = (song) => {
-    playSong(song, songs, songs.indexOf(song));
+  const buildRadioQueue = async (song, sourceList) => {
+    const songId    = song._id;
+    const artistId  = song.artist?.[0]?._id;
+    const genres    = song.genre || [];
+
+    try {
+      const seenIds = new Set(sourceList.map(s => s._id));
+      seenIds.add(songId);
+
+      const [artistData, genreData] = await Promise.all([
+        artistId ? artistService.getById(artistId) : Promise.resolve(null),
+        genres.length > 0 ? songService.getByGenres(genres, 20) : Promise.resolve(null),
+      ]);
+
+      const pick = (pool, n) =>
+        [...pool].sort(() => Math.random() - 0.5).slice(0, n);
+
+      const artistSongs = pick(
+        (artistData?.songs || []).filter(s => !seenIds.has(s._id)),
+        5
+      );
+      artistSongs.forEach(s => seenIds.add(s._id));
+
+      const genreSongs = pick(
+        (genreData?.data || []).filter(s => !seenIds.has(s._id)),
+        5
+      );
+
+      const toAdd = [...artistSongs, ...genreSongs];
+      if (toAdd.length > 0) appendToQueue(toAdd, songId);
+    } catch {
+      // fail silently — the search queue still plays fine
+    }
+  };
+
+  const handleSongClick = (song, sourceList) => {
+    playSong(song, sourceList, sourceList.indexOf(song));
     onSongPlayedFromSearch?.(song);
+    buildRadioQueue(song, sourceList);
   };
 
   const handleArtistClick = (artist) => {
@@ -84,7 +122,7 @@ function SearchDropdown({ songs, artists, loading, query, history = [], onSongPl
             }
             <button
               className="sd-text sd-history-query"
-              onClick={() => { playSong(song, history, history.indexOf(song)); onSongPlayedFromSearch?.(song); }}
+              onClick={() => handleSongClick(song, history)}
             >
               <span className="sd-name">{song.title}</span>
               {song.artist?.length > 0 && (
@@ -130,7 +168,7 @@ function SearchDropdown({ songs, artists, loading, query, history = [], onSongPl
             <button
               key={song._id}
               className="sd-item"
-              onClick={() => handleSongClick(song)}
+              onClick={() => handleSongClick(song, songs)}
               role="option"
               aria-label={`Play ${song.title}`}
             >
