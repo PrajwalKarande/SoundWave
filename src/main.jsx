@@ -48,7 +48,7 @@ const Loader = () => {
   const msg = LOADING_MSGS[Math.floor(Math.random() * LOADING_MSGS.length)]
   return (
     <div className="flex flex-col items-center justify-center min-h-64 w-full gap-3">
-      <div className="flex items-end gap-[5px] h-[36px]">
+      <div className="flex items-end gap-1.25 h-9">
         {BARS.map(({ delay, dur }, i) => (
           <div
             key={i}
