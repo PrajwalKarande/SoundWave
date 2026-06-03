@@ -14,7 +14,10 @@ import {
   VolumeX,
   Music,
   ListMusic,
+  Heart,
 } from 'lucide-react';
+import { useLikedSongs } from '../../Context/LikedSongsContext';
+import { useToast } from '../../Context/ToastContext';
 
 const formatTime = (seconds) => {
   if (!seconds || isNaN(seconds)) return '0:00';
@@ -96,6 +99,19 @@ const Player = forwardRef(function Player({ width = 288 }, ref) {
         : 'Unknown Artist'
     : '';
 
+  const { isLiked, toggleLike } = useLikedSongs();
+  const toast = useToast();
+
+  const liked = currentSong ? isLiked(currentSong._id) : false;
+
+  const handleLike = async () => {
+    if (!currentSong) return;
+    await toggleLike(currentSong._id, {
+      onSuccess: (nowLiked) => toast.success(nowLiked ? 'Added to Liked Songs' : 'Removed from Liked Songs'),
+      onError: () => toast.error('Failed to update liked status'),
+    });
+  };
+
   const RepeatIcon = repeatMode === 'one' ? Repeat1 : Repeat;
 
   return (
@@ -134,9 +150,20 @@ const Player = forwardRef(function Player({ width = 288 }, ref) {
               </div>
             </div>
 
-            <div className="player-info">
-              <p className="player-title">{currentSong.title}</p>
-              <p className="player-artist">{artistName}</p>
+            <div className="player-info" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ flex: 1, minWidth: 0, overflow: 'hidden', textAlign: 'center' }}>
+                <p className="player-title">{currentSong.title}</p>
+                <p className="player-artist">{artistName}</p>
+              </div>
+              <button
+                className={`player-btn player-btn--sm${liked ? ' player-btn--liked' : ''}`}
+                onClick={handleLike}
+                style={{ flexShrink: 0 }}
+                title={liked ? 'Remove from Liked Songs' : 'Add to Liked Songs'}
+                aria-label={liked ? 'Unlike' : 'Like'}
+              >
+                <Heart size={17} fill={liked ? 'currentColor' : 'none'} strokeWidth={liked ? 2 : 1.5} style={{ transition: 'all 0.2s ease' }} />
+              </button>
             </div>
 
             <div className="player-progress-section">

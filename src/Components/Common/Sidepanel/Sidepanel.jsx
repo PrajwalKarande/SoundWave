@@ -12,6 +12,7 @@ import {
     Loader2,
     Music2,
     Info,
+    Heart,
 } from 'lucide-react';
 import { useAuth } from '../../../Context/AuthContextProvider';
 import { usePlaylist } from '../../../Context/PlaylistContext';
@@ -67,6 +68,17 @@ const Sidepanel = forwardRef(function Sidepanel(
             </button>
 
             <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col items-center gap-1 px-2 pb-1 py-1">
+                {user?.role !== 'admin' && (
+                    <Link
+                        to="/liked"
+                        title="Liked Songs"
+                        onClick={onClose}
+                        className={`w-9 h-9 shrink-0 rounded-lg overflow-hidden flex items-center justify-center ${isActive('/liked') ? 'ring-1 ring-rose-400/50' : ''}`}
+                        style={{ background: 'linear-gradient(135deg, #be185d 0%, #7c3aed 100%)' }}
+                    >
+                        <Heart size={14} fill="white" className="text-white" />
+                    </Link>
+                )}
                 {user?.role === 'admin'
                     ? adminItems.map(({ path, icon: Icon, label }) => (
                         <Link
@@ -164,6 +176,29 @@ const Sidepanel = forwardRef(function Sidepanel(
 
             {/* Playlist list — scrollable */}
             <div className="flex-1 overflow-y-auto min-h-0 border-t border-muted-text/15 pt-3 hide-scrollbar">
+                {/* Liked Songs — always at top */}
+                <Link
+                    to="/liked"
+                    onClick={onClose}
+                    className={`flex items-center gap-3 px-2 py-2 rounded-xl transition-all duration-150 mb-1 group ${
+                        isActive('/liked')
+                            ? 'bg-rose-500/10 text-rose-300'
+                            : 'text-muted-text hover:bg-primary-bg/60 hover:text-primary-text'
+                    }`}
+                >
+                    <div
+                        className="w-9 h-9 shrink-0 rounded-lg flex items-center justify-center"
+                        style={{ background: 'linear-gradient(135deg, #be185d 0%, #7c3aed 100%)' }}
+                    >
+                        <Heart size={15} fill="white" className="text-white" />
+                    </div>
+                    <p className={`text-lg font-medium truncate leading-tight transition-colors ${
+                        isActive('/liked') ? 'text-rose-300' : 'text-primary-text/90 group-hover:text-accent'
+                    }`}>
+                        Liked Songs
+                    </p>
+                </Link>
+
                 {loading ? (
                     <div className="flex items-center justify-center py-8">
                         <Loader2 className="animate-spin text-muted-text" size={20} />

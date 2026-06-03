@@ -1,0 +1,19 @@
+.ls-eq-wrap {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 14px;
+}
+
+.ls-eq-bar {
+    width: 3px;
+    background-color: #f87171;
+    border-radius: 1.5px;
+    transform-origin: bottom;
+    animation: ls-eq 0.7s ease-in-out infinite;
+}
+
+@keyframes ls-eq {
+    0%, 100% { transform: scaleY(0.35); }
+    50%       { transform: scaleY(1);   }
+}

@@ -244,6 +244,16 @@
   transform: scale(1.12);
 }
 
+.player-btn--liked {
+  color: #f87171;
+}
+
+.player-btn--liked:hover {
+  color: #f87171;
+  filter: brightness(1.2);
+  transform: scale(1.12);
+}
+
 .player-btn--play {
   width: 46px;
   height: 46px;

@@ -33,8 +33,12 @@ export function PlaylistProvider({ children }) {
     setPlaylists(prev => prev.filter(p => p._id !== id));
   }, []);
 
+  const renamePlaylist = useCallback((id, name) => {
+    setPlaylists(prev => prev.map(p => p._id === id ? { ...p, name } : p));
+  }, []);
+
   return (
-    <PlaylistContext.Provider value={{ playlists, loading, addPlaylist, removePlaylist, refreshPlaylists }}>
+    <PlaylistContext.Provider value={{ playlists, loading, addPlaylist, removePlaylist, refreshPlaylists, renamePlaylist }}>
       {children}
     </PlaylistContext.Provider>
   );

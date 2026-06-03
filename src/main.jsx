@@ -8,6 +8,8 @@ import { AuthContextProvider } from './Context/AuthContextProvider.jsx'
 import { PlayerProvider } from './Context/PlayerContext.jsx'
 import { ConfirmProvider } from './Context/ConfirmContext.jsx'
 import { PlaylistProvider } from './Context/PlaylistContext.jsx'
+import { LikedSongsProvider } from './Context/LikedSongsContext.jsx'
+import { ToastProvider } from './Context/ToastContext.jsx'
 
 const Home            = lazy(() => import('./Components/Home/Home.jsx'))
 const Signup          = lazy(() => import('./Components/Signup/Signup.jsx'))
@@ -22,6 +24,7 @@ const AdminUploadArtist = lazy(() => import('./Components/Admin/Artist/AdminUplo
 const AddArtist       = lazy(() => import('./Components/Admin/Artist/AddArtist.jsx'))
 const UserManagement  = lazy(() => import('./Components/Admin/UserManagement.jsx'))
 const About           = lazy(() => import('./Components/About/About.jsx'))
+const LikedSongsPage  = lazy(() => import('./Components/Liked/LikedSongsPage.jsx'))
 const NotFound        = lazy(() => import('./Components/NotFound/NotFound.jsx'))
 const UserProfile     = lazy(() => import('./Components/UserProfile/UserProfile.jsx'))
 
@@ -88,6 +91,11 @@ const router = createBrowserRouter([
         element: wrap(<PlaylistPage />)
       }
     ]
+  },
+  {
+    path: '/liked',
+    element: <App />,
+    children: [{ index: true, element: wrap(<LikedSongsPage />) }]
   },
   {
     path: '/artist',
@@ -166,9 +174,13 @@ createRoot(document.getElementById('root')).render(
     <PlayerProvider>
       <AuthContextProvider>
         <PlaylistProvider>
-        <ConfirmProvider>
-            <RouterProvider router={router} />
-        </ConfirmProvider>
+          <LikedSongsProvider>
+            <ToastProvider>
+              <ConfirmProvider>
+                <RouterProvider router={router} />
+              </ConfirmProvider>
+            </ToastProvider>
+          </LikedSongsProvider>
         </PlaylistProvider>
       </AuthContextProvider>
     </PlayerProvider>

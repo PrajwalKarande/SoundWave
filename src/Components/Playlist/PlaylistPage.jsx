@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import {
-  Play, Pause, Shuffle, Plus, Trash2,
+  Play, Pause, Shuffle, Plus, Trash2, Pencil,
   Loader2, Music, Search, X, CheckCircle2, Clock,
 } from 'lucide-react';
 import {
@@ -10,6 +10,7 @@ import {
   deleteSongFromPlaylist,
   deletePlaylist,
 } from '../../Services/playlistService';
+import { CreatePlaylist } from './CreatePlaylist';
 import { songService } from '../../Services/songService';
 import { usePlayer } from '../../Context/PlayerContext';
 import './PlaylistPage.css';
@@ -44,11 +45,12 @@ export default function PlaylistPage() {
   const { playSong, currentSong, isPlaying, togglePlay } = usePlayer();
   const confirm        = useConfirm();
   const navigate       = useNavigate();
-  const { removePlaylist } = usePlaylist();
+  const { removePlaylist, renamePlaylist } = usePlaylist();
 
   const [playlist, setPlaylist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showRenameModal, setShowRenameModal] = useState(false);
   const [allSongs, setAllSongs] = useState([]);
   const [songsLoading, setSongsLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -148,6 +150,11 @@ export default function PlaylistPage() {
     if (!songs.length) return;
     const idx = Math.floor(Math.random() * songs.length);
     playSong(songs[idx], songs, idx);
+  };
+
+  const handleRenamed = (newName) => {
+    setPlaylist(prev => ({ ...prev, name: newName }));
+    renamePlaylist(id, newName);
   };
 
   const handleDelete = async () => {
@@ -298,6 +305,14 @@ export default function PlaylistPage() {
             <Plus size={20} />
           </button>
           <button
+            onClick={() => setShowRenameModal(true)}
+            className="w-10 h-10 rounded-full flex items-center justify-center text-white/50 hover:text-accent hover:bg-accent/10 transition-all"
+            aria-label="Rename playlist"
+          >
+            <Pencil size={18} />
+          </button>
+
+          <button
             onClick={handleDelete}
             className="w-10 h-10 rounded-full flex items-center justify-center text-white/50 hover:text-accent hover:bg-accent/10 transition-all"
             aria-label="Delete playlist"
@@ -400,6 +415,17 @@ export default function PlaylistPage() {
             })}
           </tbody>
         </table>
+      )}
+
+      {/* ── Rename Playlist Modal ── */}
+      {showRenameModal && (
+        <CreatePlaylist
+          mode="rename"
+          initialName={playlist.name}
+          playlistId={id}
+          onClose={() => setShowRenameModal(false)}
+          onRenamed={handleRenamed}
+        />
       )}
 
       {/* ── Add Songs Modal ── */}

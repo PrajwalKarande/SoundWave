@@ -1,41 +1,57 @@
 import { useState } from "react";
-import { createPlaylist } from "../../Services/playlistService";
+import { createPlaylist, updatePlaylist } from "../../Services/playlistService";
 import { Loader2, Check, X } from "lucide-react";
 
-export const CreatePlaylist = ({ onClose, onCreated }) => {
-    const [name, setName] = useState('');
+export const CreatePlaylist = ({
+    onClose,
+    onCreated,
+    onRenamed,
+    mode = 'create',
+    initialName = '',
+    playlistId,
+}) => {
+    const [name, setName] = useState(initialName);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [loading, setLoading] = useState(false);
 
+    const isRename = mode === 'rename';
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!name.trim()) {
-            setError('Playlist name is required');
+            setError('Playlist name cannot be empty');
             return;
         }
         setError('');
         setSuccess('');
         setLoading(true);
         try {
-            const result = await createPlaylist(name.trim());
-            setSuccess('Playlist created successfully!');
-            setName('');
-            if (onCreated) onCreated(result);
-            setTimeout(() => {
-                onClose?.();
-            }, 1200);
+            if (isRename) {
+                await updatePlaylist(playlistId, name.trim());
+                setSuccess('Playlist renamed!');
+                if (onRenamed) onRenamed(name.trim());
+                setTimeout(() => onClose?.(), 900);
+            } else {
+                const result = await createPlaylist(name.trim());
+                setSuccess('Playlist created successfully!');
+                setName('');
+                if (onCreated) onCreated(result);
+                setTimeout(() => onClose?.(), 1200);
+            }
         } catch (err) {
-            setError(err.message || 'Failed to create playlist');
+            setError(
+                err.response?.data?.message ||
+                err.message ||
+                `Failed to ${isRename ? 'rename' : 'create'} playlist`
+            );
         } finally {
             setLoading(false);
         }
     };
 
     const handleBackdropClick = (e) => {
-        if (e.target === e.currentTarget) {
-            onClose?.();
-        }
+        if (e.target === e.currentTarget) onClose?.();
     };
 
     return (
@@ -47,7 +63,9 @@ export const CreatePlaylist = ({ onClose, onCreated }) => {
             <div className="relative w-full max-w-md mx-4 bg-section-bg rounded-lg shadow-2xl border border-accent/10 overflow-hidden animate-fade-in">
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 pt-6 pb-2">
-                    <h2 className="text-xl font-bold text-primary-text">Create Playlist</h2>
+                    <h2 className="text-xl font-bold text-primary-text">
+                        {isRename ? 'Rename Playlist' : 'Create Playlist'}
+                    </h2>
                     <button
                         onClick={onClose}
                         className="p-1.5 rounded-lg text-muted-text hover:text-primary-text hover:bg-primary-bg/50 transition-colors"
@@ -81,7 +99,10 @@ export const CreatePlaylist = ({ onClose, onCreated }) => {
                             type="text"
                             placeholder="My awesome playlist"
                             value={name}
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => {
+                                setName(e.target.value);
+                                if (error) setError('');
+                            }}
                             autoFocus
                             className="w-full px-4 py-3 bg-primary-bg/60 border border-muted-text/20 rounded-lg text-primary-text placeholder-muted-text/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-colors"
                         />
@@ -100,11 +121,10 @@ export const CreatePlaylist = ({ onClose, onCreated }) => {
                             disabled={loading || !name.trim()}
                             className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-full bg-accent hover:bg-accent/80 text-primary-bg font-semibold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            {loading ? (
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                                'Create'
-                            )}
+                            {loading
+                                ? <Loader2 className="h-4 w-4 animate-spin" />
+                                : isRename ? 'Save' : 'Create'
+                            }
                         </button>
                     </div>
                 </form>
