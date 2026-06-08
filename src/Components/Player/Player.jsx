@@ -158,11 +158,11 @@ const Player = forwardRef(function Player({ width = 288 }, ref) {
               <button
                 className={`player-btn player-btn--sm${liked ? ' player-btn--liked' : ''}`}
                 onClick={handleLike}
-                style={{ flexShrink: 0 }}
+                style={{ flexShrink: 0, color: liked ? undefined : 'rgba(255,255,255,0.55)' }}
                 title={liked ? 'Remove from Liked Songs' : 'Add to Liked Songs'}
                 aria-label={liked ? 'Unlike' : 'Like'}
               >
-                <Heart size={17} fill={liked ? 'currentColor' : 'none'} strokeWidth={liked ? 2 : 1.5} style={{ transition: 'all 0.2s ease' }} />
+                <Heart size={19} fill={liked ? 'currentColor' : 'none'} strokeWidth={liked ? 2 : 1.5} style={{ transition: 'all 0.2s ease' }} />
               </button>
             </div>
 

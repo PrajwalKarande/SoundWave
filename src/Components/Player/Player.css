@@ -116,7 +116,6 @@
 /* ── Song Info ── */
 .player-info {
   text-align: center;
-  overflow: hidden;
 }
 
 .player-title {

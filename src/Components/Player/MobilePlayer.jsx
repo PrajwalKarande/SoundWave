@@ -1,8 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { usePlayer } from '../../Context/PlayerContext';
+import { useLikedSongs } from '../../Context/LikedSongsContext';
+import { useToast } from '../../Context/ToastContext';
 import {
   Play, Pause, SkipBack, SkipForward,
-  Shuffle, Repeat, Repeat1, Music, ChevronDown,
+  Shuffle, Repeat, Repeat1, Music, ChevronDown, Heart,
 } from 'lucide-react';
 
 const formatTime = (seconds) => {
@@ -40,6 +42,19 @@ export default function MobilePlayer() {
     prevSongIdRef.current = currentSong?._id ?? null;
   }, [currentSong]);
 
+  const { isLiked, toggleLike } = useLikedSongs();
+  const toast = useToast();
+  const liked = currentSong ? isLiked(currentSong._id) : false;
+
+  const handleLike = async (e) => {
+    e.stopPropagation();
+    if (!currentSong) return;
+    await toggleLike(currentSong._id, {
+      onSuccess: (nowLiked) => toast.success(nowLiked ? 'Added to Liked Songs' : 'Removed from Liked Songs'),
+      onError: () => toast.error('Failed to update liked status'),
+    });
+  };
+
   if (!currentSong) return null;
 
   const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
@@ -75,7 +90,7 @@ export default function MobilePlayer() {
     <>
       {/* ── Mini bar ── */}
       <div
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 h-16 px-3 flex items-center gap-3 cursor-pointer select-none"
+        className="min-[900px]:hidden fixed bottom-0 left-0 right-0 z-40 h-16 px-3 flex items-center gap-3 cursor-pointer select-none"
         style={{
           background: 'rgba(13, 15, 20, 0.93)',
           backdropFilter: 'blur(24px)',
@@ -97,6 +112,16 @@ export default function MobilePlayer() {
           <p className="text-sm font-semibold text-white truncate leading-tight">{currentSong.title}</p>
           <p className="text-xs text-white/45 truncate mt-0.5">{artistName}</p>
         </div>
+
+        {/* Like */}
+        <button
+          className="w-10 h-10 flex items-center justify-center active:scale-90 transition-transform"
+          style={{ color: liked ? '#f87171' : 'rgba(255,255,255,0.45)' }}
+          onClick={handleLike}
+          aria-label={liked ? 'Unlike' : 'Like'}
+        >
+          <Heart size={20} fill={liked ? 'currentColor' : 'none'} strokeWidth={liked ? 2 : 1.5} />
+        </button>
 
         {/* Play/Pause */}
         <button
@@ -130,7 +155,7 @@ export default function MobilePlayer() {
 
       {/* ── Full-screen player sheet ── */}
       <div
-        className={`md:hidden fixed inset-0 z-50 flex flex-col overflow-hidden transition-transform duration-300 ease-out ${
+        className={`min-[900px]:hidden fixed inset-0 z-50 flex flex-col overflow-hidden transition-transform duration-300 ease-out ${
           open ? 'translate-y-0' : 'translate-y-full pointer-events-none'
         }`}
         style={{ background: '#0d0f14' }}
@@ -208,9 +233,19 @@ export default function MobilePlayer() {
           </div>
 
           {/* Song info */}
-          <div className="mb-5">
-            <p className="text-2xl font-bold text-white truncate leading-tight">{currentSong.title}</p>
-            <p className="text-sm text-white/45 truncate mt-1">{artistName}</p>
+          <div className="mb-5 flex items-center gap-3">
+            <div className="flex-1 min-w-0">
+              <p className="text-2xl font-bold text-white truncate leading-tight">{currentSong.title}</p>
+              <p className="text-sm text-white/45 truncate mt-1">{artistName}</p>
+            </div>
+            <button
+              className="w-11 h-11 flex items-center justify-center shrink-0 active:scale-90 transition-all"
+              style={{ color: liked ? '#f87171' : 'rgba(255,255,255,0.35)' }}
+              onClick={handleLike}
+              aria-label={liked ? 'Unlike' : 'Like'}
+            >
+              <Heart size={24} fill={liked ? 'currentColor' : 'none'} strokeWidth={liked ? 2 : 1.5} style={{ transition: 'all 0.2s ease' }} />
+            </button>
           </div>
 
           {/* Progress bar */}

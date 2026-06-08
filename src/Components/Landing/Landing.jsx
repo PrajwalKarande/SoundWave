@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { Music, Zap, Users, Play, ChevronRight } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../../assets/logo.png';
+import logo from '../../../public/logo.png';
 import './Landing.css';
 import { useEffect, useState, useMemo } from 'react';
 import api from '../../Services/api';

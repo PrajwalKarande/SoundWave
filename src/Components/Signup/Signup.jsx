@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../Context/AuthContextProvider';
-import logo from '../../assets/logo.png';
+import logo from '../../../public/logo.png';
 import './signup.css';
 
 function Signup() {

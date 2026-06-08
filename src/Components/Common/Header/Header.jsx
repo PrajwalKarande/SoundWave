@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../Context/AuthContextProvider';
-import logo from '../../../assets/logo.png';
+import logo from '../../../../public/logo.png';
 import './Header.css';
 import { Home, Search, Menu, User, LogOut } from 'lucide-react';
 import SearchDropdown from './SearchDropdown';

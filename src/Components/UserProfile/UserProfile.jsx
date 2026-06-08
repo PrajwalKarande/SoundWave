@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Music2, ListMusic, CalendarDays } from 'lucide-react';
+import { Music2, ListMusic, CalendarDays, Heart } from 'lucide-react';
 import { useAuth } from '../../Context/AuthContextProvider';
 import { usePlaylist } from '../../Context/PlaylistContext';
+import { useLikedSongs } from '../../Context/LikedSongsContext';
 import './UserProfile.css';
 
 const GRADIENT_COLORS = [
@@ -40,10 +41,37 @@ function formatJoinDate(dateStr) {
     }
 }
 
+/* ── Liked Songs card ── */
+function LikedSongsCard({ count }) {
+    return (
+        <Link to="/liked" className="up-card group">
+            <div
+                className="up-cover"
+                style={{ background: 'linear-gradient(135deg, #be185d 0%, #7c3aed 100%)' }}
+            >
+                <Heart
+                    size={40}
+                    fill="white"
+                    className="text-white"
+                    style={{ opacity: 0.85, filter: 'drop-shadow(0 4px 12px rgba(255,255,255,0.2))' }}
+                />
+            </div>
+            <div className="mt-2.5 min-w-0">
+                <p className="text-sm font-medium text-white/80 truncate group-hover:text-white transition-colors">
+                    Liked Songs
+                </p>
+                <p className="text-xs text-white/30 mt-0.5">
+                    {count} {count === 1 ? 'song' : 'songs'}
+                </p>
+            </div>
+        </Link>
+    );
+}
+
 /* ── Playlist card ── */
 function PlaylistCard({ playlist, index }) {
-    const tint    = COVER_TINTS[index % COVER_TINTS.length];
-    const count   = playlist.songs?.length ?? 0;
+    const tint  = COVER_TINTS[index % COVER_TINTS.length];
+    const count = playlist.songs?.length ?? 0;
 
     return (
         <Link to={`/playlist/${playlist._id}`} className="up-card group">
@@ -92,27 +120,11 @@ function Skeleton() {
     );
 }
 
-/* ── Empty state ── */
-function EmptyPlaylists() {
-    return (
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
-            <div className="w-16 h-16 rounded-full bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                <Music2 size={28} className="text-white/20" />
-            </div>
-            <div>
-                <p className="text-sm font-medium text-white/40">no playlists yet</p>
-                <p className="text-xs text-white/20 mt-1">
-                    the audacity of having zero playlists, bestie
-                </p>
-            </div>
-        </div>
-    );
-}
-
 /* ── Main component ── */
 export default function UserProfile() {
     const { user, loading: authLoading } = useAuth();
     const { playlists, loading: playlistLoading } = usePlaylist();
+    const { likedIds } = useLikedSongs();
     const navigate = useNavigate();
 
     const gradientColor = useMemo(() => {
@@ -166,6 +178,10 @@ export default function UserProfile() {
                                 {playlists.length} {playlists.length === 1 ? 'playlist' : 'playlists'}
                             </span>
                             <span className="flex items-center gap-1.5">
+                                <Heart size={13} className="text-white/35" />
+                                {likedIds.size} liked {likedIds.size === 1 ? 'song' : 'songs'}
+                            </span>
+                            <span className="flex items-center gap-1.5">
                                 <CalendarDays size={13} className="text-white/35" />
                                 surviving the algorithm since {formatJoinDate(user.createdAt)}
                             </span>
@@ -174,7 +190,7 @@ export default function UserProfile() {
                 </div>
             </div>
 
-            {/* ── Playlist section ── */}
+            {/* ── Collection section ── */}
             <div className="px-6 pt-6 pb-10">
 
                 {/* Section header */}
@@ -182,13 +198,13 @@ export default function UserProfile() {
                     <h2 className="text-sm font-semibold text-white/85">the playlist arc</h2>
                     <p className="text-xs text-white/28 mt-0.5">
                         {playlists.length === 0
-                            ? 'no playlists detected. the silence is deafening.'
+                            ? 'just liked songs for now. the playlist era is coming.'
                             : `${playlists.length} playlist${playlists.length !== 1 ? 's' : ''} and counting, no cap`
                         }
                     </p>
                 </div>
 
-                {/* Grid */}
+                {/* Grid — Liked Songs card always first, then playlists */}
                 {playlistLoading ? (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 animate-pulse">
                         {Array.from({ length: 8 }).map((_, i) => (
@@ -199,10 +215,9 @@ export default function UserProfile() {
                             </div>
                         ))}
                     </div>
-                ) : playlists.length === 0 ? (
-                    <EmptyPlaylists />
                 ) : (
                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                        <LikedSongsCard count={likedIds.size} />
                         {playlists.map((playlist, i) => (
                             <PlaylistCard key={playlist._id} playlist={playlist} index={i} />
                         ))}
