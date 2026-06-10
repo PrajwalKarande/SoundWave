@@ -147,10 +147,9 @@ npm run lint
 The API base URL is hardcoded in `src/Services/api.js`:
 
 ```js
-// src/Services/api.js
 const api = axios.create({
   baseURL: 'http://localhost:3000/api',
-  withCredentials: true,   // sends httpOnly JWT cookie
+  withCredentials: true, 
 });
 ```
 

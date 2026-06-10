@@ -1,16 +1,51 @@
-import { motion } from 'framer-motion';
-import { Music, Zap, Users, Play, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import { Music, Zap, Users, ChevronRight, Play } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import logo from '../../../public/logo.png';
 import './Landing.css';
-import { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo, useRef } from 'react';
 import api from '../../Services/api';
 import { useAuth } from '../../Context/AuthContextProvider';
+
+// Animated counter component
+const AnimatedCounter = ({ target, suffix = '' }) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true, margin: '-50px' });
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!isInView) return;
+    const duration = 2000;
+    const steps = 60;
+    const increment = target / steps;
+    let current = 0;
+    const timer = setInterval(() => {
+      current += increment;
+      if (current >= target) {
+        setCount(target);
+        clearInterval(timer);
+      } else {
+        setCount(Math.floor(current));
+      }
+    }, duration / steps);
+    return () => clearInterval(timer);
+  }, [isInView, target]);
+
+  return <span ref={ref}>{count}{suffix}</span>;
+};
 
 export const Landing = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [stats, setStats] = useState({ songs: 100, artists: 30, users: 50 });
+  const [introComplete, setIntroComplete] = useState(false);
+  const landingRef = useRef(null);
+
+  // Parallax scroll setup
+  const { scrollYProgress } = useScroll({ container: landingRef });
+  const bgY1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
+  const bgY2 = useTransform(scrollYProgress, [0, 1], [0, -120]);
+  const bgY3 = useTransform(scrollYProgress, [0, 1], [0, -300]);
 
   // Compute once on mount so re-renders (e.g. stats load) don't re-randomize the bars
   const waveformBars = useMemo(() =>
@@ -69,48 +104,56 @@ export const Landing = () => {
     },
   };
 
-  const pulseVariants = {
-    animate: {
-      scale: [1, 1.05, 1],
-      boxShadow: [
-        '0 0 20px rgba(6, 201, 224, 0)',
-        '0 0 40px rgba(6, 201, 224, 0.6)',
-        '0 0 20px rgba(6, 201, 224, 0)',
-      ],
-      transition: {
-        duration: 3,
-        ease: 'easeInOut',
-        repeat: Infinity,
-      },
-    },
-  };
-
-  const slideInLeft = {
-    hidden: { opacity: 0, x: -100 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
-  };
-
-  const slideInRight = {
-    hidden: { opacity: 0, x: 100 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      transition: { duration: 0.8, ease: 'easeOut' },
-    },
-  };
-
   return (
-    <div className="landing-page">
+    <div className="landing-page" ref={landingRef}>
+      {/* Film grain overlay */}
+      <div className="grain-overlay" />
+
+      {/* Intro Splash Animation */}
+      <AnimatePresence>
+        {!introComplete && (
+          <motion.div
+            className="intro-overlay"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.4 }}
+          >
+            <motion.div
+              className="intro-content"
+              animate={{ y: [0, 0, -window.innerHeight / 2 + 40] }}
+              transition={{
+                times: [0, 0.6, 1],
+                duration: 2.4,
+                ease: 'easeInOut',
+              }}
+              onAnimationComplete={() => setIntroComplete(true)}
+            >
+              <motion.img
+                src={logo}
+                alt="SoundWave"
+                className="intro-logo"
+                initial={{ x: '-50vw', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              />
+              <motion.span
+                className="intro-title"
+                initial={{ x: '50vw', opacity: 0 }}
+                animate={{ x: 0, opacity: 1 }}
+                transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              >
+                SOUNDWAVE
+              </motion.span>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* SoundWave Header */}
       <motion.header
         className="landing-header"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        initial={{ opacity: 0 }}
+        animate={introComplete ? { opacity: 1 } : { opacity: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
       >
         <div className="landing-header-content">
           <Link to="/" className="landing-logo-section">
@@ -161,26 +204,21 @@ export const Landing = () => {
       <motion.section
         className="hero-section"
         initial="hidden"
-        animate="visible"
+        animate={introComplete ? "visible" : "hidden"}
         variants={containerVariants}
       >
-        {/* Animated background elements */}
-        <motion.div className="bg-element bg-element-1" variants={floatVariants} animate="animate" />
-        <motion.div className="bg-element bg-element-2" variants={floatVariants} animate="animate" />
-        <motion.div className="bg-element bg-element-3" variants={floatVariants} animate="animate" />
+        {/* Parallax background elements */}
+        <motion.div className="bg-element bg-element-1" style={{ y: bgY1 }} variants={floatVariants} animate="animate" />
+        <motion.div className="bg-element bg-element-2" style={{ y: bgY2 }} variants={floatVariants} animate="animate" />
+        <motion.div className="bg-element bg-element-3" style={{ y: bgY3 }} variants={floatVariants} animate="animate" />
 
         <div className="hero-content">
-          {/* Logo and tagline */}
-          <motion.div className="logo-section" variants={itemVariants}>
-            <img src={logo} alt="SoundWave" className="hero-logo" />
-
-          </motion.div>
 
           {/* Main heading */}
           <motion.h1 className="hero-title" variants={itemVariants}>
             <span className="text-gradient">Immerse Yourself</span>
             <br />
-            in Pure Sound
+            <span className="text-gradient">in Pure Sound</span>
           </motion.h1>
 
           {/* Subheading */}
@@ -192,17 +230,15 @@ export const Landing = () => {
           {/* CTA Buttons */}
           <motion.div className="cta-buttons" variants={itemVariants}>
             {user ? (
-              <>
-                <motion.button
-                  className="btn btn-primary"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate('/home')}
-                >
-                  Continue Listening
-                  <ChevronRight size={20} />
-                </motion.button>
-              </>
+              <motion.button
+                className="btn btn-primary"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => navigate('/home')}
+              >
+                Continue Listening
+                <ChevronRight size={20} />
+              </motion.button>
             ) : (
               <>
                 <Link to="/signup">
@@ -211,7 +247,7 @@ export const Landing = () => {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                   >
-                    Get Started Now
+                    Start Listening Free
                     <ChevronRight size={20} />
                   </motion.button>
                 </Link>
@@ -219,19 +255,50 @@ export const Landing = () => {
             )}
           </motion.div>
 
-          {/* Animated play button */}
           <motion.div
-            className="floating-play-btn"
-            variants={pulseVariants}
-            animate="animate"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
+            className="now-playing-card"
+            variants={itemVariants}
+            whileHover={{ scale: 1.02, boxShadow: '0 20px 60px rgba(6, 201, 224, 0.2)' }}
           >
-            <Play size={28} fill="currentColor" />
+            <div className="np-album-art">
+              <motion.div
+                className="np-vinyl"
+                animate={{ rotate: 360 }}
+                transition={{ duration: 8, ease: 'linear', repeat: Infinity }}
+              />
+              <div className="np-play-btn">
+                <Play size={16} fill="white" />
+              </div>
+            </div>
+            <div className="np-info">
+              <span className="np-label">NOW PLAYING</span>
+              <span className="np-track">Midnight Drive</span>
+              <span className="np-artist">SoundWave Radio</span>
+              <div className="np-progress">
+                <motion.div
+                  className="np-progress-fill"
+                  animate={{ width: ['0%', '100%'] }}
+                  transition={{ duration: 12, ease: 'linear', repeat: Infinity }}
+                />
+              </div>
+              <div className="np-time">
+                <span>1:24</span>
+                <span>3:45</span>
+              </div>
+            </div>
+            <div className="np-visualizer">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="np-viz-bar"
+                  animate={{ height: [8, 24 + Math.random() * 16, 8] }}
+                  transition={{ duration: 0.6 + Math.random() * 0.4, repeat: Infinity, ease: 'easeInOut', delay: i * 0.1 }}
+                />
+              ))}
+            </div>
           </motion.div>
         </div>
 
-        {/* Animated waveform visualization */}
         <motion.div className="waveform-container" variants={itemVariants}>
           {waveformBars.map((bar, i) => (
             <motion.div
@@ -251,7 +318,6 @@ export const Landing = () => {
         </motion.div>
       </motion.section>
 
-      {/* Features Section */}
       <motion.section
         className="features-section"
         initial="hidden"
@@ -264,7 +330,6 @@ export const Landing = () => {
         </motion.h2>
 
         <motion.div className="features-grid" variants={containerVariants}>
-          {/* Feature 1 */}
           <motion.div
             className="feature-card"
             variants={itemVariants}
@@ -285,7 +350,6 @@ export const Landing = () => {
             <p>Access our vast library of music across all genres</p>
           </motion.div>
 
-          {/* Feature 2 */}
           <motion.div
             className="feature-card"
             variants={itemVariants}
@@ -306,7 +370,6 @@ export const Landing = () => {
             <p>High-quality streaming with zero buffering. Play any song instantly.</p>
           </motion.div>
 
-          {/* Feature 3 */}
           <motion.div
             className="feature-card"
             variants={itemVariants}
@@ -329,7 +392,6 @@ export const Landing = () => {
         </motion.div>
       </motion.section>
 
-      {/* Music Stats Section */}
       <motion.section
         className="stats-section"
         initial="hidden"
@@ -338,67 +400,24 @@ export const Landing = () => {
         variants={containerVariants}
       >
         <motion.div className="stats-container" variants={containerVariants}>
-          {/* Stat 1 */}
           <motion.div className="stat-item" variants={itemVariants}>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.span
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-              >
-                {stats.songs}+
-              </motion.span>
-            </motion.h3>
+            <h3><AnimatedCounter target={stats.songs} suffix="+" /></h3>
             <p>Songs</p>
           </motion.div>
 
-          {/* Stat 2 */}
           <motion.div className="stat-item" variants={itemVariants}>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.span
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-              >
-                {stats.users}+
-              </motion.span>
-            </motion.h3>
+            <h3><AnimatedCounter target={stats.users} suffix="+" /></h3>
             <p>Active Users</p>
           </motion.div>
 
-          {/* Stat 3 */}
           <motion.div className="stat-item" variants={itemVariants}>
-            <motion.h3
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6 }}
-              viewport={{ once: true }}
-            >
-              <motion.span
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                transition={{ delay: 0.3, duration: 0.8 }}
-              >
-                24/7
-              </motion.span>
-            </motion.h3>
-            <p>Uninterrupted Streaming</p>
+            <h3><AnimatedCounter target={stats.artists} suffix="+" /></h3>
+            <p>Artists</p>
           </motion.div>
         </motion.div>
       </motion.section>
 
 
-      {/* CTA Section */}
       <motion.section
         className="final-cta-section"
         initial="hidden"
@@ -408,7 +427,7 @@ export const Landing = () => {
       >
         <motion.div className="final-cta-content" variants={itemVariants}>
           <h2>Ready to Experience Music Like Never Before?</h2>
-          <p>{user ? 'Continue your music journey.' : 'Join millions of music lovers and start your journey today.'}</p>
+          <p>{user ? 'Continue your music journey.' : 'Start your journey today.'}</p>
 
           {user ? (
             <motion.button
@@ -434,7 +453,6 @@ export const Landing = () => {
           )}
         </motion.div>
 
-        {/* Animated background gradient */}
         <motion.div
           className="cta-bg-glow"
           animate={{
@@ -448,7 +466,6 @@ export const Landing = () => {
         />
       </motion.section>
 
-      {/* Footer */}
       <motion.footer
         className="landing-footer"
         initial={{ opacity: 0 }}

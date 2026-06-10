@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import { Music, Users, Mic2, HardDrive, RefreshCw, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
-// ─── Platform stat card ───────────────────────────────────────────────────────
 const StatCard = ({ title, value, icon: Icon, delay, onclick }) => (
   <motion.div
     initial={{ opacity: 0, y: 20 }}
@@ -29,7 +28,6 @@ const StatCard = ({ title, value, icon: Icon, delay, onclick }) => (
   </motion.div>
 );
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
 const fmt = (n) => {
   if (n >= 1e9) return `${(n / 1e9).toFixed(2)} GB`;
   if (n >= 1e6) return `${(n / 1e6).toFixed(1)} MB`;
@@ -43,7 +41,6 @@ const fmtOps = (n) => {
   return String(n);
 };
 
-// ─── Animated ring / donut chart ─────────────────────────────────────────────
 const RingChart = ({ pct, label, sub }) => {
   const sz = 148;
   const sw = 11;
@@ -72,7 +69,6 @@ const RingChart = ({ pct, label, sub }) => {
           </filter>
         </defs>
 
-        {/* Track */}
         <circle
           cx={sz / 2} cy={sz / 2} r={r}
           fill="none"
@@ -80,7 +76,6 @@ const RingChart = ({ pct, label, sub }) => {
           strokeWidth={sw}
         />
 
-        {/* Filled arc */}
         <motion.circle
           cx={sz / 2} cy={sz / 2} r={r}
           fill="none"
@@ -95,7 +90,6 @@ const RingChart = ({ pct, label, sub }) => {
         />
       </svg>
 
-      {/* Centre label */}
       <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5">
         <span className="text-sm font-bold text-primary-text tabular-nums leading-none">{label}</span>
         <span className="text-[11px] font-mono text-accent/70 leading-none">{sub}</span>
@@ -104,7 +98,6 @@ const RingChart = ({ pct, label, sub }) => {
   );
 };
 
-// ─── Single operation bar row ─────────────────────────────────────────────────
 const OpBar = ({ label, badge, value, max, gradient, delay, unlimited }) => {
   const pct = unlimited ? 20 : (max > 0 ? Math.min((value / max) * 100, 100) : 0);
   const pctLabel = unlimited ? 'FREE' : (pct < 0.1 ? '< 0.1%' : `${pct.toFixed(1)}%`);
@@ -133,7 +126,7 @@ const OpBar = ({ label, badge, value, max, gradient, delay, unlimited }) => {
       </div>
 
       <div
-        className="h-[5px] rounded-full overflow-hidden"
+        className="h-1.25 rounded-full overflow-hidden"
         style={{ background: 'rgba(255,255,255,0.04)' }}
       >
         <motion.div
@@ -152,7 +145,6 @@ const OpBar = ({ label, badge, value, max, gradient, delay, unlimited }) => {
   );
 };
 
-// ─── R2 analytics block ───────────────────────────────────────────────────────
 const R2Analytics = ({ data, loading, error, onRetry }) => {
   const FREE_STORAGE = 10 * 1e9;
   const FREE_CLASS_A = 1_000_000;
@@ -188,9 +180,8 @@ const R2Analytics = ({ data, loading, error, onRetry }) => {
       : '—';
 
     inner = (
-      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/[0.05]">
+      <div className="grid grid-cols-1 md:grid-cols-2 divide-y md:divide-y-0 md:divide-x divide-white/5">
 
-        {/* ── Storage panel ── */}
         <div className="p-6 flex flex-col gap-5">
           <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-muted-text/50">
             Storage usage
@@ -228,7 +219,6 @@ const R2Analytics = ({ data, loading, error, onRetry }) => {
           </div>
         </div>
 
-        {/* ── Operations panel ── */}
         <div className="p-6 flex flex-col gap-4">
           <div className="flex items-center justify-between">
             <p className="text-[10px] uppercase tracking-[0.22em] font-bold text-muted-text/50">
@@ -256,7 +246,7 @@ const R2Analytics = ({ data, loading, error, onRetry }) => {
             />
           </div>
 
-          <div className="mt-auto pt-4 border-t border-white/[0.05] flex items-center justify-between">
+          <div className="mt-auto pt-4 border-t border-white/5 flex items-center justify-between">
             <span className="text-[10px] uppercase tracking-widest text-muted-text/40">
               Total requests
             </span>
@@ -277,7 +267,7 @@ const R2Analytics = ({ data, loading, error, onRetry }) => {
       className="bg-section-bg/50 backdrop-blur-md border border-accent/10 rounded-xl overflow-hidden"
     >
       {/* Card header */}
-      <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.05]">
+      <div className="flex items-center justify-between px-6 py-4 border-b border-white/5">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-lg bg-accent/10 text-accent">
             <HardDrive size={16} />
@@ -307,7 +297,6 @@ const R2Analytics = ({ data, loading, error, onRetry }) => {
   );
 };
 
-// ─── Admin dashboard page ─────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [stats,     setStats]     = useState({ songs: 0, artists: 0, users: 0 });
@@ -351,7 +340,6 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
 
-        {/* Platform overview */}
         <section>
           <h2 className="text-3xl font-primary-bg text-primary-text mb-8">Platform Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -361,7 +349,6 @@ const AdminDashboard = () => {
           </div>
         </section>
 
-        {/* R2 analytics */}
         <section>
           <h2 className="text-3xl font-primary-bg text-primary-text mb-8">Storage &amp; Operations</h2>
           <R2Analytics

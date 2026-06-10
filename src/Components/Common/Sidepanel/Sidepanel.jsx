@@ -55,10 +55,8 @@ const Sidepanel = forwardRef(function Sidepanel(
 
     const baseClasses = 'work-sans bg-section-bg text-accent h-full flex flex-col rounded-lg overflow-hidden';
 
-    // ── Mini (collapsed) bar ──────────────────────────────────────────────────
     const miniBar = (
         <>
-            {/* Library icon — click to expand */}
             <button
                 onClick={onToggle}
                 className="flex items-center justify-center py-3 shrink-0 text-accent hover:text-primary-text transition-colors"
@@ -132,7 +130,6 @@ const Sidepanel = forwardRef(function Sidepanel(
         </>
     );
 
-    // ── Full (expanded) content ───────────────────────────────────────────────
     const fullContent = user?.role === 'admin' ? (
         <nav className="flex-1 px-2 py-6">
             <ul className="space-y-2">
@@ -174,9 +171,7 @@ const Sidepanel = forwardRef(function Sidepanel(
                 </button>
             </div>
 
-            {/* Playlist list — scrollable */}
             <div className="flex-1 overflow-y-auto min-h-0 border-t border-muted-text/15 pt-3 hide-scrollbar">
-                {/* Liked Songs — always at top */}
                 <Link
                     to="/liked"
                     onClick={onClose}
@@ -223,7 +218,6 @@ const Sidepanel = forwardRef(function Sidepanel(
 
     return (
         <>
-            {/* Desktop sidebar */}
             <aside
                 ref={ref}
                 className={`hidden md:flex ${baseClasses} transition-[width,min-width,padding] duration-200 ease-in-out`}
@@ -251,7 +245,6 @@ const Sidepanel = forwardRef(function Sidepanel(
                 )}
             </aside>
 
-            {/* Mobile overlay drawer */}
             {isOpen && (
                 <div className="md:hidden fixed inset-0 z-60">
                     <div
@@ -287,7 +280,6 @@ const Sidepanel = forwardRef(function Sidepanel(
                 </div>
             )}
 
-            {/* Create Playlist Modal */}
             {showCreatePlaylist && (
                 <CreatePlaylist
                     onClose={() => setShowCreatePlaylist(false)}

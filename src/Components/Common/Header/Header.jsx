@@ -239,15 +239,11 @@ function Header({ onMenuToggle }) {
             </div>
           ) : (
             <div className="flex items-center gap-1">
-              <Link to="/login">
-                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-accent rounded-full hover:text-primary-bg hover:bg-accent transition-colors">
-                  Login
-                </button>
+              <Link to="/login" className="text-base md:text-xl font-semibold text-accent transition-colors">
+                <span className="hover:bg-accent hover:text-primary-bg px-3 py-2 rounded-full ">Login</span>
               </Link>
-              <Link to="/signup">
-                <button className="px-3 md:px-4 py-2 text-base md:text-xl font-semibold text-accent rounded-full hover:text-primary-bg hover:bg-accent transition-colors">
-                  Sign-up
-                </button>
+              <Link to="/signup" className="text-base md:text-xl font-semibold text-accent  rounded-full transition-colors">
+                <span className="hover:bg-accent hover:text-primary-bg px-3 py-2 rounded-full ">Sign-up</span>
               </Link>
             </div>
           )}
