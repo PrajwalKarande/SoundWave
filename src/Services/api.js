@@ -7,6 +7,8 @@ const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
+    'CF-Access-Client-Id': import.meta.env.VITE_CF_CLIENT_ID ?? '',
+    'CF-Access-Client-Secret': import.meta.env.VITE_CF_CLIENT_SECRET ?? '',
   },
   withCredentials: true, // send cookies on every request
 });
