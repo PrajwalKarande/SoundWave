@@ -16,7 +16,6 @@ export const AuthContextProvider = ({ children }) => {
         const userData = await authService.validateToken();
         setUser(userData);
       } catch (err) {
-        // 401 = expected (no active session), anything else is unexpected
         if (err?.response?.status !== 401) {
           console.error('Auth validation failed unexpectedly:', err);
         }
@@ -44,7 +43,6 @@ export const AuthContextProvider = ({ children }) => {
     try {
       await authService.logout();
     } catch (err) {
-      // Server-side logout failed (network error, etc.) — clear local state anyway
       console.error('Logout failed on server, clearing local state anyway:', err);
     } finally {
       setUser(null);

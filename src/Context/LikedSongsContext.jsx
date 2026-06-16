@@ -17,7 +17,6 @@ export function LikedSongsProvider({ children }) {
 
     const isLiked = useCallback((songId) => likedIds.has(String(songId)), [likedIds]);
 
-    // Optimistic toggle — reverts on API failure. Calls onSuccess(nowLiked) or onError(err).
     const toggleLike = useCallback(async (songId, { onSuccess, onError } = {}) => {
         const id = String(songId);
         const wasLiked = likedIds.has(id);

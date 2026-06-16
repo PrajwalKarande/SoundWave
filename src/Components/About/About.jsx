@@ -50,11 +50,9 @@ export default function About() {
 
     return (
         <div className="ab-page">
-            {/* Ambient orbs */}
             <div className="ab-orb ab-orb-1" />
             <div className="ab-orb ab-orb-2" />
 
-            {/* Back button */}
             <button
                 onClick={() => navigate(-1)}
                 className="ab-back-btn"
@@ -66,7 +64,6 @@ export default function About() {
 
             <div className="ab-content">
 
-                {/* ── Hero ── */}
                 <section className="ab-hero">
                     <div className="ab-eq-wrap">
                         {EQ_DELAYS.map((delay, i) => (
@@ -82,7 +79,6 @@ export default function About() {
                     <span className="ab-badge">MERN Stack · Hobby Project</span>
                 </section>
 
-                {/* ── About ── */}
                 <div className="ab-card">
                     <p className="ab-about-text">
                         SoundWave is a full-stack music streaming platform built to explore real-world
@@ -92,7 +88,6 @@ export default function About() {
                     </p>
                 </div>
 
-                {/* ── Tech Stack ── */}
                 <section>
                     <h2 className="ab-section-title">Tech Stack</h2>
                     <div className="ab-stack-grid">
@@ -114,7 +109,6 @@ export default function About() {
                     </div>
                 </section>
 
-                {/* ── Features ── */}
                 <section>
                     <h2 className="ab-section-title">Features</h2>
                     <div className="ab-features-grid">
@@ -134,7 +128,6 @@ export default function About() {
                     </div>
                 </section>
 
-                {/* ── Creator ── */}
                 <div className="ab-creator-card">
                     <div className="ab-creator-avatar">PK</div>
                     <div className="ab-creator-info">

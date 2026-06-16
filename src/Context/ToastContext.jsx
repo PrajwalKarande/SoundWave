@@ -18,7 +18,6 @@ export function ToastProvider({ children }) {
 
     const push = useCallback((message, type, duration = 3200) => {
         const id = ++_uid;
-        // Cap at 4 visible toasts — slice oldest if exceeded
         setToasts(prev => [...prev.slice(-3), { id, message, type, out: false }]);
         timers.current[id] = setTimeout(() => dismiss(id), duration);
         return id;

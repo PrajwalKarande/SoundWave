@@ -117,7 +117,6 @@ const Sidepanel = forwardRef(function Sidepanel(
                 }
             </div>
 
-            {/* About icon — collapsed */}
             <Link
                 to="/about"
                 title="About SoundWave"

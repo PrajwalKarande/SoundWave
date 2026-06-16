@@ -114,12 +114,8 @@ export default function LikedSongsPage() {
 
     return (
         <div className="relative min-h-full">
-
-            {/* ── Header ── */}
             <div style={{ background: HEADER_GRADIENT }}>
                 <div className="flex flex-col sm:flex-row items-end gap-6 p-6 pb-4">
-
-                    {/* Cover — heart on gradient */}
                     <div
                         className="w-44 h-44 shrink-0 rounded-xl flex items-center justify-center"
                         style={{
@@ -134,8 +130,6 @@ export default function LikedSongsPage() {
                             style={{ opacity: 0.88, filter: 'drop-shadow(0 4px 18px rgba(255,255,255,0.25))' }}
                         />
                     </div>
-
-                    {/* Info */}
                     <div className="flex-1 min-w-0 pb-1">
                         <p className="text-xs font-bold uppercase tracking-widest text-white/50 mb-2">Playlist</p>
                         <h1 className="text-3xl md:text-4xl font-bold text-white leading-tight mb-2">
@@ -147,7 +141,6 @@ export default function LikedSongsPage() {
                     </div>
                 </div>
 
-                {/* Controls */}
                 <div className="flex items-center gap-3 px-6 pb-5">
                     <button
                         onClick={handlePlay}
@@ -176,7 +169,6 @@ export default function LikedSongsPage() {
                 </div>
             </div>
 
-            {/* ── Song list ── */}
             {songs.length === 0 ? (
                 <div className="flex flex-col items-center gap-3 py-16 text-muted-text/40">
                     <Heart size={36} />
@@ -206,7 +198,6 @@ export default function LikedSongsPage() {
                                     }`}
                                     onClick={() => handleSongClick(song, idx)}
                                 >
-                                    {/* Index / EQ */}
                                     <td className="w-10 px-2 sm:px-6 py-2.5">
                                         <div className="w-6 flex items-center justify-center">
                                             {isRowPlaying ? (
@@ -226,7 +217,6 @@ export default function LikedSongsPage() {
                                         </div>
                                     </td>
 
-                                    {/* Cover + Title */}
                                     <td className="px-3 py-2.5">
                                         <div className="flex items-center gap-3 min-w-0">
                                             <div className="w-9 h-9 shrink-0 rounded overflow-hidden bg-white/5">
@@ -241,12 +231,10 @@ export default function LikedSongsPage() {
                                         </div>
                                     </td>
 
-                                    {/* Artist */}
                                     <td className="hidden sm:table-cell px-3 py-2.5">
                                         <p className="text-sm text-muted-text/60 truncate">{getArtistName(song.artist)}</p>
                                     </td>
 
-                                    {/* Duration + unlike */}
                                     <td className="px-2 sm:px-4 py-2.5 text-right whitespace-nowrap">
                                         <span className="text-xs text-muted-text/40 tabular-nums group-hover:hidden">
                                             {formatDuration(song.duration)}

@@ -1,7 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { Music2 } from 'lucide-react';
 
-// Subtle dark tints — one per playlist slot, cycling
 const TINTS = [
   'bg-orange-950/70',
   'bg-indigo-950/70',
@@ -42,7 +41,6 @@ export default function PlaylistSection({ playlists, onNavigate }) {
                   : 'text-muted-text hover:bg-primary-bg/60 hover:text-primary-text'
               }`}
             >
-              {/* Cover or icon */}
               <div
                 className={`w-9 h-9 shrink-0 rounded-lg flex items-center justify-center overflow-hidden ${tint} ${
                   isActive ? 'ring-1 ring-accent/40' : ''
@@ -66,7 +64,6 @@ export default function PlaylistSection({ playlists, onNavigate }) {
                 )}
               </div>
 
-              {/* Name + count */}
               <div className="min-w-0 flex-1">
                 <p
                   className={`text-lg font-medium truncate leading-tight transition-colors ${

@@ -41,13 +41,11 @@ export const Landing = () => {
   const [introComplete, setIntroComplete] = useState(false);
   const landingRef = useRef(null);
 
-  // Parallax scroll setup
   const { scrollYProgress } = useScroll({ container: landingRef });
   const bgY1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
   const bgY2 = useTransform(scrollYProgress, [0, 1], [0, -120]);
   const bgY3 = useTransform(scrollYProgress, [0, 1], [0, -300]);
 
-  // Compute once on mount so re-renders (e.g. stats load) don't re-randomize the bars
   const waveformBars = useMemo(() =>
     Array.from({ length: 40 }, () => ({
       height: Math.random() * 80 + 20,
@@ -66,13 +64,11 @@ export const Landing = () => {
           artists: userRes.data.artists,
         });
       } catch (err) {
-        // Silently fail - use default stats if API fails
         console.log("Stats not available");
       }
     };
     fetchStats();
   }, []);
-  // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -106,10 +102,8 @@ export const Landing = () => {
 
   return (
     <div className="landing-page" ref={landingRef}>
-      {/* Film grain overlay */}
       <div className="grain-overlay" />
 
-      {/* Intro Splash Animation */}
       <AnimatePresence>
         {!introComplete && (
           <motion.div
@@ -148,7 +142,6 @@ export const Landing = () => {
         )}
       </AnimatePresence>
 
-      {/* SoundWave Header */}
       <motion.header
         className="landing-header"
         initial={{ opacity: 0 }}
@@ -200,34 +193,29 @@ export const Landing = () => {
         </div>
       </motion.header>
 
-      {/* Hero Section */}
       <motion.section
         className="hero-section"
         initial="hidden"
         animate={introComplete ? "visible" : "hidden"}
         variants={containerVariants}
       >
-        {/* Parallax background elements */}
         <motion.div className="bg-element bg-element-1" style={{ y: bgY1 }} variants={floatVariants} animate="animate" />
         <motion.div className="bg-element bg-element-2" style={{ y: bgY2 }} variants={floatVariants} animate="animate" />
         <motion.div className="bg-element bg-element-3" style={{ y: bgY3 }} variants={floatVariants} animate="animate" />
 
         <div className="hero-content">
 
-          {/* Main heading */}
           <motion.h1 className="hero-title" variants={itemVariants}>
             <span className="text-gradient">Immerse Yourself</span>
             <br />
             <span className="text-gradient">in Pure Sound</span>
           </motion.h1>
 
-          {/* Subheading */}
           <motion.p className="hero-subtitle" variants={itemVariants}>
             Discover songs you love, create playlists, and lose yourself in the music.
             Your personal sound experience starts here.
           </motion.p>
 
-          {/* CTA Buttons */}
           <motion.div className="cta-buttons" variants={itemVariants}>
             {user ? (
               <motion.button

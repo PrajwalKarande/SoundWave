@@ -38,14 +38,11 @@ function Header({ onMenuToggle }) {
       const data = await songService.getSearchHistory();
       setHistory(data.songs ?? []);
     } catch {
-      // silently ignore
     }
   }, [user]);
 
   const handleSongPlayedFromSearch = useCallback((song) => {
-    // Optimistically prepend song to history
     setHistory(prev => [song, ...prev.filter(h => h._id !== song._id).slice(0, 19)]);
-    // Persist to backend fire-and-forget
     songService.addSongToSearchHistory(song._id).catch(() => {});
   }, []);
 
@@ -60,7 +57,6 @@ function Header({ onMenuToggle }) {
   };
 
   const runSearch = useCallback(async (q) => {
-    // Serve from cache if available
     if (cacheRef.current.has(q)) {
       setResults(cacheRef.current.get(q));
       setLoading(false);
@@ -83,7 +79,6 @@ function Header({ onMenuToggle }) {
       cacheRef.current.set(q, hit);
       setResults(hit);
     } catch {
-      // silently ignore search errors
     } finally {
       setLoading(false);
     }
@@ -131,7 +126,6 @@ function Header({ onMenuToggle }) {
       <div className="flex items-center justify-between px-2 md:px-6 py-1 gap-2">
 
         <div className='flex flex-row items-center lg:gap-2 md:gap-0 flex-1 min-w-0'>
-          {/* Hamburger — mobile only */}
           <button
             onClick={onMenuToggle}
             className="md:hidden p-2 shrink-0 text-muted-text hover:text-primary-text transition-colors"
@@ -148,7 +142,6 @@ function Header({ onMenuToggle }) {
             <Home size={24}/>
           </Link>
 
-          {/* Search wrapper — position:relative so dropdown anchors to it */}
           <div
             ref={searchRef}
             className="relative w-32 sm:w-48 md:w-64 lg:w-1/2"

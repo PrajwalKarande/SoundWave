@@ -2,8 +2,6 @@ import api from './api';
 const extractErrorMessage = (err, fallbackMessage) => {
   const status = err?.response?.status;
   const payload = err?.response?.data?.message;
-
-  // 400 validation errors usually come as an array of { field, message } objects
   if (status === 400 && Array.isArray(payload) && payload.length > 0) {
     return payload
       .map((item) => {
@@ -14,8 +12,6 @@ const extractErrorMessage = (err, fallbackMessage) => {
       .filter(Boolean)
       .join(', ');
   }
-
-  // Non-400 array payloads — just surface the first entry
   if (Array.isArray(payload) && payload.length > 0) {
     return payload[0]?.message ?? payload[0]?.field ?? fallbackMessage;
   }
@@ -27,15 +23,7 @@ const extractErrorMessage = (err, fallbackMessage) => {
   return err?.response?.data?.error ?? err?.message ?? fallbackMessage;
 };
 
-// ---------------------------------------------------------------------------
-// Artist Service
-// ---------------------------------------------------------------------------
-
 export const artistService = {
-  /**
-   * Fetches all artists.
-   * @returns {Promise<Artist[]>}
-   */
   getAll: async (params = {}) => {
     try {
       const { data } = await api.get('/artists', { params });
@@ -45,11 +33,6 @@ export const artistService = {
     }
   },
 
-  /**
-   * Creates a new artist.
-   * @param {{ name: string, bio: string, profileImageURL: string }} payload
-   * @returns {Promise<Artist>}
-   */
   create: async ({ name, bio, profileImageURL }) => {
     try {
       const { data } = await api.post('/artists/create', { name, bio, profileImageURL });
@@ -59,11 +42,6 @@ export const artistService = {
     }
   },
 
-  /**
-   * Fetches a single artist by ID (with populated songs).
-   * @param {string} id
-   * @returns {Promise<Artist>}
-   */
   getById: async (id) => {
     try {
       const { data } = await api.get(`/artists/${id}`);
@@ -73,11 +51,6 @@ export const artistService = {
     }
   },
 
-  /**
-   * Deletes an artist by ID.
-   * @param {string} artistId
-   * @returns {Promise<void>}
-   */
   update: async (artistId, payload) => {
     try {
       const { data } = await api.put(`/artists/update/${artistId}`, payload);

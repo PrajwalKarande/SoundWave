@@ -1,22 +1,18 @@
-/* ── Ambient float animation ── */
 @keyframes ab-float {
     0%,  100% { transform: translateY(0)    scale(1);    }
     50%        { transform: translateY(-28px) scale(1.04); }
 }
 
-/* ── Card entrance ── */
 @keyframes ab-enter {
     from { opacity: 0; transform: translateY(14px); }
     to   { opacity: 1; transform: translateY(0);    }
 }
 
-/* ── EQ bars ── */
 @keyframes ab-eq {
     0%,  100% { transform: scaleY(0.22); }
     50%        { transform: scaleY(1);    }
 }
 
-/* ── Page wrapper ── */
 .ab-page {
     position: relative;
     min-height: 100dvh;
@@ -25,7 +21,6 @@
     padding: 24px 20px 64px;
 }
 
-/* ── Back button ── */
 .ab-back-btn {
     position: relative;
     z-index: 2;
@@ -49,7 +44,6 @@
     color: rgba(255, 255, 255, 0.8);
 }
 
-/* ── Ambient orbs ── */
 .ab-orb {
     position: absolute;
     border-radius: 50%;
@@ -77,7 +71,6 @@
     animation: ab-float 12s ease-in-out infinite reverse;
 }
 
-/* ── Content column ── */
 .ab-content {
     position: relative;
     z-index: 1;
@@ -88,7 +81,6 @@
     gap: 24px;
 }
 
-/* ── Hero ── */
 .ab-hero {
     text-align: center;
     padding: 8px 0 0;
@@ -141,7 +133,6 @@
     text-transform: uppercase;
 }
 
-/* ── Generic glass card ── */
 .ab-card {
     background: rgba(21, 23, 29, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.07);
@@ -157,7 +148,6 @@
     line-height: 1.75;
 }
 
-/* ── Section heading ── */
 .ab-section-title {
     font-size: 0.65rem;
     font-weight: 700;
@@ -168,7 +158,6 @@
     padding-left: 2px;
 }
 
-/* ── Tech Stack grid ── */
 .ab-stack-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -230,7 +219,6 @@
     margin-top: 2px;
 }
 
-/* ── Features grid ── */
 .ab-features-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -279,7 +267,6 @@
     line-height: 1.5;
 }
 
-/* ── Creator card ── */
 .ab-creator-card {
     display: flex;
     align-items: center;

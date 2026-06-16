@@ -21,7 +21,6 @@ function App() {
   const startResize = useCallback((which, e) => {
     e.preventDefault()
     const startX = e.clientX
-    // When collapsed the visual width is SIDEBAR_MINI, use that as start point
     const startW = which === 'sidebar'
       ? (sidebarCollapsed ? SIDEBAR_MINI : sidebarWidth)
       : playerWidth
@@ -37,7 +36,6 @@ function App() {
       const delta = ev.clientX - startX
       if (which === 'sidebar') {
         const raw = startW + delta
-        // Track smoothly from SIDEBAR_MAX all the way down to SIDEBAR_MINI — no mid-drag snap
         const w = Math.min(SIDEBAR_MAX, Math.max(SIDEBAR_MINI, raw))
         if (sidebarRef.current) {
           sidebarRef.current.style.width    = `${w}px`
@@ -70,8 +68,6 @@ function App() {
       if (which === 'sidebar') {
         const raw = startW + delta
         if (raw < SIDEBAR_MIN) {
-          // Remove is-resizing first, then let React apply collapsed styles in the
-          // next animation frame so the CSS transition actually fires
           panelEl?.classList.remove('is-resizing')
           requestAnimationFrame(() => setSidebarCollapsed(true))
         } else {
@@ -97,7 +93,6 @@ function App() {
       onToggleSidebar={() => setSidebarCollapsed(prev => !prev)}
     >
 
-      {/* Sidebar resize handle */}
       <div
         className="hidden md:flex w-2 shrink-0 cursor-col-resize items-center justify-center group select-none"
         onMouseDown={(e) => startResize('sidebar', e)}
@@ -109,7 +104,6 @@ function App() {
         <Outlet />
       </main>
 
-      {/* Player resize handle */}
       <div
         className="hidden md:flex w-2 shrink-0 cursor-col-resize items-center justify-center group select-none"
         onMouseDown={(e) => startResize('player', e)}

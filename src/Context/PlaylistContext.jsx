@@ -16,7 +16,6 @@ export function PlaylistProvider({ children }) {
       const data = await getPlaylist();
       setPlaylists(data.data || data || []);
     } catch {
-      // ignore fetch errors silently
     } finally {
       setLoading(false);
     }

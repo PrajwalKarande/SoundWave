@@ -1,4 +1,3 @@
-// src/Components/Admin/Song/AddSong.jsx
 import { useState } from 'react';
 import { Upload, Music, Image, X, Plus, Check, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -175,7 +174,6 @@ export default function AddSong() {
         <div className="bg-section-bg rounded-xl p-6 max-w-4xl">
           <form onSubmit={handleSubmit} className="space-y-6">
 
-            {/* Song Title */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-primary-text">Song Title *</label>
               <input
@@ -188,7 +186,6 @@ export default function AddSong() {
               />
             </div>
 
-            {/* Artists */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-primary-text">Artists *</label>
               {formData.artists.map((artist, index) => (
@@ -221,7 +218,6 @@ export default function AddSong() {
               </button>
             </div>
 
-            {/* Genres */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-primary-text">Genres * (Select at least one)</label>
               <div className="flex flex-wrap gap-2">
@@ -242,7 +238,6 @@ export default function AddSong() {
               </div>
             </div>
 
-            {/* Audio File Upload */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-primary-text">Audio File * (MP3, WAV — Max 50MB)</label>
               <div className="border-2 border-dashed border-muted-text/30 rounded-lg p-8 text-center hover:border-accent transition-colors">
@@ -269,7 +264,6 @@ export default function AddSong() {
               </div>
             </div>
 
-            {/* Cover Image Upload */}
             <div>
               <label className="block text-sm font-semibold mb-2 text-primary-text">Cover Image * (JPG, PNG — Max 5MB)</label>
               <div className="border-2 border-dashed border-muted-text/30 rounded-lg p-8 text-center hover:border-accent transition-colors">
@@ -295,7 +289,6 @@ export default function AddSong() {
               </div>
             </div>
 
-            {/* Submit */}
             <button
               type="submit"
               disabled={loading}

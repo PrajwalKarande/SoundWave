@@ -11,7 +11,6 @@ export const usePlayer = () => {
 
 const STORAGE_KEY = 'sw_last_song';
 
-// True Shuffle helper (Fisher-Yates)
 const shuffleArray = (array) => {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
@@ -33,7 +32,6 @@ const loadLastSong = () => {
 export const PlayerProvider = ({ children }) => {
   const audioRef = useRef(new Audio());
 
-  // Restore last song so the player shows it on refresh (paused, no audio loaded)
   const [currentSong,   setCurrentSong]   = useState(() => loadLastSong());
   const [queue,         setQueue]         = useState([]);
   const [originalQueue, setOriginalQueue] = useState([]);
@@ -49,14 +47,12 @@ export const PlayerProvider = ({ children }) => {
 
   const audio = audioRef.current;
 
-  // ── Persist current song whenever it changes ──────────────────────────────
   useEffect(() => {
     if (currentSong) {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(currentSong));
     }
   }, [currentSong]);
 
-  // ── Record play after 30 seconds of continuous playback ───────────────────
   useEffect(() => {
     if (!currentSong?._id) return;
     const songId = currentSong._id;
@@ -66,7 +62,6 @@ export const PlayerProvider = ({ children }) => {
     return () => clearTimeout(timer);
   }, [currentSong?._id]);
 
-  // ── Sync volume ────────────────────────────────────────────────────────────
   useEffect(() => {
     audio.volume = isMuted ? 0 : volume;
   }, [volume, isMuted, audio]);
@@ -94,7 +89,6 @@ export const PlayerProvider = ({ children }) => {
     }
   }, [queue, queueIndex, repeatMode, audio]);
 
-  // ── Audio event listeners ──────────────────────────────────────────────────
   useEffect(() => {
     const handleTimeUpdate = () => setCurrentTime(audio.currentTime);
     const handleLoadedMetadata = () => setDuration(audio.duration);
@@ -165,7 +159,6 @@ export const PlayerProvider = ({ children }) => {
     if (isPlaying) {
       audio.pause();
     } else {
-      // On fresh load the Audio element has no src (restored song came from localStorage only)
       if (!audio.src && currentSong.url) {
         audio.src = currentSong.url;
         audio.load();
